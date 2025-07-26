@@ -13,22 +13,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: pnpm 설치
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
-          run_install: true
+      # - name: pnpm 설치
+      #   uses: pnpm/action-setup@v4
+      #   with:
+      #     version: 10
+      #     run_install: true
 
-      - name: Install Node.js # pnpm 설치를 하더라도 node는 추가로 설치 필요
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'pnpm'
+      # - name: Install Node.js # pnpm 설치를 하더라도 node는 추가로 설치 필요
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: 22
+      #     cache: 'pnpm'
 
-      - name: Build the project
-        run: |
-          echo "🏗️  Nest Project를 Build 합니다."
-          pnpm run build
+      # - name: Build the project
+      #   run: |
+      #     echo "🏗️  Nest Project를 Build 합니다."
+      #     pnpm run build
 
       - name: 홈 서버에 checkout 된 코드 복사
         uses: appleboy/scp-action@v0.1.3
@@ -37,7 +37,8 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          source: './dist/*, ./scripts/*, ./ecosystem.config.cjs'
+          # source: './dist/*, ./scripts/*, ./ecosystem.config.cjs'
+          source: '.'
           target: '${{ secrets.APP_DIRECTORY }}'
 
       - name: SSH 접속 및 스크립트 실행

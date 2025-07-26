@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: "peekle",
-      script: "node dist/main.js",
+      script: "dist/main.js",
       instances: 0, // 프로세스 수 결정, 0으로 두면 최대
       exec_mode: "cluster",
       // watch: true, // nodemon과 같은 기능

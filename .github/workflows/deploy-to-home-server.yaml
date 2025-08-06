@@ -49,6 +49,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
+            #!/bin/bash
             echo "✅ SSH Connected ..."
             echo "👤 Current User: $(whoami)"
             echo "🖥️ Host Name: $(hostname)"

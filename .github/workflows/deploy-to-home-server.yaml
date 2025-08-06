@@ -50,6 +50,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             #!/bin/bash
+            bash -c '
             echo "✅ SSH Connected ..."
             echo "👤 Current User: $(whoami)"
             echo "🖥️ Host Name: $(hostname)"
@@ -80,3 +81,4 @@ jobs:
               echo "❌ Script execution failed. Please check the logs."
               exit 1
             fi
+            '

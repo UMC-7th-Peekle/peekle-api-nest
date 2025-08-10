@@ -2,6 +2,9 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+import { GlobalExceptionFilter } from '@common/filters/http-exception.filter';
+import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
+
 import { AppModule } from '@modules/app/app.module';
 
 async function bootstrap() {
@@ -31,6 +34,9 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  app.useGlobalFilters(new GlobalExceptionFilter());
+  app.useGlobalInterceptors(app.get(ResponseInterceptor));
 
   await app.listen(process.env.PORT ?? 7777);
 }

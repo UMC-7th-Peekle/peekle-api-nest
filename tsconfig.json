@@ -10,7 +10,9 @@
     "noFallthroughCasesInSwitch": false,
     "module": "commonjs",
     "target": "ES2023",
-    "lib": ["es2020"],
+    "lib": [
+      "es2020"
+    ],
     "sourceMap": true,
     "allowJs": false,
     "skipLibCheck": true,
@@ -25,30 +27,79 @@
     "emitDecoratorMetadata": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "baseUrl": "./",
+    "baseUrl": "./src",
     "paths": {
-      "@config/*": ["config/*"],
-      "@common/*": ["common/*"],
-      "@utils/*": ["utils/*"],
-      "@shared/*": ["shared/*"],
-      "@database/*": ["database/*"],
-      "@entities/*": ["entities/*"],
-      "@repositories/*": ["repositories/*"],
-      "@auth/*": ["auth/*"],
-      "@guards/*": ["guards/*"],
-      "@decorators/*": ["decorators/*"],
-      "@modules/*": ["modules/*"],
-      "@services/*": ["services/*"],
-      "@controllers/*": ["controllers/*"],
-      "@dto/*": ["dto/*"],
-      "@types/*": ["types/*"],
-      "@interfaces/*": ["interfaces/*"],
-      "@middleware/*": ["middleware/*"],
-      "@filters/*": ["filters/*"],
-      "@pipes/*": ["pipes/*"],
-      "@/*": ["*"]
+      "@config/*": [
+        "config/*"
+      ],
+      "@common/*": [
+        "common/*"
+      ],
+      "@utils/*": [
+        "utils/*"
+      ],
+      "@shared/*": [
+        "shared/*"
+      ],
+      "@prisma/*": [
+        "prisma/*"
+      ],
+      "@database/*": [
+        "database/*"
+      ],
+      "@entities/*": [
+        "entities/*"
+      ],
+      "@repositories/*": [
+        "repositories/*"
+      ],
+      "@auth/*": [
+        "auth/*"
+      ],
+      "@guards/*": [
+        "guards/*"
+      ],
+      "@decorators/*": [
+        "decorators/*"
+      ],
+      "@modules/*": [
+        "modules/*"
+      ],
+      "@services/*": [
+        "services/*"
+      ],
+      "@controllers/*": [
+        "controllers/*"
+      ],
+      "@dto/*": [
+        "dto/*"
+      ],
+      "@types/*": [
+        "types/*"
+      ],
+      "@interfaces/*": [
+        "interfaces/*"
+      ],
+      "@middleware/*": [
+        "middleware/*"
+      ],
+      "@filters/*": [
+        "filters/*"
+      ],
+      "@pipes/*": [
+        "pipes/*"
+      ],
+      "@/*": [
+        "*"
+      ]
     }
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "dist", "test/**/*.e2e-spec.ts"]
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test/**/*.e2e-spec.ts"
+  ]
 }

@@ -24,6 +24,7 @@ model Article {
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt   DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
 
+  user           User             @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "article_user_id_fk")
   community      Community        @relation(fields: [communityId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "article_community_id_fk")
   articleImage   ArticleImage[]
   articleLike    ArticleLike[]
@@ -160,6 +161,7 @@ model User {
   role               String               @default("USER") @db.VarChar(30)
   createdAt          DateTime             @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt          DateTime             @default(now()) @map("updated_at") @db.Timestamp(6)
+  article            Article[]
   articleComment     ArticleComment[]
   articleCommentLike ArticleCommentLike[]
   articleLike        ArticleLike[]

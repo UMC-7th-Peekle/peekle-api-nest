@@ -24,6 +24,7 @@ model Article {
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt   DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
 
+  user           User             @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "article_user_id_fk")
   community      Community        @relation(fields: [communityId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "article_community_id_fk")
   articleImage   ArticleImage[]
   articleLike    ArticleLike[]
@@ -36,6 +37,7 @@ model Article {
 model ArticleComment {
   id                 BigInt               @id @default(autoincrement())
   articleId          BigInt               @map("article_id")
+  parentCommentId    BigInt?              @map("parent_comment_id")
   content            String               @db.VarChar(2000)
   authorId           BigInt               @map("author_id")
   isAnonymous        Boolean              @map("is_anonymous")
@@ -43,10 +45,13 @@ model ArticleComment {
   updatedAt          DateTime             @default(now()) @map("updated_at") @db.Timestamp(6)
   user               User                 @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "article_comment_user_id_fk")
   article            Article              @relation(fields: [articleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "article_comment_article_id_fk")
+  parentComment      ArticleComment?      @relation("CommentReplies", fields: [parentCommentId], references: [id])
+  replies            ArticleComment[]     @relation("CommentReplies")
   articleCommentLike ArticleCommentLike[]
 
   @@index([authorId], map: "article_comment_user_id_fk")
   @@index([articleId], map: "article_comment_article_id_fk")
+  @@index([parentCommentId], map: "article_comment_parent_comment_id_fk") 
   @@map("article_comment")
 }
 
@@ -156,6 +161,7 @@ model User {
   role               String               @default("USER") @db.VarChar(30)
   createdAt          DateTime             @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt          DateTime             @default(now()) @map("updated_at") @db.Timestamp(6)
+  article            Article[]
   articleComment     ArticleComment[]
   articleCommentLike ArticleCommentLike[]
   articleLike        ArticleLike[]

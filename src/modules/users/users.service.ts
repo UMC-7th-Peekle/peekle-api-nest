@@ -1,7 +1,17 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { CreateUserRequestDto } from '@modules/users/dto/create-user';
+import {
+  // 컨트롤러에서만 쓰면 import 안 해도 OK
+  UpdateNicknameRequestDto,
+} from '@modules/users/dto/nickname';
+import { UpdateProfileImageRequestDto } from '@modules/users/dto/profile';
 import {
   GetTermsHistoryResponseDto,
   UpdateTermsAgreementRequestDto,
@@ -28,7 +38,7 @@ export class UsersService {
       select: { id: true },
     });
 
-    return { message: '사용자가 생성되었습니다.', id: newUser.id.toString() };
+    return { id: newUser.id.toString() };
   }
 
   /**
@@ -85,6 +95,11 @@ export class UsersService {
    * 약관 동의 상태 업데이트
    */
   async updateTermsAgreement(userId: bigint, body: UpdateTermsAgreementRequestDto) {
+    if (!body.updates || body.updates.length === 0) {
+      // 클라이언트가 잘못된 요청 보냈을 때 400 에러 반환
+      throw new BadRequestException('업데이트할 약관 동의 내역이 없습니다.');
+    }
+
     // 여러 약관 동의 변경을 하나의 트랜잭션으로 처리
     await this.prisma.$transaction(
       body.updates.map(({ termId, isAccepted }) =>
@@ -103,5 +118,77 @@ export class UsersService {
     );
 
     return { message: '약관 동의 내역이 업데이트되었습니다.' };
+  }
+
+  /**
+   * 닉네임 사용 가능 여부 확인
+   * - 중복 존재 시 available=false
+   */
+  async checkNicknameAvailability(nickname: string) {
+    const trimmed = nickname.trim();
+    if (!trimmed) {
+      throw new BadRequestException('닉네임을 입력해 주세요.');
+    }
+
+    const exists = await this.prisma.user.findFirst({
+      where: { nickname: trimmed },
+      select: { id: true },
+    });
+
+    return { available: !exists };
+  }
+
+  /**
+   * 내 닉네임 변경
+   * - 자기 자신 제외 중복 방지
+   * - TODO: Prisma에 @unique 제약 추가해야 함
+   */
+  async updateNickname(userId: bigint, dto: UpdateNicknameRequestDto) {
+    const nickname = dto.nickname.trim();
+
+    const nicknameAlreadyExists = await this.prisma.user.findFirst({
+      where: { nickname, NOT: { id: userId } },
+      select: { id: true },
+    });
+    if (nicknameAlreadyExists) {
+      throw new ConflictException('이미 사용 중인 닉네임입니다.');
+    }
+
+    try {
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: { nickname },
+      });
+    } catch (e: any) {
+      // P2002: Prisma unique constraint violation (중복 닉네임)
+      if (e?.code === 'P2002') {
+        throw new ConflictException('이미 사용 중인 닉네임입니다.');
+      }
+      throw e;
+    }
+
+    return { message: '닉네임이 변경되었습니다.' };
+  }
+
+  /**
+   * 내 프로필 이미지 수정/삭제
+   * - null → 삭제
+   */
+  async updateProfileImage(userId: bigint, dto: UpdateProfileImageRequestDto) {
+    if (!Object.prototype.hasOwnProperty.call(dto, 'profileImage')) {
+      return { message: '변경 사항이 없습니다.' };
+    }
+
+    // null → 삭제, string → trim 후 저장
+    const next = dto.profileImage === null ? null : (dto.profileImage as string).trim();
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { profileImage: next },
+    });
+
+    return {
+      message: next ? '프로필 이미지가 업데이트되었습니다.' : '프로필 이미지가 삭제되었습니다.',
+    };
   }
 }

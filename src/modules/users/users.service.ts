@@ -7,10 +7,7 @@ import {
 
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { CreateUserRequestDto } from '@modules/users/dto/create-user';
-import {
-  // 컨트롤러에서만 쓰면 import 안 해도 OK
-  UpdateNicknameRequestDto,
-} from '@modules/users/dto/nickname';
+import { UpdateNicknameRequestDto } from '@modules/users/dto/nickname';
 import { UpdateProfileImageRequestDto } from '@modules/users/dto/profile';
 import {
   GetTermsHistoryResponseDto,

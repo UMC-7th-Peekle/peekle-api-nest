@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -51,7 +51,7 @@ model ArticleComment {
 
   @@index([authorId], map: "article_comment_user_id_fk")
   @@index([articleId], map: "article_comment_article_id_fk")
-  @@index([parentCommentId], map: "article_comment_parent_comment_id_fk") 
+  @@index([parentCommentId], map: "article_comment_parent_comment_id_fk")
   @@map("article_comment")
 }
 

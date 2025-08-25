@@ -1,0 +1,186 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Article {
+  id          BigInt   @id @default(autoincrement())
+  communityId BigInt   @map("community_id")
+  title       String   @db.VarChar(50)
+  content     String   @db.VarChar(5000)
+  isAnonymous Boolean  @map("is_anonymous")
+  authorId    BigInt   @map("author_id")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt   DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+
+  user           User             @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "article_user_id_fk")
+  community      Community        @relation(fields: [communityId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "article_community_id_fk")
+  articleImage   ArticleImage[]
+  articleLike    ArticleLike[]
+  ArticleComment ArticleComment[] @relation(map: "article_comment_article_id_fk")
+
+  @@index([communityId], map: "article_community_id_fk")
+  @@map("article")
+}
+
+model ArticleComment {
+  id                 BigInt               @id @default(autoincrement())
+  articleId          BigInt               @map("article_id")
+  parentCommentId    BigInt?              @map("parent_comment_id")
+  content            String               @db.VarChar(2000)
+  authorId           BigInt               @map("author_id")
+  isAnonymous        Boolean              @map("is_anonymous")
+  createdAt          DateTime             @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt          DateTime             @default(now()) @map("updated_at") @db.Timestamp(6)
+  user               User                 @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "article_comment_user_id_fk")
+  article            Article              @relation(fields: [articleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "article_comment_article_id_fk")
+  parentComment      ArticleComment?      @relation("CommentReplies", fields: [parentCommentId], references: [id])
+  replies            ArticleComment[]     @relation("CommentReplies")
+  articleCommentLike ArticleCommentLike[]
+
+  @@index([authorId], map: "article_comment_user_id_fk")
+  @@index([articleId], map: "article_comment_article_id_fk")
+  @@index([parentCommentId], map: "article_comment_parent_comment_id_fk")
+  @@map("article_comment")
+}
+
+model ArticleCommentLike {
+  commentId      BigInt         @map("comment_id")
+  userId         BigInt         @map("user_id")
+  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt      DateTime       @default(now()) @map("updated_at") @db.Timestamp(6)
+  articleComment ArticleComment @relation(fields: [commentId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "article_comment_like_article_comment_id_fk")
+  user           User           @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "article_comment_like_user_id_fk")
+
+  @@id([commentId, userId])
+  @@index([userId], map: "article_comment_like_user_id_fk")
+  @@map("article_comment_like")
+}
+
+model ArticleImage {
+  articleId BigInt   @map("article_id")
+  imageUrl  String   @map("image_url") @db.VarChar(1024)
+  order     Int
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "article_image_article_id_fk")
+
+  @@id([articleId, order])
+  @@map("article_image")
+}
+
+model ArticleLike {
+  articleId BigInt   @map("article_id")
+  userId    BigInt   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "article_like_article_id_fk")
+  user      User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "article_like_user_id_fk")
+
+  @@id([articleId, userId])
+  @@index([userId], map: "article_like_user_id_fk")
+  @@map("article_like")
+}
+
+model Community {
+  id        BigInt    @id @default(autoincrement())
+  name      String    @db.VarChar(100)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamp(6)
+  article   Article[]
+
+  @@map("community")
+}
+
+model Event {
+  id                 BigInt       @id @default(autoincrement())
+  title              String       @db.VarChar(50)
+  startDate          DateTime     @map("start_date") @db.Date
+  endDate            DateTime     @map("end_date") @db.Date
+  venueName          String?      @map("venue_name") @db.VarChar(100)
+  venueRoadAddress   String?      @map("venue_road_address") @db.VarChar(200)
+  venueJibunAddress  String?      @map("venue_jibun_address") @db.VarChar(200)
+  venueDetailAddress String?      @map("venue_detail_address") @db.VarChar(100)
+  price              Int
+  link               String?      @db.VarChar(300)
+  description        String?      @db.VarChar(1000)
+  authorId           BigInt       @map("author_id")
+  category           String       @db.VarChar(100)
+  createdAt          DateTime     @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt          DateTime     @default(now()) @map("updated_at") @db.Timestamp(6)
+  user               User         @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "event_user_id_fk")
+  eventImage         EventImage[]
+
+  @@index([authorId], map: "event_user_id_fk")
+  @@map("event")
+}
+
+model EventImage {
+  eventId   BigInt   @map("event_id")
+  imageUrl  String   @map("image_url") @db.VarChar(1024)
+  order     Int
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "event_image_event_id_fk")
+
+  @@id([eventId, order])
+  @@map("event_image")
+}
+
+model Term {
+  id         BigInt     @id @default(autoincrement())
+  title      String     @db.VarChar(30)
+  content    String     @db.Text
+  isRequired Boolean    @map("is_required")
+  createdAt  DateTime   @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt  DateTime   @default(now()) @map("updated_at") @db.Timestamp(6)
+  userTerm   UserTerm[]
+
+  @@map("term")
+}
+
+model User {
+  id                 BigInt               @id @default(autoincrement())
+  name               String               @db.VarChar(10)
+  nickname           String               @db.VarChar(10)
+  birthdate          DateTime             @db.Date
+  gender             String?              @db.VarChar(10)
+  phoneNumber        String?              @map("phone_number") @db.VarChar(20)
+  profileImage       String?              @map("profile_image") @db.VarChar(1024)
+  role               String               @default("USER") @db.VarChar(30)
+  createdAt          DateTime             @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt          DateTime             @default(now()) @map("updated_at") @db.Timestamp(6)
+  article            Article[]
+  articleComment     ArticleComment[]
+  articleCommentLike ArticleCommentLike[]
+  articleLike        ArticleLike[]
+  event              Event[]
+  userTerm           UserTerm[]
+
+  @@map("user")
+}
+
+model UserTerm {
+  userId     BigInt   @map("user_id")
+  termId     BigInt   @map("term_id")
+  isAccepted Boolean  @map("is_accepted")
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt  DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+  term       Term     @relation(fields: [termId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_term_term_id_fk")
+  user       User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_term_user_id_fk")
+
+  @@id([userId, termId])
+  @@index([termId], map: "user_term_term_id_fk")
+  @@map("user_term")
+}

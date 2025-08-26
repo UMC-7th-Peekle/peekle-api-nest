@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
 import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
 
@@ -9,7 +10,14 @@ import { UsersModule } from '@modules/users/users.module';
 import { AppController } from './app.controller';
 
 @Module({
-  imports: [UsersModule, PrismaModule, AuthModule],
+  imports: [
+    UsersModule,
+    PrismaModule,
+    AuthModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+  ],
   controllers: [AppController],
   providers: [ResponseInterceptor],
 })

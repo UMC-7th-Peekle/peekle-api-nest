@@ -4,21 +4,23 @@ import {
   ExceptionFilter,
   HttpException,
   HttpStatus,
+  Logger,
 } from '@nestjs/common';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
-  catch(exception: unknown, host: ArgumentsHost) {
+  private readonly logger = new Logger(GlobalExceptionFilter.name);
+
+  catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
 
-    const status =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR;
+    this.logger.error(exception.message, exception.stack);
 
-    const message =
-      exception instanceof HttpException ? exception.message : '서버 에러 발생';
+    const status =
+      exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+
+    const message = exception instanceof HttpException ? exception.message : '서버 에러 발생';
 
     if (!response.headerSent) {
       response.status(status).json({

@@ -53,3 +53,19 @@ export class CreateUserRequestDto {
 }
 
 export class CreateUserResponseDto {}
+
+export class LoginRequestDto {
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '사용자 이름',
+  })
+  name!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '사용자 닉네임',
+  })
+  nickname!: string;
+}

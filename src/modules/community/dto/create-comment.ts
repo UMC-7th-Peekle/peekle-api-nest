@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { IsBoolean, IsInt, IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { IsBoolean, IsInt, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class CreateCommentDto {
   @ApiProperty({ example: 100, description: '댓글이 달릴 게시글 ID', type: Number })
@@ -20,4 +20,14 @@ export class CreateCommentDto {
   @ApiProperty({ example: false, description: '익명 여부', type: Boolean })
   @IsBoolean()
   is_anonymous!: boolean;
+
+  @ApiProperty({
+    example: 20,
+    description: '부모 댓글 ID (대댓글 작성 시)',
+    type: Number,
+    required: false,
+  })
+  @IsInt()
+  @IsOptional()
+  parent_comment_id?: number;
 }

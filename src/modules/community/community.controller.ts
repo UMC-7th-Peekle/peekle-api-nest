@@ -100,7 +100,9 @@ export class CommunityController {
   }
 
   @Post('article/comment/reply')
-  createReply() {
-    return this.communityService.createReply();
+  @ApiOperation({ summary: '게시글 대댓글 작성' })
+  @ApiCreatedResponse({ description: '대댓글 작성 성공', type: CreateCommentDto })
+  async createReply(@Body() dto: CreateCommentDto) {
+    return await this.communityService.createReply(dto);
   }
 }

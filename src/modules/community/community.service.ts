@@ -120,7 +120,17 @@ export class CommunityService {
     return { message: '게시글 댓글 삭제 (DELETE /community/article/comment)' };
   }
 
-  createReply() {
-    return { message: '게시글 대댓글 작성 (POST /community/article/comment/reply)' };
+  async createReply(dto: CreateCommentDto) {
+    const reply = await this.prisma.articleComment.create({
+      data: {
+        articleId: dto.article_id,
+        content: dto.content,
+        authorId: dto.author_id,
+        isAnonymous: dto.is_anonymous,
+        parentCommentId: dto.parent_comment_id, // 대댓글은 부모 댓글 ID를 반드시 포함
+      },
+    });
+
+    return { status: true, message: '대댓글이 작성되었습니다.', data: reply };
   }
 }

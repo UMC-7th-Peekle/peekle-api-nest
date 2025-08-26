@@ -6,6 +6,7 @@ import { ApiConsumes, ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
 import { CommunityService } from './community.service';
 import { CreateArticleDto } from './dto/create-article';
 import { CreateArticleLikeDto } from './dto/create-article-like';
+import { CreateCommentDto } from './dto/create-comment';
 
 @Controller('community')
 export class CommunityController {
@@ -82,8 +83,10 @@ export class CommunityController {
   }
 
   @Post('article/comment')
-  createComment() {
-    return this.communityService.createComment();
+  @ApiOperation({ summary: '게시글 댓글 작성' })
+  @ApiCreatedResponse({ description: '댓글 작성 성공', type: CreateCommentDto })
+  async createComment(@Body() dto: CreateCommentDto) {
+    return await this.communityService.createComment(dto);
   }
 
   @Patch('article/comment')

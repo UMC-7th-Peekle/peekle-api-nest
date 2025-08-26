@@ -4,6 +4,7 @@ import { PrismaService } from '@modules/prisma/prisma.service';
 
 import { CreateArticleDto } from './dto/create-article';
 import { CreateArticleLikeDto } from './dto/create-article-like';
+import { CreateCommentDto } from './dto/create-comment';
 
 @Injectable()
 export class CommunityService {
@@ -96,8 +97,19 @@ export class CommunityService {
     return { message: '게시글 댓글 조회 (GET /community/article/comment)' };
   }
 
-  createComment() {
-    return { message: '게시글 댓글 작성 (POST /community/article/comment)' };
+  async createComment(dto: CreateCommentDto) {
+    const comment = await this.prisma.articleComment.create({
+      data: {
+        articleId: dto.article_id,
+        content: dto.content,
+        authorId: dto.author_id,
+        isAnonymous: dto.is_anonymous,
+        // parent_comment_id는 대댓글 작성에 필요, 현재는 null로 고정
+        parentCommentId: null,
+      },
+    });
+
+    return { status: true, message: '댓글이 작성되었습니다.', data: comment };
   }
 
   updateComment() {

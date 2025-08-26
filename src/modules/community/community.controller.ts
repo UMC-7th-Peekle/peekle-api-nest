@@ -5,6 +5,7 @@ import { ApiConsumes, ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
 
 import { CommunityService } from './community.service';
 import { CreateArticleDto } from './dto/create-article';
+import { CreateArticleLikeDto } from './dto/create-article-like';
 
 @Controller('community')
 export class CommunityController {
@@ -53,8 +54,10 @@ export class CommunityController {
   }
 
   @Post('article/like')
-  createArticleLike() {
-    return this.communityService.createArticleLike();
+  @ApiOperation({ summary: '게시글 좋아요' })
+  @ApiCreatedResponse({ description: '게시글 좋아요 성공', type: Boolean })
+  async createArticleLike(@Body() dto: CreateArticleLikeDto) {
+    return await this.communityService.createArticleLike(dto);
   }
 
   @Delete('article/like')

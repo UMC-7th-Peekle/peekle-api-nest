@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 
 import { PrismaService } from '@modules/prisma/prisma.service';
 
 import { CreateArticleDto } from './dto/create-article';
+import { CreateArticleLikeDto } from './dto/create-article-like';
 
 @Injectable()
 export class CommunityService {
@@ -23,11 +24,11 @@ export class CommunityService {
     // 게시글 생성
     const createdArticle = await this.prisma.article.create({
       data: {
-        communityId: dto.communityId,
+        communityId: dto.community_id,
         title: dto.title,
         content: dto.content,
-        isAnonymous: dto.isAnonymous,
-        authorId: dto.authorId,
+        isAnonymous: dto.is_anonymous,
+        authorId: dto.author_id,
       },
     });
 
@@ -54,8 +55,29 @@ export class CommunityService {
     return { message: '게시글 삭제 (DELETE /community/article/:articleId)' };
   }
 
-  createArticleLike() {
-    return { message: '게시글 좋아요 (POST /community/article/like)' };
+  async createArticleLike(dto: CreateArticleLikeDto) {
+    // 복합키(articleId, userId) 기반 좋아요 존재 여부 확인
+    const existingLike = await this.prisma.articleLike.findUnique({
+      where: {
+        articleId_userId: {
+          articleId: BigInt(dto.article_id),
+          userId: BigInt(dto.user_id),
+        },
+      },
+    });
+
+    if (existingLike) {
+      throw new ConflictException('이미 좋아요를 누른 게시글입니다.');
+    }
+
+    const like = await this.prisma.articleLike.create({
+      data: {
+        articleId: BigInt(dto.article_id),
+        userId: BigInt(dto.user_id),
+      },
+    });
+
+    return { status: true, message: '좋아요 성공', data: like };
   }
 
   deleteArticleLike() {

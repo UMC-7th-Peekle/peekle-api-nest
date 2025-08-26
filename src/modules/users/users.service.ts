@@ -5,6 +5,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
+import { Prisma } from '@prisma/client';
+
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { CreateUserRequestDto } from '@modules/users/dto/create-user';
 import { UpdateNicknameRequestDto } from '@modules/users/dto/nickname';
@@ -156,10 +158,12 @@ export class UsersService {
         where: { id: userId },
         data: { nickname },
       });
-    } catch (e: any) {
-      // P2002: Prisma unique constraint violation (중복 닉네임)
-      if (e?.code === 'P2002') {
-        throw new ConflictException('이미 사용 중인 닉네임입니다.');
+    } catch (e: unknown) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        // P2002: Prisma unique constraint violation (중복 닉네임)
+        if (e?.code === 'P2002') {
+          throw new ConflictException('이미 사용 중인 닉네임입니다.');
+        }
       }
       throw e;
     }
@@ -172,12 +176,17 @@ export class UsersService {
    * - null → 삭제
    */
   async updateProfileImage(userId: bigint, dto: UpdateProfileImageRequestDto) {
-    if (!Object.prototype.hasOwnProperty.call(dto, 'profileImage')) {
+    if (!('profileImage' in dto)) {
       return { message: '변경 사항이 없습니다.' };
     }
 
     // null → 삭제, string → trim 후 저장
-    const next = dto.profileImage === null ? null : (dto.profileImage as string).trim();
+    const next =
+      dto.profileImage === null
+        ? null
+        : typeof dto.profileImage === 'string'
+          ? dto.profileImage.trim()
+          : dto.profileImage;
 
     await this.prisma.user.update({
       where: { id: userId },

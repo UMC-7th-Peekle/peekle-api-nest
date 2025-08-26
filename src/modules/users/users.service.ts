@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import { Prisma } from '@prisma/client';
+import { Prisma } from '@peekle/prisma/client';
 
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { UpdateNicknameRequestDto } from '@modules/users/dto/nickname';

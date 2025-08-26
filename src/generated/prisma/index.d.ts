@@ -11094,6 +11094,8 @@ export namespace Prisma {
     phoneNumber: string | null
     profileImage: string | null
     role: string | null
+    oauthProvider: string | null
+    oauthId: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -11107,6 +11109,8 @@ export namespace Prisma {
     phoneNumber: string | null
     profileImage: string | null
     role: string | null
+    oauthProvider: string | null
+    oauthId: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -11120,6 +11124,8 @@ export namespace Prisma {
     phoneNumber: number
     profileImage: number
     role: number
+    oauthProvider: number
+    oauthId: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -11143,6 +11149,8 @@ export namespace Prisma {
     phoneNumber?: true
     profileImage?: true
     role?: true
+    oauthProvider?: true
+    oauthId?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -11156,6 +11164,8 @@ export namespace Prisma {
     phoneNumber?: true
     profileImage?: true
     role?: true
+    oauthProvider?: true
+    oauthId?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -11169,6 +11179,8 @@ export namespace Prisma {
     phoneNumber?: true
     profileImage?: true
     role?: true
+    oauthProvider?: true
+    oauthId?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -11269,6 +11281,8 @@ export namespace Prisma {
     phoneNumber: string | null
     profileImage: string | null
     role: string
+    oauthProvider: string | null
+    oauthId: string | null
     createdAt: Date
     updatedAt: Date
     _count: UserCountAggregateOutputType | null
@@ -11301,6 +11315,8 @@ export namespace Prisma {
     phoneNumber?: boolean
     profileImage?: boolean
     role?: boolean
+    oauthProvider?: boolean
+    oauthId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     article?: boolean | User$articleArgs<ExtArgs>
@@ -11323,11 +11339,13 @@ export namespace Prisma {
     phoneNumber?: boolean
     profileImage?: boolean
     role?: boolean
+    oauthProvider?: boolean
+    oauthId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "nickname" | "birthdate" | "gender" | "phoneNumber" | "profileImage" | "role" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "nickname" | "birthdate" | "gender" | "phoneNumber" | "profileImage" | "role" | "oauthProvider" | "oauthId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     article?: boolean | User$articleArgs<ExtArgs>
     articleComment?: boolean | User$articleCommentArgs<ExtArgs>
@@ -11357,6 +11375,8 @@ export namespace Prisma {
       phoneNumber: string | null
       profileImage: string | null
       role: string
+      oauthProvider: string | null
+      oauthId: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["user"]>
@@ -11742,6 +11762,8 @@ export namespace Prisma {
     readonly phoneNumber: FieldRef<"User", 'String'>
     readonly profileImage: FieldRef<"User", 'String'>
     readonly role: FieldRef<"User", 'String'>
+    readonly oauthProvider: FieldRef<"User", 'String'>
+    readonly oauthId: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
@@ -13356,6 +13378,8 @@ export namespace Prisma {
     phoneNumber: 'phoneNumber',
     profileImage: 'profileImage',
     role: 'role',
+    oauthProvider: 'oauthProvider',
+    oauthId: 'oauthId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -13454,7 +13478,9 @@ export namespace Prisma {
     gender: 'gender',
     phoneNumber: 'phoneNumber',
     profileImage: 'profileImage',
-    role: 'role'
+    role: 'role',
+    oauthProvider: 'oauthProvider',
+    oauthId: 'oauthId'
   };
 
   export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
@@ -14149,6 +14175,8 @@ export namespace Prisma {
     phoneNumber?: StringNullableFilter<"User"> | string | null
     profileImage?: StringNullableFilter<"User"> | string | null
     role?: StringFilter<"User"> | string
+    oauthProvider?: StringNullableFilter<"User"> | string | null
+    oauthId?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     article?: ArticleListRelationFilter
@@ -14168,6 +14196,8 @@ export namespace Prisma {
     phoneNumber?: SortOrderInput | SortOrder
     profileImage?: SortOrderInput | SortOrder
     role?: SortOrder
+    oauthProvider?: SortOrderInput | SortOrder
+    oauthId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     article?: ArticleOrderByRelationAggregateInput
@@ -14191,6 +14221,8 @@ export namespace Prisma {
     phoneNumber?: StringNullableFilter<"User"> | string | null
     profileImage?: StringNullableFilter<"User"> | string | null
     role?: StringFilter<"User"> | string
+    oauthProvider?: StringNullableFilter<"User"> | string | null
+    oauthId?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     article?: ArticleListRelationFilter
@@ -14210,6 +14242,8 @@ export namespace Prisma {
     phoneNumber?: SortOrderInput | SortOrder
     profileImage?: SortOrderInput | SortOrder
     role?: SortOrder
+    oauthProvider?: SortOrderInput | SortOrder
+    oauthId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
@@ -14231,6 +14265,8 @@ export namespace Prisma {
     phoneNumber?: StringNullableWithAggregatesFilter<"User"> | string | null
     profileImage?: StringNullableWithAggregatesFilter<"User"> | string | null
     role?: StringWithAggregatesFilter<"User"> | string
+    oauthProvider?: StringNullableWithAggregatesFilter<"User"> | string | null
+    oauthId?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
@@ -14927,6 +14963,8 @@ export namespace Prisma {
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleCreateNestedManyWithoutUserInput
@@ -14946,6 +14984,8 @@ export namespace Prisma {
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleUncheckedCreateNestedManyWithoutUserInput
@@ -14965,6 +15005,8 @@ export namespace Prisma {
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateManyWithoutUserNestedInput
@@ -14984,6 +15026,8 @@ export namespace Prisma {
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUncheckedUpdateManyWithoutUserNestedInput
@@ -15003,6 +15047,8 @@ export namespace Prisma {
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -15016,6 +15062,8 @@ export namespace Prisma {
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15029,6 +15077,8 @@ export namespace Prisma {
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15816,6 +15866,8 @@ export namespace Prisma {
     phoneNumber?: SortOrder
     profileImage?: SortOrder
     role?: SortOrder
+    oauthProvider?: SortOrder
+    oauthId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -15833,6 +15885,8 @@ export namespace Prisma {
     phoneNumber?: SortOrder
     profileImage?: SortOrder
     role?: SortOrder
+    oauthProvider?: SortOrder
+    oauthId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -15846,6 +15900,8 @@ export namespace Prisma {
     phoneNumber?: SortOrder
     profileImage?: SortOrder
     role?: SortOrder
+    oauthProvider?: SortOrder
+    oauthId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -16951,6 +17007,8 @@ export namespace Prisma {
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     articleComment?: ArticleCommentCreateNestedManyWithoutUserInput
@@ -16969,6 +17027,8 @@ export namespace Prisma {
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     articleComment?: ArticleCommentUncheckedCreateNestedManyWithoutUserInput
@@ -17102,6 +17162,8 @@ export namespace Prisma {
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     articleComment?: ArticleCommentUpdateManyWithoutUserNestedInput
@@ -17120,6 +17182,8 @@ export namespace Prisma {
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     articleComment?: ArticleCommentUncheckedUpdateManyWithoutUserNestedInput
@@ -17246,6 +17310,8 @@ export namespace Prisma {
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleCreateNestedManyWithoutUserInput
@@ -17264,6 +17330,8 @@ export namespace Prisma {
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleUncheckedCreateNestedManyWithoutUserInput
@@ -17414,6 +17482,8 @@ export namespace Prisma {
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateManyWithoutUserNestedInput
@@ -17432,6 +17502,8 @@ export namespace Prisma {
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUncheckedUpdateManyWithoutUserNestedInput
@@ -17593,6 +17665,8 @@ export namespace Prisma {
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleCreateNestedManyWithoutUserInput
@@ -17611,6 +17685,8 @@ export namespace Prisma {
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleUncheckedCreateNestedManyWithoutUserInput
@@ -17680,6 +17756,8 @@ export namespace Prisma {
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateManyWithoutUserNestedInput
@@ -17698,6 +17776,8 @@ export namespace Prisma {
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUncheckedUpdateManyWithoutUserNestedInput
@@ -17815,6 +17895,8 @@ export namespace Prisma {
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleCreateNestedManyWithoutUserInput
@@ -17833,6 +17915,8 @@ export namespace Prisma {
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleUncheckedCreateNestedManyWithoutUserInput
@@ -17904,6 +17988,8 @@ export namespace Prisma {
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateManyWithoutUserNestedInput
@@ -17922,6 +18008,8 @@ export namespace Prisma {
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUncheckedUpdateManyWithoutUserNestedInput
@@ -18006,6 +18094,8 @@ export namespace Prisma {
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleCreateNestedManyWithoutUserInput
@@ -18024,6 +18114,8 @@ export namespace Prisma {
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleUncheckedCreateNestedManyWithoutUserInput
@@ -18082,6 +18174,8 @@ export namespace Prisma {
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateManyWithoutUserNestedInput
@@ -18100,6 +18194,8 @@ export namespace Prisma {
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUncheckedUpdateManyWithoutUserNestedInput
@@ -18608,6 +18704,8 @@ export namespace Prisma {
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleCreateNestedManyWithoutUserInput
@@ -18626,6 +18724,8 @@ export namespace Prisma {
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleUncheckedCreateNestedManyWithoutUserInput
@@ -18689,6 +18789,8 @@ export namespace Prisma {
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateManyWithoutUserNestedInput
@@ -18707,6 +18809,8 @@ export namespace Prisma {
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUncheckedUpdateManyWithoutUserNestedInput

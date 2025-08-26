@@ -5,6 +5,7 @@ import { PrismaService } from '@modules/prisma/prisma.service';
 import { CreateArticleDto } from './dto/create-article';
 import { CreateArticleLikeDto } from './dto/create-article-like';
 import { CreateCommentDto } from './dto/create-comment';
+import { CreateCommentLikeDto } from './dto/create-comment-like';
 
 @Injectable()
 export class CommunityService {
@@ -85,8 +86,29 @@ export class CommunityService {
     return { message: '게시글 좋아요 취소 (DELETE /community/article/like)' };
   }
 
-  createCommentLike() {
-    return { message: '게시글 댓글 좋아요 (POST /community/article/comment/like)' };
+  async createCommentLike(dto: CreateCommentLikeDto) {
+    // 중복 좋아요 확인 (복합 키)
+    const existingLike = await this.prisma.articleLike.findUnique({
+      where: {
+        articleId_userId: {
+          articleId: BigInt(dto.comment_id),
+          userId: BigInt(dto.user_id),
+        },
+      },
+    });
+
+    if (existingLike) {
+      throw new ConflictException('이미 좋아요를 누른 댓글입니다.');
+    }
+
+    const like = await this.prisma.articleLike.create({
+      data: {
+        articleId: BigInt(dto.comment_id),
+        userId: BigInt(dto.user_id),
+      },
+    });
+
+    return { status: true, message: '댓글 좋아요 성공', data: like };
   }
 
   deleteCommentLike() {

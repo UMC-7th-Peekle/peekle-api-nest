@@ -7,6 +7,7 @@ import { CommunityService } from './community.service';
 import { CreateArticleDto } from './dto/create-article';
 import { CreateArticleLikeDto } from './dto/create-article-like';
 import { CreateCommentDto } from './dto/create-comment';
+import { CreateCommentLikeDto } from './dto/create-comment-like';
 
 @Controller('community')
 export class CommunityController {
@@ -68,8 +69,10 @@ export class CommunityController {
 
   // 댓글 관련
   @Post('article/comment/like')
-  createCommentLike() {
-    return this.communityService.createCommentLike();
+  @ApiOperation({ summary: '댓글 좋아요 등록' })
+  @ApiCreatedResponse({ description: '댓글 좋아요 등록 성공', type: Boolean })
+  async createCommentLike(@Body() dto: CreateCommentLikeDto) {
+    return await this.communityService.createCommentLike(dto);
   }
 
   @Delete('article/comment/like')

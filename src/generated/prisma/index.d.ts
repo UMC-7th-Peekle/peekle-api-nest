@@ -11276,7 +11276,7 @@ export namespace Prisma {
     id: bigint
     name: string
     nickname: string
-    birthdate: Date
+    birthdate: Date | null
     gender: string | null
     phoneNumber: string | null
     profileImage: string | null
@@ -11370,7 +11370,7 @@ export namespace Prisma {
       id: bigint
       name: string
       nickname: string
-      birthdate: Date
+      birthdate: Date | null
       gender: string | null
       phoneNumber: string | null
       profileImage: string | null
@@ -14170,7 +14170,7 @@ export namespace Prisma {
     id?: BigIntFilter<"User"> | bigint | number
     name?: StringFilter<"User"> | string
     nickname?: StringFilter<"User"> | string
-    birthdate?: DateTimeFilter<"User"> | Date | string
+    birthdate?: DateTimeNullableFilter<"User"> | Date | string | null
     gender?: StringNullableFilter<"User"> | string | null
     phoneNumber?: StringNullableFilter<"User"> | string | null
     profileImage?: StringNullableFilter<"User"> | string | null
@@ -14191,7 +14191,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     nickname?: SortOrder
-    birthdate?: SortOrder
+    birthdate?: SortOrderInput | SortOrder
     gender?: SortOrderInput | SortOrder
     phoneNumber?: SortOrderInput | SortOrder
     profileImage?: SortOrderInput | SortOrder
@@ -14216,7 +14216,7 @@ export namespace Prisma {
     NOT?: UserWhereInput | UserWhereInput[]
     name?: StringFilter<"User"> | string
     nickname?: StringFilter<"User"> | string
-    birthdate?: DateTimeFilter<"User"> | Date | string
+    birthdate?: DateTimeNullableFilter<"User"> | Date | string | null
     gender?: StringNullableFilter<"User"> | string | null
     phoneNumber?: StringNullableFilter<"User"> | string | null
     profileImage?: StringNullableFilter<"User"> | string | null
@@ -14237,7 +14237,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     nickname?: SortOrder
-    birthdate?: SortOrder
+    birthdate?: SortOrderInput | SortOrder
     gender?: SortOrderInput | SortOrder
     phoneNumber?: SortOrderInput | SortOrder
     profileImage?: SortOrderInput | SortOrder
@@ -14260,7 +14260,7 @@ export namespace Prisma {
     id?: BigIntWithAggregatesFilter<"User"> | bigint | number
     name?: StringWithAggregatesFilter<"User"> | string
     nickname?: StringWithAggregatesFilter<"User"> | string
-    birthdate?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    birthdate?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     gender?: StringNullableWithAggregatesFilter<"User"> | string | null
     phoneNumber?: StringNullableWithAggregatesFilter<"User"> | string | null
     profileImage?: StringNullableWithAggregatesFilter<"User"> | string | null
@@ -14958,7 +14958,7 @@ export namespace Prisma {
     id?: bigint | number
     name: string
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
@@ -14979,7 +14979,7 @@ export namespace Prisma {
     id?: bigint | number
     name: string
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
@@ -15000,7 +15000,7 @@ export namespace Prisma {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     name?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15021,7 +15021,7 @@ export namespace Prisma {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     name?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15042,7 +15042,7 @@ export namespace Prisma {
     id?: bigint | number
     name: string
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
@@ -15057,7 +15057,7 @@ export namespace Prisma {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     name?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15072,7 +15072,7 @@ export namespace Prisma {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     name?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15841,6 +15841,17 @@ export namespace Prisma {
     id?: SortOrder
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type EventListRelationFilter = {
     every?: EventWhereInput
     some?: EventWhereInput
@@ -15908,6 +15919,20 @@ export namespace Prisma {
 
   export type UserSumOrderByAggregateInput = {
     id?: SortOrder
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type TermScalarRelationFilter = {
@@ -16584,6 +16609,10 @@ export namespace Prisma {
     connect?: UserTermWhereUniqueInput | UserTermWhereUniqueInput[]
   }
 
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
   export type ArticleUpdateManyWithoutUserNestedInput = {
     create?: XOR<ArticleCreateWithoutUserInput, ArticleUncheckedCreateWithoutUserInput> | ArticleCreateWithoutUserInput[] | ArticleUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ArticleCreateOrConnectWithoutUserInput | ArticleCreateOrConnectWithoutUserInput[]
@@ -16998,11 +17027,36 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
   export type UserCreateWithoutArticleInput = {
     id?: bigint | number
     name: string
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
@@ -17022,7 +17076,7 @@ export namespace Prisma {
     id?: bigint | number
     name: string
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
@@ -17157,7 +17211,7 @@ export namespace Prisma {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     name?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17177,7 +17231,7 @@ export namespace Prisma {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     name?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17305,7 +17359,7 @@ export namespace Prisma {
     id?: bigint | number
     name: string
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
@@ -17325,7 +17379,7 @@ export namespace Prisma {
     id?: bigint | number
     name: string
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
@@ -17477,7 +17531,7 @@ export namespace Prisma {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     name?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17497,7 +17551,7 @@ export namespace Prisma {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     name?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17660,7 +17714,7 @@ export namespace Prisma {
     id?: bigint | number
     name: string
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
@@ -17680,7 +17734,7 @@ export namespace Prisma {
     id?: bigint | number
     name: string
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
@@ -17751,7 +17805,7 @@ export namespace Prisma {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     name?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17771,7 +17825,7 @@ export namespace Prisma {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     name?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17890,7 +17944,7 @@ export namespace Prisma {
     id?: bigint | number
     name: string
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
@@ -17910,7 +17964,7 @@ export namespace Prisma {
     id?: bigint | number
     name: string
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
@@ -17983,7 +18037,7 @@ export namespace Prisma {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     name?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18003,7 +18057,7 @@ export namespace Prisma {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     name?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18089,7 +18143,7 @@ export namespace Prisma {
     id?: bigint | number
     name: string
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
@@ -18109,7 +18163,7 @@ export namespace Prisma {
     id?: bigint | number
     name: string
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
@@ -18169,7 +18223,7 @@ export namespace Prisma {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     name?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18189,7 +18243,7 @@ export namespace Prisma {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     name?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18699,7 +18753,7 @@ export namespace Prisma {
     id?: bigint | number
     name: string
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
@@ -18719,7 +18773,7 @@ export namespace Prisma {
     id?: bigint | number
     name: string
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
@@ -18784,7 +18838,7 @@ export namespace Prisma {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     name?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18804,7 +18858,7 @@ export namespace Prisma {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     name?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null

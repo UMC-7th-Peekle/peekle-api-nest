@@ -154,7 +154,7 @@ model User {
   id                 BigInt               @id @default(autoincrement())
   name               String               @db.VarChar(10)
   nickname           String               @db.VarChar(10)
-  birthdate          DateTime             @db.Date
+  birthdate          DateTime?            @db.Date
   gender             String?              @db.VarChar(10)
   phoneNumber        String?              @map("phone_number") @db.VarChar(20)
   profileImage       String?              @map("profile_image") @db.VarChar(1024)

@@ -5,7 +5,7 @@ import { Public } from '@modules/auth/decorators/public.decorator';
 import { GoogleOAuthGuard } from '@modules/auth/guards/google-oauth.guard';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { CreateUserRequestDto, LoginRequestDto } from '@modules/users/dto/user.dto';
-import { UsersService } from '@modules/users/users.service';
+import { UsersService } from '@modules/users/services/users.service';
 
 @Controller('auth')
 export class AuthController {

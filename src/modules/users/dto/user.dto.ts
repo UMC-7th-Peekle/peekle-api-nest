@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 import { Type } from 'class-transformer';
-import { IsDate, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import { IsArray, IsDate, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 
-import { TermsAgreeStateDto } from '@modules/users/dto/terms.dto';
+import { SingleTermAgreeStateDto } from '@modules/users/dto/terms.dto';
 
 /**
  * CreateUserRequestDto (Request DTO)
@@ -63,12 +63,12 @@ export class CreateUserRequestDto {
 
   @ApiProperty({
     description: '약관 동의 상태',
-    type: () => TermsAgreeStateDto,
+    type: () => SingleTermAgreeStateDto,
   })
   @ValidateNested()
-  @Type(() => TermsAgreeStateDto)
+  @Type(() => SingleTermAgreeStateDto)
   @IsNotEmpty()
-  terms!: TermsAgreeStateDto;
+  terms!: SingleTermAgreeStateDto;
 }
 
 export class CreateUserResponseDto {}
@@ -77,16 +77,26 @@ export class CreateOAuthUserResponseDto extends CreateUserResponseDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
-    description: 'OAuth Provider 입니다. 현재는 google/kakao 둘 중 하나 입니다.',
+    description: '사용자 닉네임',
   })
-  oauthProvider!: string;
+  nickname!: string;
+
+  @ApiProperty({
+    description: '약관 동의 상태',
+    type: () => SingleTermAgreeStateDto,
+    isArray: true,
+  })
+  @ValidateNested({ each: true })
+  @Type(() => SingleTermAgreeStateDto)
+  @IsArray()
+  terms!: SingleTermAgreeStateDto[];
 
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
-    description: 'OAuth Provider 측에서 제공하는 UserID 입니다.',
+    description: 'OAuth Provider 입니다. 현재는 google/kakao 둘 중 하나 입니다.',
   })
-  oauthId!: string;
+  oauthProvider!: string;
 }
 
 export class LoginRequestDto {

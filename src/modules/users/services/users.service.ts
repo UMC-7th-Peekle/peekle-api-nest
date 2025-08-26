@@ -5,8 +5,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import { Prisma } from '@peekle/prisma/client';
-
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { UpdateNicknameRequestDto } from '@modules/users/dto/nickname.dto';
 import { UpdateProfileImageRequestDto } from '@modules/users/dto/profile.dto';
@@ -15,6 +13,8 @@ import {
   UpdateTermsAgreementRequestDto,
 } from '@modules/users/dto/terms.dto';
 import { CreateUserRequestDto } from '@modules/users/dto/user.dto';
+
+import { Prisma } from '@/generated/prisma';
 
 @Injectable()
 export class UsersService {

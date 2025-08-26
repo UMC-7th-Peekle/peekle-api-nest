@@ -26,7 +26,7 @@ import {
   UpdateTermsAgreementRequestDto,
 } from '@modules/users/dto/terms.dto';
 import { CreateUserRequestDto, CreateUserResponseDto } from '@modules/users/dto/user.dto';
-import { UsersService } from '@modules/users/users.service';
+import { UsersService } from '@modules/users/services/users.service';
 
 @ApiTags('users')
 @Controller('users')

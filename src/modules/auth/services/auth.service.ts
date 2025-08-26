@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { RefreshJwtConfig } from '@modules/auth/config/refresh-jwt.config';
 import { JwtPayload } from '@modules/auth/types/jwt.types';
 import { PrismaService } from '@modules/prisma/prisma.service';
-import { UsersService } from '@modules/users/users.service';
+import { UsersService } from '@modules/users/services/users.service';
 
 export class AuthService {
   constructor(

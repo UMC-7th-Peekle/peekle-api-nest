@@ -9,7 +9,7 @@ import { KakaoOAuthConfig } from '@modules/auth/config/kakao-oauth-config';
 import { RefreshJwtConfig } from '@modules/auth/config/refresh-jwt.config';
 import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
 import { AuthService } from '@modules/auth/services/auth.service';
-import { KakaoAuthService } from '@modules/auth/services/kakao-oauth.service';
+import { KakaoAuthService } from '@modules/auth/services/kakao-oauth.auth.service';
 import { GoogleOAuthStrategy } from '@modules/auth/strategies/google-oauth.strategy';
 import { UsersModule } from '@modules/users/users.module';
 

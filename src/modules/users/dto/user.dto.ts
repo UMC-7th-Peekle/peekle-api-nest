@@ -3,6 +3,14 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsDate, IsNotEmpty, IsString } from 'class-validator';
 
+/**
+ * CreateUserRequestDto (Request DTO)
+ * - 클라이언트 → 서버 요청을 받을 때 사용
+ * - 사용자가 보내는 JSON 바디를 런타임에서 유효성 검사해야 함
+ * - 따라서 @IsString(), @IsDateString(), @IsNotEmpty() 같은 데코레이터를 붙여서
+ *   들어오는 값이 의도한 타입/형식인지 검증하는 게 필수
+ */
+
 export class CreateUserRequestDto {
   @IsString()
   @IsNotEmpty()

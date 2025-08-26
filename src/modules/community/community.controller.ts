@@ -1,4 +1,7 @@
 import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
+import { UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { ApiConsumes, ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
 
 import { CommunityService } from './community.service';
 import { CreateArticleDto } from './dto/create-article';
@@ -27,8 +30,16 @@ export class CommunityController {
   }
 
   @Post('article')
-  async createArticle(@Body() dto: CreateArticleDto) {
-    return await this.communityService.createArticle(dto);
+  @ApiOperation({ summary: '게시글 작성' })
+  @ApiCreatedResponse({ description: '게시글 생성 성공', type: CreateArticleDto })
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FilesInterceptor('article_images'))
+  async createArticle(
+    @UploadedFiles() files: Express.Multer.File[], // form-data 에서 article_images는 이미지 파일들
+    @Body('data') data: string, // form-data 에서 data는 내용 부분 (이미지 제외한 나머지)
+  ) {
+    const dto: CreateArticleDto = JSON.parse(data);
+    return await this.communityService.createArticle(dto, files);
   }
 
   @Patch('article/:articleId')

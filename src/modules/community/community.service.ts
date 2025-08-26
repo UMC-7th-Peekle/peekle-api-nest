@@ -19,17 +19,29 @@ export class CommunityService {
     return { message: '게시글 상세 조회 (GET /community/article/:articleId)' };
   }
 
-  async createArticle(dto: CreateArticleDto) {
+  async createArticle(dto: CreateArticleDto, files: Express.Multer.File[]) {
+    // 게시글 생성
     const createdArticle = await this.prisma.article.create({
       data: {
-        communityId: dto.community_id,
+        communityId: dto.communityId,
         title: dto.title,
         content: dto.content,
-        isAnonymous: dto.is_anonymous,
-        authorId: dto.author_id,
-        // created_at, updated_at은 DB에서 자동 처리
+        isAnonymous: dto.isAnonymous,
+        authorId: dto.authorId,
       },
     });
+
+    // 이미지 파일이 있으면 각각 DB에 저장
+    for (const [index, file] of files.entries()) {
+      const imageUrl = `/article_images/${file.filename}`; // 추후 업로드 url로 맞게 변경 필요 (앞에 뭔지 경운햄한테 물어보기)
+      await this.prisma.articleImage.create({
+        data: {
+          articleId: createdArticle.id,
+          imageUrl: imageUrl,
+          order: index + 1,
+        },
+      });
+    }
 
     return createdArticle;
   }

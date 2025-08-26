@@ -5,7 +5,7 @@ import { IsBoolean, IsInt, IsNotEmpty, IsString, MaxLength } from 'class-validat
 export class CreateArticleDto {
   @ApiProperty({ example: 1, description: '커뮤니티 ID', type: Number })
   @IsInt()
-  community_id!: number;
+  communityId!: number;
 
   @ApiProperty({ example: '게시글 제목', description: '게시글 제목', maxLength: 50 })
   @IsString()
@@ -21,9 +21,9 @@ export class CreateArticleDto {
 
   @ApiProperty({ example: false, description: '익명 여부', type: Boolean })
   @IsBoolean()
-  is_anonymous!: boolean;
+  isAnonymous!: boolean;
 
   @ApiProperty({ example: 123, description: '작성자 ID', type: Number })
   @IsInt()
-  author_id!: number;
+  authorId!: number;
 }

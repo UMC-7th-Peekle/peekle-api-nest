@@ -35,6 +35,6 @@
       "@/*": ["*"]
     }
   },
-  "include": ["src/**/*.ts"],
+  "include": ["**/*.ts"],
   "exclude": ["node_modules", "dist", "test/**/*.e2e-spec.ts"]
 }

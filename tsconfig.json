@@ -30,11 +30,12 @@
       "@config/*": ["config/*"],
       "@common/*": ["common/*"],
       "@utils/*": ["utils/*"],
-      "@prisma/*": ["prisma/*"],
+      "@prisma/client": ["generated/prisma"],
+      "@prisma/client/*": ["generated/prisma/*"],
       "@modules/*": ["modules/*"],
       "@/*": ["*"]
     }
   },
-  "include": ["src/**/*.ts"],
+  "include": ["**/*.ts"],
   "exclude": ["node_modules", "dist", "test/**/*.e2e-spec.ts"]
 }

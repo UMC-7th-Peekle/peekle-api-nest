@@ -1,6 +1,7 @@
-import { Controller, Delete, Get, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
 
 import { CommunityService } from './community.service';
+import { CreateArticleDto } from './dto/create-article';
 
 @Controller('community')
 export class CommunityController {
@@ -26,8 +27,8 @@ export class CommunityController {
   }
 
   @Post('article')
-  createArticle() {
-    return this.communityService.createArticle();
+  async createArticle(@Body() dto: CreateArticleDto) {
+    return await this.communityService.createArticle(dto);
   }
 
   @Patch('article/:articleId')

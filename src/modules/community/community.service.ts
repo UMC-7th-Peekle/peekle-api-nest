@@ -1,7 +1,12 @@
 import { Injectable } from '@nestjs/common';
 
+import { PrismaService } from '@modules/prisma/prisma.service';
+
+import { CreateArticleDto } from './dto/create-article';
+
 @Injectable()
 export class CommunityService {
+  constructor(private readonly prisma: PrismaService) {}
   getCommunityHome() {
     return { message: '커뮤니티 홈 조회 (GET /community)' };
   }
@@ -14,8 +19,19 @@ export class CommunityService {
     return { message: '게시글 상세 조회 (GET /community/article/:articleId)' };
   }
 
-  createArticle() {
-    return { message: '게시글 작성 (POST /community/article)' };
+  async createArticle(dto: CreateArticleDto) {
+    const createdArticle = await this.prisma.article.create({
+      data: {
+        communityId: dto.community_id,
+        title: dto.title,
+        content: dto.content,
+        isAnonymous: dto.is_anonymous,
+        authorId: dto.author_id,
+        // created_at, updated_at은 DB에서 자동 처리
+      },
+    });
+
+    return createdArticle;
   }
 
   updateArticle() {

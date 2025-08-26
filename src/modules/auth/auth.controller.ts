@@ -50,6 +50,9 @@ export class AuthController {
   googleLogin() {}
   //  http://localhost:7777/auth/google/login
 
+  @Post('google/register')
+  googleRegister() {}
+
   @ApiOperation({ summary: 'Google 콜백: 사용자 인증 후 토큰 발급' })
   @ApiResponse({
     status: 302,

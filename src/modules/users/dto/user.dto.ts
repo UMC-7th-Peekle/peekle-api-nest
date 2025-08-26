@@ -1,7 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 import { Type } from 'class-transformer';
-import { IsDate, IsNotEmpty, IsString } from 'class-validator';
+import { IsDate, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+
+import { TermsAgreeStateDto } from '@modules/users/dto/terms.dto';
 
 /**
  * CreateUserRequestDto (Request DTO)
@@ -58,9 +60,34 @@ export class CreateUserRequestDto {
     description: '관리자 여부',
   })
   role!: string;
+
+  @ApiProperty({
+    description: '약관 동의 상태',
+    type: () => TermsAgreeStateDto,
+  })
+  @ValidateNested()
+  @Type(() => TermsAgreeStateDto)
+  @IsNotEmpty()
+  terms!: TermsAgreeStateDto;
 }
 
 export class CreateUserResponseDto {}
+
+export class CreateOAuthUserResponseDto extends CreateUserResponseDto {
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: 'OAuth Provider 입니다. 현재는 google/kakao 둘 중 하나 입니다.',
+  })
+  oauthProvider!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: 'OAuth Provider 측에서 제공하는 UserID 입니다.',
+  })
+  oauthId!: string;
+}
 
 export class LoginRequestDto {
   @IsString()

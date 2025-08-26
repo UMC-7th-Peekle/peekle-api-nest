@@ -10,21 +10,21 @@ import {
 // 임시 유저 식별 (JWT 붙기 전까지 mock 헤더 사용)
 import { UserId } from '@common/decorators/user-id-decorator';
 
-import { GetMeResponseDto } from '@modules/users/dto/get-me';
+import { GetMeResponseDto } from '@modules/users/dto/get-me.dto';
 import {
   CheckNicknameQueryDto,
   CheckNicknameResponseDto,
   UpdateNicknameRequestDto,
   UpdateNicknameResponseDto,
-} from '@modules/users/dto/nickname';
+} from '@modules/users/dto/nickname.dto';
 import {
   UpdateProfileImageRequestDto,
   UpdateProfileImageResponseDto,
-} from '@modules/users/dto/profile';
+} from '@modules/users/dto/profile.dto';
 import {
   GetTermsHistoryResponseDto,
   UpdateTermsAgreementRequestDto,
-} from '@modules/users/dto/terms';
+} from '@modules/users/dto/terms.dto';
 import { CreateUserRequestDto, CreateUserResponseDto } from '@modules/users/dto/user.dto';
 import { UsersService } from '@modules/users/users.service';
 

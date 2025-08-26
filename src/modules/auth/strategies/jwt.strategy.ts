@@ -6,7 +6,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { JwtConfig } from '@modules/auth/config/jwt.config';
 import { AuthService } from '@modules/auth/services/auth.service';
-import { JwtPayload } from '@modules/auth/types/jwt.type';
+import { JwtPayload } from '@modules/auth/types/jwt.types';
 
 /**
  * JWT를 이용한 Guard 입니다.

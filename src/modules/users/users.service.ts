@@ -8,12 +8,12 @@ import {
 import { Prisma } from '@peekle/prisma/client';
 
 import { PrismaService } from '@modules/prisma/prisma.service';
-import { UpdateNicknameRequestDto } from '@modules/users/dto/nickname';
-import { UpdateProfileImageRequestDto } from '@modules/users/dto/profile';
+import { UpdateNicknameRequestDto } from '@modules/users/dto/nickname.dto';
+import { UpdateProfileImageRequestDto } from '@modules/users/dto/profile.dto';
 import {
   GetTermsHistoryResponseDto,
   UpdateTermsAgreementRequestDto,
-} from '@modules/users/dto/terms';
+} from '@modules/users/dto/terms.dto';
 import { CreateUserRequestDto } from '@modules/users/dto/user.dto';
 
 @Injectable()
@@ -24,6 +24,26 @@ export class UsersService {
    * 사용자 생성
    */
   async createUser(user: CreateUserRequestDto) {
+    const newUser = await this.prisma.user.create({
+      data: {
+        name: user.name,
+        nickname: user.nickname,
+        birthdate: new Date(user.birthdate),
+        gender: user.gender ?? null,
+        phoneNumber: user.phoneNumber ?? null,
+        profileImage: user.profileImage ?? null,
+        role: user.role || 'USER',
+      },
+      select: { id: true },
+    });
+
+    return { id: newUser.id.toString() };
+  }
+
+  /**
+   * 사용자 생성
+   */
+  async createOAuthUser(user: CreateUserRequestDto) {
     const newUser = await this.prisma.user.create({
       data: {
         name: user.name,

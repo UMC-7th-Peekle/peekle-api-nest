@@ -29,6 +29,15 @@ export class AuthController {
     return { message: 'Login successful' };
   }
 
+  @ApiOperation({
+    summary: '토큰 검증 API',
+    description: 'GET 요청을 보냈을 때 JwtGuard를 통과했는지 확인합니다.',
+  })
+  @Get('token-check')
+  async tokenCheck() {
+    return { message: 'JwtGuard를 PASS 했습니다.' };
+  }
+
   @ApiOperation({ summary: 'Google 인증 페이지로 이동 (로그인 시작)' })
   @ApiResponse({
     status: 302,

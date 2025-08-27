@@ -1,6 +1,7 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
+import { ResponseMessage } from '@/common/decorators/response-message-decorator';
 import { Public } from '@/modules/auth/decorators/public.decorator';
 
 import { GetEventsQueryDto } from './dto/get-events.dto';
@@ -17,9 +18,10 @@ export class EventsController {
     summary: '이벤트 목록 조회 API',
     description: '무한 스크롤 기반, 정렬(order=asc|desc), limit(1~50) 지원',
   })
-  @ApiOkResponse()
+  @ApiOkResponse({ description: '이벤트 목록 조회 성공' })
+  @ResponseMessage('이벤트 목록을 조회했습니다.')
   async list(@Query() q: GetEventsQueryDto) {
     const { items, pageInfo } = await this.eventsQuery.getEventsList(q);
-    return { success: true, data: { items, pageInfo } };
+    return { items, pageInfo };
   }
 }

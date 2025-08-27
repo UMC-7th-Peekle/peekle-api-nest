@@ -1,4 +1,3 @@
-// src/modules/events/dto/get-events.query.dto.ts
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 import { Type } from 'class-transformer';

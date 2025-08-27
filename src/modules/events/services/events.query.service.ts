@@ -8,50 +8,24 @@ export class EventsQueryService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getEventsList(query: GetEventsQueryDto) {
-    const sortOrder = query.order === Order.ASC ? 'asc' : 'desc';
-    const cursor =
-      query.afterStart || query.afterId
-        ? (() => {
-            if (!query.afterStart || !query.afterId) {
-              throw new BadRequestException('afterStart and afterId must be provided together');
-            }
-            const d = new Date(query.afterStart);
-            if (isNaN(d.getTime())) throw new BadRequestException('Invalid afterStart');
+    const sortOrder: 'asc' | 'desc' = query.order === Order.ASC ? 'asc' : 'desc';
 
-            let id: bigint;
-            try {
-              id = BigInt(query.afterId);
-            } catch {
-              throw new BadRequestException('Invalid afterId');
-            }
-            return { date: d, id };
-          })()
-        : null;
-    // --------- where: 커서 이후/이전만 조회 ---------
-    // ASC:  (startDate > D) OR (startDate == D AND id > I)
-    // DESC: (startDate < D) OR (startDate == D AND id < I)
     const where: any = {};
-    if (cursor) {
-      if (query.order === Order.ASC) {
-        // ASC:  (startDate > D) OR (startDate == D AND id > I)
-        where.OR = [
-          { startDate: { gt: cursor.date } },
-          { startDate: cursor.date, id: { gt: cursor.id } },
-        ];
-      } else {
-        // DESC: (startDate < D) OR (startDate == D AND id < I)
-        where.OR = [
-          { startDate: { lt: cursor.date } },
-          { startDate: cursor.date, id: { lt: cursor.id } },
-        ];
+    if (query.cursor) {
+      let cursorId: bigint;
+      try {
+        cursorId = BigInt(query.cursor);
+      } catch {
+        throw new BadRequestException('Invalid cursor');
       }
+      // asc면 커서보다 큰 id가 다음 페이지, desc면 작은 id가 다음 페이지
+      where.id = sortOrder === 'asc' ? { gt: cursorId } : { lt: cursorId };
     }
 
-    // 필터는 이 아래 where에 누적해서 추가
-
+    // 조회: id asc/desc, limit+1
     const rows = await this.prisma.event.findMany({
       where,
-      orderBy: [{ startDate: sortOrder }, { id: sortOrder }],
+      orderBy: [{ id: sortOrder }],
       take: query.limit + 1, // hasNext 판별 위해 +1
       select: {
         id: true,
@@ -63,28 +37,24 @@ export class EventsQueryService {
       },
     });
 
-    const hasNext = rows.length > query.limit;
-    const sliced = hasNext ? rows.slice(0, query.limit) : rows;
+    const hasNextPage = rows.length > query.limit;
+    const sliced = hasNextPage ? rows.slice(0, query.limit) : rows;
 
-    // 썸네일 일괄 조회: 각 이벤트의 order가 가장 낮은 1장
+    // 썸네일(각 이벤트 첫 장) 일괄 조회
     const ids = sliced.map((r) => r.id);
-    let firstThumbByEvent = new Map<bigint, string>();
-
+    const firstThumbByEvent = new Map<bigint, string>();
     if (ids.length) {
       const thumbs = await this.prisma.eventImage.findMany({
         where: { eventId: { in: ids } },
         orderBy: [{ eventId: 'asc' }, { order: 'asc' }],
         select: { eventId: true, imageUrl: true, order: true },
       });
-
-      firstThumbByEvent = thumbs.reduce((acc, t) => {
-        if (!acc.has(t.eventId)) acc.set(t.eventId, t.imageUrl);
-        return acc;
-      }, new Map<bigint, string>());
+      for (const t of thumbs) {
+        if (!firstThumbByEvent.has(t.eventId)) firstThumbByEvent.set(t.eventId, t.imageUrl);
+      }
     }
 
-    // 응답 매핑
-    const items = sliced.map((e) => ({
+    const events = sliced.map((e) => ({
       id: e.id.toString(),
       title: e.title,
       period: {
@@ -100,15 +70,10 @@ export class EventsQueryService {
       thumbnailUrl: firstThumbByEvent.get(e.id) ?? null,
     }));
 
-    // 다음 요청용 커서
+    //  다음 커서: 현재 페이지의 마지막 아이템 id(asc/desc 모두 동일)
     const last = sliced.at(-1);
-    const next = last
-      ? {
-          afterStart: last.startDate.toISOString().slice(0, 10),
-          afterId: last.id.toString(),
-        }
-      : null;
+    const nextCursor = last ? last.id.toString() : null;
 
-    return { items, pageInfo: { hasNext, next } };
+    return { events, nextCursor, hasNextPage };
   }
 }

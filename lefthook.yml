@@ -1,0 +1,60 @@
+pre-commit:
+  parallel: true
+  commands:
+    eslint:
+      glob: '**/*.{js,ts}'
+      run: |
+        echo "🔍 ========================================="
+        echo "🔧 Running ESLint on staged files..."
+        echo "🔍 ========================================="
+        pnpm exec eslint {staged_files} --fix || exit 1
+        echo "✅ ESLint completed successfully!"
+      stage_fixed: true
+    prettier:
+      glob: '**/*.{js,ts,json,yaml,md,css}'
+      run: |
+        echo "💅 ========================================="
+        echo "🎨 Running Prettier on staged files..."
+        echo "💅 ========================================="
+        pnpm exec prettier --write {staged_files} || exit 1
+        echo "✅ Code formatting completed!"
+      stage_fixed: true
+    type-check:
+      run: |
+        echo "🔍 ========================================="
+        echo "📝 Running TypeScript type checking..."
+        echo "🔍 ========================================="
+        pnpm type-check || exit 1
+        echo "✅ Type checking completed successfully!"
+
+
+pre-push:
+  commands:
+    build:
+      run: |
+        echo "🚀 ========================================="
+        echo "🚀 Starting build for push verification..."
+        echo "🚀 ========================================="
+        echo "📊 Step 1/2: Running type check..."
+        if pnpm type-check; then
+          echo "✅ Type check passed successfully!"
+          echo "📊 Step 2/2: Building project..."
+          echo "🔨 ========================================="
+          echo "🏗️ Removing previous build leftovers..."
+          echo "🔨 ========================================="
+          pnpm remove-leftovers || exit 1
+          echo "🔨 ========================================="
+          echo "🏗️ Running production build..."
+          echo "🔨 ========================================="
+          pnpm build || exit 1
+          echo "🎉 ========================================="
+          echo "✅ Build completed successfully!"
+          echo "🚀 Ready to push!"
+          echo "🎉 ========================================="
+        else
+          echo "❌ ========================================="
+          echo "❌ Type check failed!"
+          echo "🚫 Build skipped - fix type errors first"
+          echo "❌ ========================================="
+          exit 1
+        fi

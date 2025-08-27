@@ -1,1 +1,0 @@
-rm -rf dist tsconfig.build.tsbuildinfo

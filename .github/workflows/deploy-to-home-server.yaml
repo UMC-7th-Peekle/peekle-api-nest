@@ -37,9 +37,9 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          # source: './dist/*, ./scripts/*, ./ecosystem.config.cjs'
           source: '.'
           target: '${{ secrets.APP_DIRECTORY }}'
+          rm: true
 
       - name: SSH 접속 및 스크립트 실행
         uses: appleboy/ssh-action@v1
@@ -67,6 +67,10 @@ jobs:
             cd ${{ secrets.APP_DIRECTORY }}
 
             echo "📂 Changed to application directory: $(pwd)"
+
+            echo "Creating .env files"
+            echo "${{ secrets.DOTENV_DEFAULT }}" | awk 'NF' > .env
+            echo "${{ secrets.DOTENV_DEVELOPMENT }}" | awk 'NF' > .env.development
 
             echo "📂 Listing files in the application directory:"
             ls -la

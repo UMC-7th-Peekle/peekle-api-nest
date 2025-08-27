@@ -16,12 +16,13 @@ export class EventsController {
   @Get()
   @ApiOperation({
     summary: '이벤트 목록 조회 API',
-    description: '무한 스크롤 기반, 정렬(order=asc|desc), limit(1~50) 지원',
+    description: '커서 기반 페이지네이션',
   })
   @ApiOkResponse({ description: '이벤트 목록 조회 성공' })
   @ResponseMessage('이벤트 목록을 조회했습니다.')
   async list(@Query() q: GetEventsQueryDto) {
-    const { items, pageInfo } = await this.eventsQuery.getEventsList(q);
-    return { items, pageInfo };
+    const { events, nextCursor, hasNextPage } = await this.eventsQuery.getEventsList(q);
+
+    return { events, nextCursor, hasNextPage };
   }
 }

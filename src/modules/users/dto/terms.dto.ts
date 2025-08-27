@@ -1,11 +1,25 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 import { Type } from 'class-transformer';
-import { IsArray, IsBoolean, IsNumber, ValidateNested } from 'class-validator';
+import { IsArray, IsBoolean, IsNumber, IsString, ValidateNested } from 'class-validator';
+
+export class SingleTermAgreeStateDto {
+  @ApiProperty({
+    description: '약관 ID (서버 → 클라이언트: JSON은 BigInt 그대로 직렬화 불가해서 string으로)',
+  })
+  @IsString()
+  termId!: string;
+
+  @ApiProperty({
+    description: '사용자가 해당 약관에 동의했는지 여부',
+  })
+  @IsBoolean()
+  isAccepted!: boolean;
+}
 
 export class TermsHistoryItemDto {
   @ApiProperty({
-    description: '약관 ID (서버 → 클라이언트: JSON은 BigInt 그대로 직렬화 불가해서 string으로)',
+    description: '약관 ID',
   })
   termId!: string;
 

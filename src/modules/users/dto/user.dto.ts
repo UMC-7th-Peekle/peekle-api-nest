@@ -1,7 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 import { Type } from 'class-transformer';
-import { IsDate, IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsDate, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+
+import { SingleTermAgreeStateDto } from '@modules/users/dto/terms.dto';
 
 /**
  * CreateUserRequestDto (Request DTO)
@@ -58,6 +60,50 @@ export class CreateUserRequestDto {
     description: '관리자 여부',
   })
   role!: string;
+
+  @ApiProperty({
+    description: '약관 동의 상태',
+    type: () => SingleTermAgreeStateDto,
+  })
+  @ValidateNested()
+  @Type(() => SingleTermAgreeStateDto)
+  @IsNotEmpty()
+  terms!: SingleTermAgreeStateDto;
 }
 
 export class CreateUserResponseDto {}
+
+export class CreateOAuthUserRequestDto {
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '사용자 닉네임',
+  })
+  nickname!: string;
+
+  @ApiProperty({
+    description: '약관 동의 상태',
+    type: () => SingleTermAgreeStateDto,
+    isArray: true,
+  })
+  @ValidateNested({ each: true })
+  @Type(() => SingleTermAgreeStateDto)
+  @IsArray()
+  terms!: SingleTermAgreeStateDto[];
+}
+
+export class LoginRequestDto {
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '사용자 이름',
+  })
+  name!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '사용자 닉네임',
+  })
+  nickname!: string;
+}

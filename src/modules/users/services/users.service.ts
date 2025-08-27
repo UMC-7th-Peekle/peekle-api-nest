@@ -5,16 +5,17 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import { Prisma } from '@peekle/prisma/client';
-
+import { RegisterJwtPayload } from '@modules/auth/types/jwt.types';
 import { PrismaService } from '@modules/prisma/prisma.service';
-import { CreateUserRequestDto } from '@modules/users/dto/create-user';
-import { UpdateNicknameRequestDto } from '@modules/users/dto/nickname';
-import { UpdateProfileImageRequestDto } from '@modules/users/dto/profile';
+import { UpdateNicknameRequestDto } from '@modules/users/dto/nickname.dto';
+import { UpdateProfileImageRequestDto } from '@modules/users/dto/profile.dto';
 import {
   GetTermsHistoryResponseDto,
   UpdateTermsAgreementRequestDto,
-} from '@modules/users/dto/terms';
+} from '@modules/users/dto/terms.dto';
+import { CreateOAuthUserRequestDto, CreateUserRequestDto } from '@modules/users/dto/user.dto';
+
+import { Prisma } from '@/generated/prisma';
 
 @Injectable()
 export class UsersService {
@@ -56,7 +57,7 @@ export class UsersService {
       id: profileOwner.id.toString(),
       name: profileOwner.name,
       nickname: profileOwner.nickname,
-      birthdate: profileOwner.birthdate.toISOString().slice(0, 10),
+      birthdate: profileOwner?.birthdate?.toISOString().slice(0, 10),
       gender: profileOwner.gender ?? undefined,
       phoneNumber: profileOwner.phoneNumber ?? undefined,
       profileImage: profileOwner.profileImage ?? undefined,

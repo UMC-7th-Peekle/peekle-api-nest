@@ -152,13 +152,15 @@ model Term {
 
 model User {
   id                 BigInt               @id @default(autoincrement())
-  name               String               @db.VarChar(10)
+  name               String?              @db.VarChar(10)
   nickname           String               @db.VarChar(10)
-  birthdate          DateTime             @db.Date
+  birthdate          DateTime?            @db.Date
   gender             String?              @db.VarChar(10)
   phoneNumber        String?              @map("phone_number") @db.VarChar(20)
   profileImage       String?              @map("profile_image") @db.VarChar(1024)
   role               String               @default("USER") @db.VarChar(30)
+  oauthProvider      String?              @map("oauth_provider") @db.VarChar(30)
+  oauthId            String?              @map("oauth_id") @db.VarChar(100)
   createdAt          DateTime             @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt          DateTime             @default(now()) @map("updated_at") @db.Timestamp(6)
   article            Article[]

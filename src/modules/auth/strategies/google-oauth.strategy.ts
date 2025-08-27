@@ -5,6 +5,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, VerifyCallback } from 'passport-google-oauth20';
 
 import { GoogleOAuthConfig } from '@modules/auth/config/google-oauth-config';
+import { GoogleOAuthUserData, OAuthProvider } from '@modules/users/types/oauth.users.types';
 
 @Injectable()
 export class GoogleOAuthStrategy extends PassportStrategy(Strategy, 'google-oauth') {
@@ -32,8 +33,8 @@ export class GoogleOAuthStrategy extends PassportStrategy(Strategy, 'google-oaut
     done: VerifyCallback,
   ) {
     console.log('Google OAuth profile:', profile);
-    const user = {
-      oauthProvider: 'google',
+    const user: GoogleOAuthUserData = {
+      oauthProvider: OAuthProvider.GOOGLE,
       oauthId: profile.id,
       name: profile.displayName,
       profileImage: profile.photos[0].value,

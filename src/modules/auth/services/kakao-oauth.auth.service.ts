@@ -1,17 +1,11 @@
 import { Inject, NotFoundException } from '@nestjs/common';
 import { ConfigService, ConfigType } from '@nestjs/config';
 
-import axios from 'axios';
+import axios, { HttpStatusCode } from 'axios';
 
 import { KakaoOAuthConfig } from '@modules/auth/config/kakao-oauth-config';
-
-interface KakaoUserInfo {
-  oauthId: number;
-  name: string;
-  nickname: string;
-  email: string;
-  profileImage: string;
-}
+import { KakaoUserInfoResponse } from '@modules/auth/types/kakao.types';
+import { KakaoUserData, OAuthProvider } from '@modules/users/types/oauth.users.types';
 
 export class KakaoAuthService {
   constructor(
@@ -21,10 +15,27 @@ export class KakaoAuthService {
   ) {}
   // http://localhost:7777/auth/login/kakao
 
+  getKakaoRedirectUrl = () => {
+    const kakaoUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${this.kakaoOAuthConfig.restApiKey}&redirect_uri=${this.kakaoOAuthConfig.redirectUrl}&response_type=code`;
+    console.log(kakaoUrl);
+    return {
+      url: kakaoUrl,
+      statusCode: HttpStatusCode.Found,
+    };
+  };
+
+  /**
+   * 인증코드가 존재하는지 식별
+   */
+  checkAuthorizationCode = (authorizationCode: string) => {
+    if (!authorizationCode) {
+      throw new NotFoundException('Kakao 측에서 발급한 Authorization Code가 존재하지 않습니다.');
+    }
+  };
+
   /**
    * 카카오 OAuth 인증 코드를 사용하여 액세스 토큰을 요청하는 함수.
    */
-
   getKakaoAccessToken = async (authorizationCode) => {
     console.log(`[getKakaoAccessToken] 인증 코드: ${authorizationCode}`);
     const tokenResponse = await axios.post('https://kauth.kakao.com/oauth/token', null, {
@@ -49,45 +60,33 @@ export class KakaoAuthService {
    * @function getKakaoUserInfo
    * @param accessToken - The access token from Kakao.
    */
-  getKakaoUserInfo = async (accessToken: string): Promise<KakaoUserInfo> => {
-    const userInfoResponse = await axios.get('https://kapi.kakao.com/v2/user/me', {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
+  getKakaoUserInfo = async (accessToken: string): Promise<KakaoUserData> => {
+    const kakaoUserInfoResponse = await axios.get<KakaoUserInfoResponse>(
+      'https://kapi.kakao.com/v2/user/me',
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        params: {
+          property_keys: [
+            'kakao_account.email',
+            'kakao_account.profile.nickname',
+            'kakao_account.profile.profile_image_url',
+          ],
+        },
       },
-      params: {
-        property_keys: [
-          'kakao_account.email',
-          'kakao_account.profile.nickname',
-          'kakao_account.profile.profile_image_url',
-        ],
-      },
-    });
-
-    console.log(
-      `[getKakaoUserInfo] 사용자 정보: ${JSON.stringify(userInfoResponse.data, null, 2)}`,
     );
 
-    const { id, properties, kakao_account } = userInfoResponse.data;
+    const { id, properties, kakao_account } = kakaoUserInfoResponse.data;
 
     return {
-      oauthId: id,
+      oauthProvider: OAuthProvider.KAKAO,
+      oauthId: id.toString(),
       name: properties.nickname,
       nickname: properties.nickname,
       email: kakao_account.email,
       profileImage: properties.profile_image,
     };
-  };
-
-  /**
-   * 인증코드가 존재하는지 식별
-   */
-
-  checkAuthorizationCode = (authorizationCode: string) => {
-    if (!authorizationCode) {
-      console.error('[checkAuthorizationCode] 인증 코드가 필요합니다.');
-      throw new NotFoundException('인증 코드가 필요합니다.');
-    }
-    console.log(`[checkAuthorizationCode] 인증 코드: ${authorizationCode}`);
   };
 
   /**

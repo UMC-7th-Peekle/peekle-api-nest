@@ -11,6 +11,7 @@ import { Reflector } from '@nestjs/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
+import { BYPASS_RESPONSE_INTERCEPTOR } from '@common/decorators/bypass-response-interceptor.decorator';
 import { RESPONSE_MESSAGE_METADATA } from '@common/decorators/response-message-decorator';
 
 export type Response<T> = {
@@ -25,6 +26,13 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
   constructor(private readonly reflector: Reflector) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<Response<T>> {
+    const bypass = this.reflector.get<boolean>(BYPASS_RESPONSE_INTERCEPTOR, context.getHandler());
+
+    // 👇 bypass 데코레이터가 있으면, map을 적용하지 않고 그대로 반환
+    if (bypass) {
+      return next.handle();
+    }
+
     return next.handle().pipe(
       map((res: any) => this.responseHandler(res, context)),
       catchError((err: unknown) => {

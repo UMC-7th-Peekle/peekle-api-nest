@@ -35,6 +35,8 @@ echo "📦  의존성 설치가 완료되었습니다."
 # pnpm run prisma:generate
 # echo "🛠️  Prisma 클라이언트 생성이 완료되었습니다."
 
+pnpm run remove-leftovers
+
 pnpm run build
 echo "🔨  빌드가 완료되었습니다."
 

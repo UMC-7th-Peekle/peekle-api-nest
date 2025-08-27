@@ -6,4 +6,5 @@ onlyBuiltDependencies:
   - '@prisma/client'
   - '@prisma/engines'
   - '@swc/core'
+  - lefthook
   - prisma

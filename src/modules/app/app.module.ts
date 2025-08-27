@@ -18,6 +18,7 @@ import { AppController } from './app.controller';
     EventsModule,
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: ['.env.local', `.env.${process.env.NODE_ENV}`, '.env'],
     }),
   ],
   controllers: [AppController],

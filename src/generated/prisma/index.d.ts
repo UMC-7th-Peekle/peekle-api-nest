@@ -11274,7 +11274,7 @@ export namespace Prisma {
 
   export type UserGroupByOutputType = {
     id: bigint
-    name: string
+    name: string | null
     nickname: string
     birthdate: Date | null
     gender: string | null
@@ -11368,7 +11368,7 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: bigint
-      name: string
+      name: string | null
       nickname: string
       birthdate: Date | null
       gender: string | null
@@ -14168,7 +14168,7 @@ export namespace Prisma {
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     id?: BigIntFilter<"User"> | bigint | number
-    name?: StringFilter<"User"> | string
+    name?: StringNullableFilter<"User"> | string | null
     nickname?: StringFilter<"User"> | string
     birthdate?: DateTimeNullableFilter<"User"> | Date | string | null
     gender?: StringNullableFilter<"User"> | string | null
@@ -14189,7 +14189,7 @@ export namespace Prisma {
 
   export type UserOrderByWithRelationInput = {
     id?: SortOrder
-    name?: SortOrder
+    name?: SortOrderInput | SortOrder
     nickname?: SortOrder
     birthdate?: SortOrderInput | SortOrder
     gender?: SortOrderInput | SortOrder
@@ -14214,7 +14214,7 @@ export namespace Prisma {
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
-    name?: StringFilter<"User"> | string
+    name?: StringNullableFilter<"User"> | string | null
     nickname?: StringFilter<"User"> | string
     birthdate?: DateTimeNullableFilter<"User"> | Date | string | null
     gender?: StringNullableFilter<"User"> | string | null
@@ -14235,7 +14235,7 @@ export namespace Prisma {
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
-    name?: SortOrder
+    name?: SortOrderInput | SortOrder
     nickname?: SortOrder
     birthdate?: SortOrderInput | SortOrder
     gender?: SortOrderInput | SortOrder
@@ -14258,7 +14258,7 @@ export namespace Prisma {
     OR?: UserScalarWhereWithAggregatesInput[]
     NOT?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
     id?: BigIntWithAggregatesFilter<"User"> | bigint | number
-    name?: StringWithAggregatesFilter<"User"> | string
+    name?: StringNullableWithAggregatesFilter<"User"> | string | null
     nickname?: StringWithAggregatesFilter<"User"> | string
     birthdate?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     gender?: StringNullableWithAggregatesFilter<"User"> | string | null
@@ -14956,7 +14956,7 @@ export namespace Prisma {
 
   export type UserCreateInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
     birthdate?: Date | string | null
     gender?: string | null
@@ -14977,7 +14977,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
     birthdate?: Date | string | null
     gender?: string | null
@@ -14998,7 +14998,7 @@ export namespace Prisma {
 
   export type UserUpdateInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15019,7 +15019,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15040,7 +15040,7 @@ export namespace Prisma {
 
   export type UserCreateManyInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
     birthdate?: Date | string | null
     gender?: string | null
@@ -15055,7 +15055,7 @@ export namespace Prisma {
 
   export type UserUpdateManyMutationInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15070,7 +15070,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateManyInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17054,7 +17054,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutArticleInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
     birthdate?: Date | string | null
     gender?: string | null
@@ -17074,7 +17074,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutArticleInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
     birthdate?: Date | string | null
     gender?: string | null
@@ -17209,7 +17209,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutArticleInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17229,7 +17229,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutArticleInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17357,7 +17357,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutArticleCommentInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
     birthdate?: Date | string | null
     gender?: string | null
@@ -17377,7 +17377,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutArticleCommentInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
     birthdate?: Date | string | null
     gender?: string | null
@@ -17529,7 +17529,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutArticleCommentInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17549,7 +17549,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutArticleCommentInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17712,7 +17712,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutArticleCommentLikeInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
     birthdate?: Date | string | null
     gender?: string | null
@@ -17732,7 +17732,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutArticleCommentLikeInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
     birthdate?: Date | string | null
     gender?: string | null
@@ -17803,7 +17803,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutArticleCommentLikeInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17823,7 +17823,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutArticleCommentLikeInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17942,7 +17942,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutArticleLikeInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
     birthdate?: Date | string | null
     gender?: string | null
@@ -17962,7 +17962,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutArticleLikeInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
     birthdate?: Date | string | null
     gender?: string | null
@@ -18035,7 +18035,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutArticleLikeInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18055,7 +18055,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutArticleLikeInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18141,7 +18141,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutEventInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
     birthdate?: Date | string | null
     gender?: string | null
@@ -18161,7 +18161,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutEventInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
     birthdate?: Date | string | null
     gender?: string | null
@@ -18221,7 +18221,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutEventInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18241,7 +18241,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutEventInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18751,7 +18751,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutUserTermInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
     birthdate?: Date | string | null
     gender?: string | null
@@ -18771,7 +18771,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutUserTermInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
     birthdate?: Date | string | null
     gender?: string | null
@@ -18836,7 +18836,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutUserTermInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18856,7 +18856,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutUserTermInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null

@@ -18,7 +18,7 @@ export class GetEventsQueryDto {
   @IsInt()
   @Min(1)
   @Max(50)
-  limit = 20;
+  limit: number = 20;
 
   @ApiPropertyOptional({ enum: EventSortField, default: EventSortField.DATE })
   @IsEnum(EventSortField)

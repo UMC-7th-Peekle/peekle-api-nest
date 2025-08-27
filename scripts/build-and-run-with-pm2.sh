@@ -41,6 +41,6 @@ pnpm run build
 echo "🔨  빌드가 완료되었습니다."
 
 echo "🚀  pm2를 이용해 프로세스를 시작합니다."
-pm2 start ecosystem.config.cjs
+pm2 start ecosystem.config.cjs --env development
 
 echo "✅  모든 작업이 성공적으로 완료되었습니다! 🎉"

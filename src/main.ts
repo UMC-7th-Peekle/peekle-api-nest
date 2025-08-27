@@ -41,7 +41,13 @@ async function bootstrap() {
   app.useGlobalFilters(new GlobalExceptionFilter());
   app.useGlobalInterceptors(app.get(ResponseInterceptor));
 
-  await app.listen(process.env.PORT ?? 7777);
+  // console.log(`[App Start] Current NODE_ENV: ${JSON.stringify(process.env, null, 2)}`);
+
+  await app.listen(process.env.PORT ?? 7777, () => {
+    console.log(
+      `🚀 NEST.JS RUNNING IN PORT ${process.env.PORT ?? '[UNDEFINED IN ENV]'}, NODE_ENV=${process.env.NODE_ENV}`,
+    );
+  });
 }
 
 bootstrap();

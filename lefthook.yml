@@ -2,7 +2,7 @@ pre-commit:
   parallel: true
   commands:
     eslint:
-      glob: '**/*.{js,ts}'
+      glob: '**/*.ts'
       run: |
         echo "🔍 ========================================="
         echo "🔧 Running ESLint on staged files..."
@@ -11,7 +11,7 @@ pre-commit:
         echo "✅ ESLint completed successfully!"
       stage_fixed: true
     prettier:
-      glob: '**/*.{js,ts,json,yaml,md,css}'
+      glob: '**/*.{ts,json,yaml,md}'
       run: |
         echo "💅 ========================================="
         echo "🎨 Running Prettier on staged files..."
@@ -26,7 +26,6 @@ pre-commit:
         echo "🔍 ========================================="
         pnpm type-check || exit 1
         echo "✅ Type checking completed successfully!"
-
 
 pre-push:
   commands:

@@ -73,7 +73,7 @@ export class CreateUserRequestDto {
 
 export class CreateUserResponseDto {}
 
-export class CreateOAuthUserResponseDto extends CreateUserResponseDto {
+export class CreateOAuthUserRequestDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
@@ -90,13 +90,6 @@ export class CreateOAuthUserResponseDto extends CreateUserResponseDto {
   @Type(() => SingleTermAgreeStateDto)
   @IsArray()
   terms!: SingleTermAgreeStateDto[];
-
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty({
-    description: 'OAuth Provider 입니다. 현재는 google/kakao 둘 중 하나 입니다.',
-  })
-  oauthProvider!: string;
 }
 
 export class LoginRequestDto {

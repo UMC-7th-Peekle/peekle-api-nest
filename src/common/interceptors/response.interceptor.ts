@@ -27,9 +27,11 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
   intercept(context: ExecutionContext, next: CallHandler): Observable<Response<T>> {
     return next.handle().pipe(
       map((res: any) => this.responseHandler(res, context)),
-      catchError((err: HttpException) => {
-        if (!err.getResponse()) {
-          return throwError(() => this.errorHandler(err, context));
+      catchError((err: unknown) => {
+        if (err instanceof HttpException) {
+          if (!err.getResponse()) {
+            return throwError(() => this.errorHandler(err, context));
+          }
         }
         return throwError(() => err);
       }),

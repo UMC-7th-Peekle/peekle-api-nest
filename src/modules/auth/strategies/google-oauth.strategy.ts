@@ -21,8 +21,8 @@ export class GoogleOAuthStrategy extends PassportStrategy(Strategy, 'google-oaut
   }
 
   async validate(
-    accessToken: string,
-    refreshToken: string,
+    __accessToken: string,
+    __refreshToken: string,
     profile: {
       id: string;
       displayName: string;
@@ -31,16 +31,13 @@ export class GoogleOAuthStrategy extends PassportStrategy(Strategy, 'google-oaut
     },
     done: VerifyCallback,
   ) {
+    console.log('Google OAuth profile:', profile);
     const user = {
-      provider: 'google',
-      providerId: profile.id,
-      email: profile.emails[0].value,
+      oauthProvider: 'google',
+      oauthId: profile.id,
       name: profile.displayName,
-      picture: profile.photos[0].value,
-      accessToken,
+      profileImage: profile.photos[0].value,
     };
-
-    console.log('Google OAuth user:', user);
 
     // ✅ done(에러, 사용자_객체) 형태로 호출합니다.
     done(null, user);

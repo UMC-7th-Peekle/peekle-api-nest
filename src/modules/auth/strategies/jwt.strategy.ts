@@ -14,7 +14,7 @@ import { JwtPayload } from '@modules/auth/types/jwt.types';
  * Passport의 jwt strategy에 활용됩니다.
  */
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
     @Inject(JwtConfig.KEY)
     private jwtConfiguration: ConfigType<typeof JwtConfig>,

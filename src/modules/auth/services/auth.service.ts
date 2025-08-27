@@ -3,9 +3,11 @@ import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
 import { RefreshJwtConfig } from '@modules/auth/config/refresh-jwt.config';
-import { JwtPayload } from '@modules/auth/types/jwt.types';
+import { RegisterJwtConfig } from '@modules/auth/config/register-jwt.config';
+import { JwtPayload, RegisterJwtPayload } from '@modules/auth/types/jwt.types';
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { UsersService } from '@modules/users/services/users.service';
+import { GoogleOAuthUserData } from '@modules/users/types/oauth.users.types';
 
 export class AuthService {
   constructor(
@@ -13,16 +15,18 @@ export class AuthService {
     private readonly jwtService: JwtService,
     @Inject(RefreshJwtConfig.KEY)
     private refreshJwtConfig: ConfigType<typeof RefreshJwtConfig>,
+    @Inject(RegisterJwtConfig.KEY)
+    private registerJwtConfig: ConfigType<typeof RegisterJwtConfig>,
     private readonly userService: UsersService,
   ) {}
 
   async authenticateWithUserId(userId: bigint) {
-    const { accessToken, refreshToken } = await this.generateToken(userId);
+    const { accessToken, refreshToken } = await this.generateTokens(userId);
 
     return { accessToken, refreshToken };
   }
 
-  async generateToken(userId: bigint): Promise<JwtPayload> {
+  async generateTokens(userId: bigint): Promise<JwtPayload> {
     const payload = {
       userId: userId.toString(),
     };
@@ -37,6 +41,12 @@ export class AuthService {
       accessToken,
       refreshToken,
     };
+  }
+
+  async generateRegisterToken(payload: RegisterJwtPayload) {
+    const registerToken = await this.jwtService.signAsync(payload, this.registerJwtConfig);
+
+    return registerToken;
   }
 
   verifyToken(token: string): boolean {

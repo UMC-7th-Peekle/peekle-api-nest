@@ -16,7 +16,7 @@ export class GetMeResponseDto {
   @ApiProperty({
     description: '사용자 이름',
   })
-  name!: string;
+  name?: string | null;
 
   @ApiProperty({
     description: '사용자 닉네임',
@@ -25,9 +25,10 @@ export class GetMeResponseDto {
 
   @ApiProperty({
     description: '사용자 생년월일 (DB DATE → YYYY-MM-DD 문자열)',
+    required: false,
     format: 'date',
   })
-  birthdate!: string;
+  birthdate?: string;
 
   @ApiProperty({
     description: '사용자 성별',

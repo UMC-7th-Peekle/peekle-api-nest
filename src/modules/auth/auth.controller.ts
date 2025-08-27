@@ -1,10 +1,16 @@
-import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Body, Controller, Get, Post, Query, Req, Request, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiHeader, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 
 import { Public } from '@modules/auth/decorators/public.decorator';
 import { GoogleOAuthGuard } from '@modules/auth/guards/google-oauth.guard';
+import { RegisterJwtGuard } from '@modules/auth/guards/register-jwt.guard';
 import { AuthService } from '@modules/auth/services/auth.service';
-import { CreateUserRequestDto, LoginRequestDto } from '@modules/users/dto/user.dto';
+import {
+  CreateOAuthUserRequestDto,
+  CreateUserRequestDto,
+  LoginRequestDto,
+} from '@modules/users/dto/user.dto';
+import { OAuthUserService } from '@modules/users/services/oauth.users.service';
 import { UsersService } from '@modules/users/services/users.service';
 
 @Controller('auth')
@@ -12,18 +18,40 @@ export class AuthController {
   constructor(
     private readonly usersService: UsersService,
     private readonly authService: AuthService,
+    private readonly oauthUserService: OAuthUserService,
   ) {}
 
   @ApiOperation({
     summary: '회원가입 API 입니다.',
     description: 'CreateUser 형식을 받아서, 새로운 사용자를 생성합니다.',
   })
+  @Public()
   @Post('register')
   async register(@Body() user: CreateUserRequestDto) {
     console.log(user);
     return this.usersService.createUser(user);
   }
 
+  @ApiOperation({
+    summary: 'OAuth 회원가입 API 입니다.',
+    description: 'OAuth로 회원가입을 하고자 하는 사용자의 나머지 정보를 받아서 가입을 처리합니다.',
+  })
+  @ApiBearerAuth()
+  // @ApiHeader({
+  //   name: 'RegisterToken', // 실제 헤더의 key
+  //   description: '가입용 임시 토큰(Register Token). Token만 평문으로 보내시면 됩니다.',
+  //   required: true,
+  //   example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+  // })
+  @Public()
+  @UseGuards(RegisterJwtGuard)
+  @Post('oauth/register')
+  async oauthRegister(@Req() req, @Body() user: CreateOAuthUserRequestDto) {
+    console.log(user);
+    return this.oauthUserService.createOAuthUser({ ...req.user, ...user });
+  }
+
+  @Public()
   @Post('login')
   async login(@Body() loginRequest: LoginRequestDto) {
     return { message: 'Login successful' };
@@ -33,9 +61,26 @@ export class AuthController {
     summary: '토큰 검증 API',
     description: 'GET 요청을 보냈을 때 JwtGuard를 통과했는지 확인합니다.',
   })
-  @Get('token-check')
+  @ApiBearerAuth()
+  @Get('protected')
   async tokenCheck() {
     return { message: 'JwtGuard를 PASS 했습니다.' };
+  }
+
+  @ApiOperation({
+    summary: '테스트 토큰 생성 API',
+    description: 'Query String으로 userId를 첨부하세요.',
+  })
+  @ApiQuery({
+    name: 'userId',
+    required: true,
+    description: '토큰을 생성할 사용자 ID',
+    example: '1',
+  })
+  @Public()
+  @Get('test-token')
+  async getTestToken(@Query() query: GetTestToekenRequest) {
+    return this.authService.generateTokens(BigInt(query.userId));
   }
 
   @ApiOperation({ summary: 'Google 인증 페이지로 이동 (로그인 시작)' })
@@ -50,9 +95,6 @@ export class AuthController {
   googleLogin() {}
   //  http://localhost:7777/auth/google/login
 
-  @Post('google/register')
-  googleRegister() {}
-
   @ApiOperation({ summary: 'Google 콜백: 사용자 인증 후 토큰 발급' })
   @ApiResponse({
     status: 302,
@@ -64,13 +106,13 @@ export class AuthController {
   async googleCallback(@Request() req: any) {
     console.log('Google OAuth Callback:', req.user);
 
-    const { providerId: googleUserId } = req.user;
-    const response = await this.authService.authenticateWithUserId(BigInt(googleUserId));
+    const { oauthProvider, oauthId, name, profileImage } = req.user;
 
-    return response;
+    const result = await this.oauthUserService.oauthLoginOrRegister(oauthProvider, oauthId, {
+      name,
+      profileImage,
+    });
 
-    // res.redirect(
-    //   `${process.env.FRONTEND_URL}/v1/auth/google/callback?accessToken=${response.accessToken}&refreshToken=${response.refreshToken}`,
-    // );
+    return result;
   }
 }

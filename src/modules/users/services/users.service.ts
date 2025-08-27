@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
+import { RegisterJwtPayload } from '@modules/auth/types/jwt.types';
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { UpdateNicknameRequestDto } from '@modules/users/dto/nickname.dto';
 import { UpdateProfileImageRequestDto } from '@modules/users/dto/profile.dto';
@@ -12,7 +13,7 @@ import {
   GetTermsHistoryResponseDto,
   UpdateTermsAgreementRequestDto,
 } from '@modules/users/dto/terms.dto';
-import { CreateUserRequestDto } from '@modules/users/dto/user.dto';
+import { CreateOAuthUserRequestDto, CreateUserRequestDto } from '@modules/users/dto/user.dto';
 
 import { Prisma } from '@/generated/prisma';
 
@@ -24,26 +25,6 @@ export class UsersService {
    * 사용자 생성
    */
   async createUser(user: CreateUserRequestDto) {
-    const newUser = await this.prisma.user.create({
-      data: {
-        name: user.name,
-        nickname: user.nickname,
-        birthdate: new Date(user.birthdate),
-        gender: user.gender ?? null,
-        phoneNumber: user.phoneNumber ?? null,
-        profileImage: user.profileImage ?? null,
-        role: user.role || 'USER',
-      },
-      select: { id: true },
-    });
-
-    return { id: newUser.id.toString() };
-  }
-
-  /**
-   * 사용자 생성
-   */
-  async createOAuthUser(user: CreateUserRequestDto) {
     const newUser = await this.prisma.user.create({
       data: {
         name: user.name,
@@ -76,7 +57,7 @@ export class UsersService {
       id: profileOwner.id.toString(),
       name: profileOwner.name,
       nickname: profileOwner.nickname,
-      birthdate: profileOwner.birthdate.toISOString().slice(0, 10),
+      birthdate: profileOwner?.birthdate?.toISOString().slice(0, 10),
       gender: profileOwner.gender ?? undefined,
       phoneNumber: profileOwner.phoneNumber ?? undefined,
       profileImage: profileOwner.profileImage ?? undefined,

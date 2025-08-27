@@ -1,7 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
-import { Transform, Type } from 'class-transformer';
-import { IsEnum, IsInt, IsNumberString, IsOptional, IsString, Max, Min } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsEnum, IsInt, IsNumberString, IsOptional, Max, Min } from 'class-validator';
 
 import { TransformToBigint } from '@common/decorators/transform.decorator';
 

@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 import { Type } from 'class-transformer';
-import { IsArray, IsBoolean, IsNumber, IsNumberString, ValidateNested } from 'class-validator';
+import { IsArray, IsBoolean, IsNumberString, ValidateNested } from 'class-validator';
 
 import { TransformToBigint } from '@common/decorators/transform.decorator';
 

@@ -1,4 +1,8 @@
-import { GoogleOAuthUserData, OAuthUserInfo } from '@modules/users/types/oauth.users.types';
+import {
+  GoogleOAuthUserData,
+  KakaoUserData,
+  OAuthUserInfo,
+} from '@modules/users/types/oauth.users.types';
 
 export interface JwtPayload {
   userId: string;
@@ -6,6 +10,4 @@ export interface JwtPayload {
   refreshToken: string;
 }
 
-export interface RegisterJwtPayload extends OAuthUserInfo {
-  userData: GoogleOAuthUserData;
-}
+export type RegisterJwtPayload = GoogleOAuthUserData | KakaoUserData;

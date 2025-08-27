@@ -4,7 +4,11 @@ import { AuthService } from '@modules/auth/services/auth.service';
 import { RegisterJwtPayload } from '@modules/auth/types/jwt.types';
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { CreateOAuthUserRequestDto } from '@modules/users/dto/user.dto';
-import { GoogleOAuthUserData, OAuthProvider } from '@modules/users/types/oauth.users.types';
+import {
+  GoogleOAuthUserData,
+  KakaoUserData,
+  OAuthProvider,
+} from '@modules/users/types/oauth.users.types';
 
 @Injectable()
 export class OAuthUserService {
@@ -13,11 +17,8 @@ export class OAuthUserService {
     private readonly prismaService: PrismaService,
   ) {}
 
-  async oauthLoginOrRegister(
-    oauthProvider: OAuthProvider,
-    oauthId: string,
-    userData: GoogleOAuthUserData,
-  ) {
+  async oauthLoginOrRegister(oauthData: GoogleOAuthUserData | KakaoUserData) {
+    const { oauthProvider, oauthId, ...userData } = oauthData;
     const user = await this.prismaService.user.findFirst({
       where: {
         oauthProvider: oauthProvider,
@@ -29,11 +30,7 @@ export class OAuthUserService {
       const tokens = await this.authService.generateTokens(user.id);
       return { type: 'login', tokens };
     } else {
-      const registerToken = await this.authService.generateRegisterToken({
-        oauthProvider,
-        oauthId,
-        userData,
-      });
+      const registerToken = await this.authService.generateRegisterToken(oauthData);
       return { type: 'register', tokens: { registerToken } };
     }
   }
@@ -43,9 +40,9 @@ export class OAuthUserService {
     const newUser = await this.prismaService.$transaction(async (txPrisma) => {
       const createdUser = await txPrisma.user.create({
         data: {
-          name: user.userData.name ?? null,
+          name: user.name ?? null,
           nickname: user.nickname,
-          profileImage: user.userData.profileImage ?? null,
+          profileImage: user.profileImage ?? null,
           oauthProvider: user.oauthProvider,
           oauthId: user.oauthId,
         },

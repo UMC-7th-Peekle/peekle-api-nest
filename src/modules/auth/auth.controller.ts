@@ -1,10 +1,23 @@
-import { Body, Controller, Get, Post, Query, Req, Request, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiHeader, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Redirect,
+  Req,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
+
+import { BypassResponseInterceptor } from '@common/decorators/bypass-response-interceptor.decorator';
 
 import { Public } from '@modules/auth/decorators/public.decorator';
 import { GoogleOAuthGuard } from '@modules/auth/guards/google-oauth.guard';
 import { RegisterJwtGuard } from '@modules/auth/guards/register-jwt.guard';
 import { AuthService } from '@modules/auth/services/auth.service';
+import { KakaoAuthService } from '@modules/auth/services/kakao-oauth.auth.service';
 import {
   CreateOAuthUserRequestDto,
   CreateUserRequestDto,
@@ -12,6 +25,7 @@ import {
 } from '@modules/users/dto/user.dto';
 import { OAuthUserService } from '@modules/users/services/oauth.users.service';
 import { UsersService } from '@modules/users/services/users.service';
+import { OAuthProvider } from '@modules/users/types/oauth.users.types';
 
 @Controller('auth')
 export class AuthController {
@@ -19,6 +33,7 @@ export class AuthController {
     private readonly usersService: UsersService,
     private readonly authService: AuthService,
     private readonly oauthUserService: OAuthUserService,
+    private readonly kakaoUserService: KakaoAuthService,
   ) {}
 
   @ApiOperation({
@@ -79,8 +94,8 @@ export class AuthController {
   })
   @Public()
   @Get('test-token')
-  async getTestToken(@Query() query: GetTestToekenRequest) {
-    return this.authService.generateTokens(BigInt(query.userId));
+  async getTestToken(@Query('userId') userId: string) {
+    return this.authService.generateTokens(BigInt(userId));
   }
 
   @ApiOperation({ summary: 'Google 인증 페이지로 이동 (로그인 시작)' })
@@ -90,7 +105,6 @@ export class AuthController {
   })
   @Public()
   @UseGuards(GoogleOAuthGuard)
-  // google authenticate page move
   @Get('google/login')
   googleLogin() {}
   //  http://localhost:7777/auth/google/login
@@ -106,12 +120,38 @@ export class AuthController {
   async googleCallback(@Request() req: any) {
     console.log('Google OAuth Callback:', req.user);
 
-    const { oauthProvider, oauthId, name, profileImage } = req.user;
+    const result = await this.oauthUserService.oauthLoginOrRegister(req.user);
 
-    const result = await this.oauthUserService.oauthLoginOrRegister(oauthProvider, oauthId, {
-      name,
-      profileImage,
-    });
+    return result;
+  }
+
+  @ApiOperation({ summary: 'Kakao 인증 페이지로 이동 (로그인 시작)' })
+  @ApiResponse({
+    status: 302,
+    description: 'Kakao 로그인 페이지로 리다이렉트',
+  })
+  @Public()
+  @Redirect()
+  @Get('kakao/login')
+  @BypassResponseInterceptor()
+  kakaoLogin() {
+    //  http://localhost:7777/auth/kakao/login
+    return this.kakaoUserService.getKakaoRedirectUrl();
+  }
+
+  @ApiOperation({ summary: 'Kakao 콜백: 사용자 인증 후 토큰 발급' })
+  @ApiResponse({
+    status: 302,
+    description: '프론트엔드로 토큰을 포함한 URL로 리다이렉트',
+  })
+  @Public()
+  @Get('kakao/callback')
+  async kakaoCallback(@Query('code') code: string) {
+    this.kakaoUserService.checkAuthorizationCode(code);
+    const kakaoAccessToken = await this.kakaoUserService.getKakaoAccessToken(code);
+    const kakaoUserInfo = await this.kakaoUserService.getKakaoUserInfo(kakaoAccessToken);
+
+    const result = await this.oauthUserService.oauthLoginOrRegister(kakaoUserInfo);
 
     return result;
   }

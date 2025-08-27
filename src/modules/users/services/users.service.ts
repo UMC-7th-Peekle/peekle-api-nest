@@ -54,7 +54,7 @@ export class UsersService {
     }
 
     return {
-      id: profileOwner.id.toString(),
+      id: profileOwner.id,
       name: profileOwner.name,
       nickname: profileOwner.nickname,
       birthdate: profileOwner?.birthdate?.toISOString().slice(0, 10),
@@ -83,7 +83,7 @@ export class UsersService {
 
     return {
       items: terms.map((term) => ({
-        termId: term.id.toString(),
+        termId: term.id,
         title: term.title,
         isRequired: term.isRequired,
         isAccepted: term.userTerm[0]?.isAccepted ?? false,

@@ -1,14 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 import { Type } from 'class-transformer';
-import { IsArray, IsBoolean, IsNumber, IsString, ValidateNested } from 'class-validator';
+import { IsArray, IsBoolean, IsNumber, IsNumberString, ValidateNested } from 'class-validator';
+
+import { TransformToBigint } from '@common/decorators/transform.decorator';
 
 export class SingleTermAgreeStateDto {
   @ApiProperty({
     description: '약관 ID (서버 → 클라이언트: JSON은 BigInt 그대로 직렬화 불가해서 string으로)',
   })
-  @IsString()
-  termId!: string;
+  @IsNumberString()
+  @TransformToBigint()
+  termId!: bigint;
 
   @ApiProperty({
     description: '사용자가 해당 약관에 동의했는지 여부',
@@ -21,7 +24,9 @@ export class TermsHistoryItemDto {
   @ApiProperty({
     description: '약관 ID',
   })
-  termId!: string;
+  @IsNumberString()
+  @TransformToBigint()
+  termId!: bigint;
 
   @ApiProperty({
     description: '약관 제목',
@@ -48,12 +53,13 @@ export class GetTermsHistoryResponseDto {
 }
 
 export class UpdateTermsAgreementItemDto {
-  @IsNumber()
   @ApiProperty({
     description: '약관 ID',
     example: 1,
   })
-  termId!: number;
+  @IsNumberString()
+  @TransformToBigint()
+  termId!: bigint;
 
   @IsBoolean()
   @ApiProperty({

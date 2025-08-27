@@ -3,6 +3,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsString, Length, Matches } from 'class-validator';
 
+import { TransformToBigint } from '@common/decorators/transform.decorator';
+
 // 허용 문자 셋: 숫자, 영문 대/소, 한글 자모(3131~318E) + 완성형(AC00~D7A3), 공백
 const NICKNAME_CHARSET = /^[0-9A-Za-z\u3131-\u318E\uAC00-\uD7A3 ]+$/;
 
@@ -11,7 +13,7 @@ export class CheckNicknameQueryDto {
     description: '중복 확인할 닉네임 (앞/뒤 공백은 자동 제거, 중간 공백 허용, 1~10자)',
     maxLength: 10,
   })
-  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value)) 
+  @TransformToBigint()
   @IsString()
   @Length(1, 10)
   @Matches(NICKNAME_CHARSET, {
@@ -30,7 +32,6 @@ export class UpdateNicknameRequestDto {
     description: '변경할 닉네임 (앞/뒤 공백은 자동 제거, 중간 공백 허용, 1~10자)',
     maxLength: 10,
   })
-  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsString()
   @Length(1, 10)
   @Matches(NICKNAME_CHARSET, {

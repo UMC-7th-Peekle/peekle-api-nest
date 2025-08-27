@@ -1,5 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 
+import { Prisma } from '@peekle/prisma/client';
+
 import { GetEventsQueryDto, Order } from '@modules/events/dto/get-events.dto';
 import { PrismaService } from '@modules/prisma/prisma.service';
 
@@ -10,7 +12,7 @@ export class EventsQueryService {
   async getEventsList(query: GetEventsQueryDto) {
     const sortOrder: 'asc' | 'desc' = query.order === Order.ASC ? 'asc' : 'desc';
 
-    const where: any = {};
+    const where: Prisma.EventWhereInput = {};
     if (query.cursor) {
       let cursorId: bigint;
       try {

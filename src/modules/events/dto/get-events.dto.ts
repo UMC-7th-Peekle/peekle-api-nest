@@ -1,7 +1,9 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
-import { Type } from 'class-transformer';
-import { IsEnum, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import { IsEnum, IsInt, IsNumberString, IsOptional, IsString, Max, Min } from 'class-validator';
+
+import { TransformToBigint } from '@common/decorators/transform.decorator';
 
 export enum EventSortField {
   DATE = 'date',
@@ -33,8 +35,13 @@ export class GetEventsQueryDto {
   @IsEnum(Order)
   order: Order = Order.ASC;
 
-  @ApiPropertyOptional({ description: '마지막으로 본 이벤트 id(BigInt string)' })
+  @ApiPropertyOptional({
+    description: '마지막으로 본 이벤트 id (BigInt string)',
+    example: '9007199254740991', // Swagger 예시 추가
+    type: 'string', // Swagger에는 여전히 string으로 표시
+  })
   @IsOptional()
-  @IsString()
-  cursor?: string;
+  @IsNumberString()
+  @TransformToBigint()
+  cursor?: bigint;
 }

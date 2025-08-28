@@ -10,6 +10,7 @@ type Kind = 'image' | 'video';
 
 const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 이미지 1장 최대 10MB
 const MAX_TOTAL_IMAGE_SIZE = 30 * 1024 * 1024; // 한 번 요청 시 총 이미지 용량 30MB
+const MAX_BATCH_IMAGES = 30; // 한 번 요청 시 최대 이미지 장수
 const MAX_VIDEO_SIZE = 2 * 1024 * 1024 * 1024; // 동영상 2GB
 
 const ALLOWED_IMAGE_MIME = new Set([
@@ -63,10 +64,11 @@ export class AwsS3Service {
     contentType: string;
     size?: number; // 현재 파일 용량
     totalSize?: number; // 배치 업로드 총합
+    batchCount?: number; // 업로드 총 장수
     ext?: string; // 확장자 (직접 전달 안 하면 mimeToExt로 자동 결정)
     expiresIn?: number; // Presigned URL 유효 시간
   }) {
-    const { domain, kind, contentType, size, totalSize, ext, expiresIn = 600 } = opts;
+    const { domain, kind, contentType, size, totalSize, batchCount, ext, expiresIn = 600 } = opts;
 
     // MIME 정책
     if (kind === 'image' && !ALLOWED_IMAGE_MIME.has(contentType)) {
@@ -87,6 +89,9 @@ export class AwsS3Service {
       }
       if (typeof totalSize === 'number' && totalSize > MAX_TOTAL_IMAGE_SIZE) {
         throw new BadRequestException('이미지 총합이 30MB를 초과했습니다.');
+      }
+      if (typeof batchCount === 'number' && batchCount > MAX_BATCH_IMAGES) {
+        throw new BadRequestException('이미지는 한 번에 최대 30장까지 업로드할 수 있습니다.');
       }
     } else if (kind === 'video' && typeof size === 'number' && size > MAX_VIDEO_SIZE) {
       throw new BadRequestException('동영상은 최대 2GB까지 업로드할 수 있습니다.');

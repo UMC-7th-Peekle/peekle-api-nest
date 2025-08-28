@@ -9,6 +9,7 @@ import { PrismaModule } from '@modules/prisma/prisma.module';
 import { UsersModule } from '@modules/users/users.module';
 
 import awsConfig from '@/modules/aws/aws.config';
+import { AwsModule } from '@/modules/aws/aws.module';
 
 import { AppController } from './app.controller';
 
@@ -18,6 +19,7 @@ import { AppController } from './app.controller';
     PrismaModule,
     AuthModule,
     EventsModule,
+    AwsModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env.local', `.env.${process.env.NODE_ENV}`, '.env'],

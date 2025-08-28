@@ -4,14 +4,14 @@ import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetPresignedUrlDto } from '@modules/aws/dto/get-presigned-url.dto';
 import { AwsS3Service } from '@modules/aws/services/aws.s3.service';
 
-import { Public } from '@/modules/auth/decorators/public.decorator';
+// import { Public } from '@/modules/auth/decorators/public.decorator';
 
 @ApiTags('uploads')
 @Controller('uploads')
 export class AwsController {
   constructor(private readonly awsS3: AwsS3Service) {}
 
-  @Public() // 테스트 할 때 사용
+  // @Public() // 테스트 할 때 사용
   @Post('presigned')
   @ApiOperation({
     summary: 'S3 Presigned URL 발급',

@@ -2,10 +2,10 @@ import { ConflictException, Injectable } from '@nestjs/common';
 
 import { PrismaService } from '@modules/prisma/prisma.service';
 
-import { CreateArticleDto } from './dto/create-article';
-import { CreateArticleLikeDto } from './dto/create-article-like';
-import { CreateCommentDto } from './dto/create-comment';
-import { CreateCommentLikeDto } from './dto/create-comment-like';
+import { CreateArticleLikeDto } from '../dto/create-article-like.dto';
+import { CreateArticleDto } from '../dto/create-article.dto';
+import { CreateCommentLikeDto } from '../dto/create-comment-like.dto';
+import { CreateCommentDto } from '../dto/create-comment.dto';
 
 @Injectable()
 export class CommunityService {
@@ -22,7 +22,7 @@ export class CommunityService {
     return { message: '게시글 상세 조회 (GET /community/article/:articleId)' };
   }
 
-  async createArticle(dto: CreateArticleDto, files: Express.Multer.File[]) {
+  async createArticle(dto: CreateArticleDto, files: Express.Multer.File[], userId: bigint) {
     // 게시글 생성
     const createdArticle = await this.prisma.article.create({
       data: {
@@ -30,7 +30,7 @@ export class CommunityService {
         title: dto.title,
         content: dto.content,
         isAnonymous: dto.is_anonymous,
-        authorId: dto.author_id,
+        authorId: userId, // JWT에서 추출한 사용자 ID 사용
       },
     });
 
@@ -57,13 +57,13 @@ export class CommunityService {
     return { message: '게시글 삭제 (DELETE /community/article/:articleId)' };
   }
 
-  async createArticleLike(dto: CreateArticleLikeDto) {
+  async createArticleLike(dto: CreateArticleLikeDto, userId: bigint) {
     // 복합키(articleId, userId) 기반 좋아요 존재 여부 확인
     const existingLike = await this.prisma.articleLike.findUnique({
       where: {
         articleId_userId: {
           articleId: BigInt(dto.article_id),
-          userId: BigInt(dto.user_id),
+          userId: userId,
         },
       },
     });
@@ -86,13 +86,13 @@ export class CommunityService {
     return { message: '게시글 좋아요 취소 (DELETE /community/article/like)' };
   }
 
-  async createCommentLike(dto: CreateCommentLikeDto) {
+  async createCommentLike(dto: CreateCommentLikeDto, userId: bigint) {
     // 중복 좋아요 확인 (복합 키)
     const existingLike = await this.prisma.articleLike.findUnique({
       where: {
         articleId_userId: {
           articleId: BigInt(dto.comment_id),
-          userId: BigInt(dto.user_id),
+          userId: userId,
         },
       },
     });
@@ -119,12 +119,12 @@ export class CommunityService {
     return { message: '게시글 댓글 조회 (GET /community/article/comment)' };
   }
 
-  async createComment(dto: CreateCommentDto) {
+  async createComment(dto: CreateCommentDto, userId: bigint) {
     const comment = await this.prisma.articleComment.create({
       data: {
         articleId: dto.article_id,
         content: dto.content,
-        authorId: dto.author_id,
+        authorId: userId,
         isAnonymous: dto.is_anonymous,
         // parent_comment_id는 대댓글 작성에 필요, 현재는 null로 고정
         parentCommentId: null,
@@ -142,7 +142,7 @@ export class CommunityService {
     return { message: '게시글 댓글 삭제 (DELETE /community/article/comment)' };
   }
 
-  async createReply(dto: CreateCommentDto) {
+  async createReply(dto: CreateCommentDto, userId: bigint) {
     const reply = await this.prisma.articleComment.create({
       data: {
         articleId: dto.article_id,

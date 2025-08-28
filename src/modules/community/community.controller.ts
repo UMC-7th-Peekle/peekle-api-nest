@@ -1,13 +1,13 @@
-import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post, Req } from '@nestjs/common';
 import { UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
 
-import { CommunityService } from './community.service';
-import { CreateArticleDto } from './dto/create-article';
-import { CreateArticleLikeDto } from './dto/create-article-like';
-import { CreateCommentDto } from './dto/create-comment';
-import { CreateCommentLikeDto } from './dto/create-comment-like';
+import { CreateArticleLikeDto } from './dto/create-article-like.dto';
+import { CreateArticleDto } from './dto/create-article.dto';
+import { CreateCommentLikeDto } from './dto/create-comment-like.dto';
+import { CreateCommentDto } from './dto/create-comment.dto';
+import { CommunityService } from './services/community.service';
 
 @Controller('community')
 export class CommunityController {
@@ -40,9 +40,11 @@ export class CommunityController {
   async createArticle(
     @UploadedFiles() files: Express.Multer.File[], // form-data 에서 article_images는 이미지 파일들
     @Body('data') data: string, // form-data 에서 data는 내용 부분 (이미지 제외한 나머지)
+    @Req() req,
   ) {
+    const userId = req.user.id;
     const dto: CreateArticleDto = JSON.parse(data);
-    return await this.communityService.createArticle(dto, files);
+    return await this.communityService.createArticle(dto, files, userId);
   }
 
   @Patch('article/:articleId')
@@ -58,8 +60,9 @@ export class CommunityController {
   @Post('article/like')
   @ApiOperation({ summary: '게시글 좋아요' })
   @ApiCreatedResponse({ description: '게시글 좋아요 성공', type: Boolean })
-  async createArticleLike(@Body() dto: CreateArticleLikeDto) {
-    return await this.communityService.createArticleLike(dto);
+  async createArticleLike(@Body() dto: CreateArticleLikeDto, @Req() req) {
+    const userId = req.user.id;
+    return await this.communityService.createArticleLike(dto, userId);
   }
 
   @Delete('article/like')
@@ -71,8 +74,9 @@ export class CommunityController {
   @Post('article/comment/like')
   @ApiOperation({ summary: '댓글 좋아요 등록' })
   @ApiCreatedResponse({ description: '댓글 좋아요 등록 성공', type: Boolean })
-  async createCommentLike(@Body() dto: CreateCommentLikeDto) {
-    return await this.communityService.createCommentLike(dto);
+  async createCommentLike(@Body() dto: CreateCommentLikeDto, @Req() req) {
+    const userId = req.user.id;
+    return await this.communityService.createCommentLike(dto, userId);
   }
 
   @Delete('article/comment/like')
@@ -88,8 +92,9 @@ export class CommunityController {
   @Post('article/comment')
   @ApiOperation({ summary: '게시글 댓글 작성' })
   @ApiCreatedResponse({ description: '댓글 작성 성공', type: CreateCommentDto })
-  async createComment(@Body() dto: CreateCommentDto) {
-    return await this.communityService.createComment(dto);
+  async createComment(@Body() dto: CreateCommentDto, @Req() req) {
+    const userId = req.user.id;
+    return await this.communityService.createComment(dto, userId);
   }
 
   @Patch('article/comment')
@@ -105,7 +110,8 @@ export class CommunityController {
   @Post('article/comment/reply')
   @ApiOperation({ summary: '게시글 대댓글 작성' })
   @ApiCreatedResponse({ description: '대댓글 작성 성공', type: CreateCommentDto })
-  async createReply(@Body() dto: CreateCommentDto) {
-    return await this.communityService.createReply(dto);
+  async createReply(@Body() dto: CreateCommentDto, @Req() req) {
+    const userId = req.user.id;
+    return await this.communityService.createReply(dto, userId);
   }
 }

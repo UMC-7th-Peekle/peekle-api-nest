@@ -5,7 +5,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import { RegisterJwtPayload } from '@modules/auth/types/jwt.types';
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { UpdateNicknameRequestDto } from '@modules/users/dto/nickname.dto';
 import { UpdateProfileImageRequestDto } from '@modules/users/dto/profile.dto';
@@ -13,7 +12,7 @@ import {
   GetTermsHistoryResponseDto,
   UpdateTermsAgreementRequestDto,
 } from '@modules/users/dto/terms.dto';
-import { CreateOAuthUserRequestDto, CreateUserRequestDto } from '@modules/users/dto/user.dto';
+import { CreateUserRequestDto } from '@modules/users/dto/user.dto';
 
 import { Prisma } from '@/generated/prisma';
 
@@ -54,7 +53,7 @@ export class UsersService {
     }
 
     return {
-      id: profileOwner.id.toString(),
+      id: profileOwner.id,
       name: profileOwner.name,
       nickname: profileOwner.nickname,
       birthdate: profileOwner?.birthdate?.toISOString().slice(0, 10),
@@ -83,7 +82,7 @@ export class UsersService {
 
     return {
       items: terms.map((term) => ({
-        termId: term.id.toString(),
+        termId: term.id,
         title: term.title,
         isRequired: term.isRequired,
         isAccepted: term.userTerm[0]?.isAccepted ?? false,

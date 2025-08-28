@@ -51,7 +51,7 @@ export class OAuthUserService {
         select: { id: true },
       });
 
-      const newUserTerms = await txPrisma.userTerm.createMany({
+      await txPrisma.userTerm.createMany({
         data: user.terms.map((term) => ({
           userId: createdUser.id,
           termId: BigInt(term.termId),

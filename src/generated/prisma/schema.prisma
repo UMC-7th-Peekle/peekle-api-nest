@@ -5,8 +5,9 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  provider      = "prisma-client-js"
+  output        = "../src/generated/prisma"
+  binaryTargets = ["native", "darwin", "darwin-arm64", "linux-arm64-openssl-3.0.x", "windows", "debian-openssl-1.1.x"]
 }
 
 datasource db {
@@ -24,8 +25,8 @@ model Article {
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt   DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
 
-  user           User             @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "article_user_id_fk")
-  community      Community        @relation(fields: [communityId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "article_community_id_fk")
+  user           User             @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "article_user_id_fk")
+  community      Community        @relation(fields: [communityId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "article_community_id_fk")
   articleImage   ArticleImage[]
   articleLike    ArticleLike[]
   ArticleComment ArticleComment[] @relation(map: "article_comment_article_id_fk")
@@ -43,8 +44,8 @@ model ArticleComment {
   isAnonymous        Boolean              @map("is_anonymous")
   createdAt          DateTime             @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt          DateTime             @default(now()) @map("updated_at") @db.Timestamp(6)
-  user               User                 @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "article_comment_user_id_fk")
-  article            Article              @relation(fields: [articleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "article_comment_article_id_fk")
+  user               User                 @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "article_comment_user_id_fk")
+  article            Article              @relation(fields: [articleId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "article_comment_article_id_fk")
   parentComment      ArticleComment?      @relation("CommentReplies", fields: [parentCommentId], references: [id])
   replies            ArticleComment[]     @relation("CommentReplies")
   articleCommentLike ArticleCommentLike[]
@@ -60,8 +61,8 @@ model ArticleCommentLike {
   userId         BigInt         @map("user_id")
   createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt      DateTime       @default(now()) @map("updated_at") @db.Timestamp(6)
-  articleComment ArticleComment @relation(fields: [commentId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "article_comment_like_article_comment_id_fk")
-  user           User           @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "article_comment_like_user_id_fk")
+  articleComment ArticleComment @relation(fields: [commentId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "article_comment_like_article_comment_id_fk")
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "article_comment_like_user_id_fk")
 
   @@id([commentId, userId])
   @@index([userId], map: "article_comment_like_user_id_fk")
@@ -74,7 +75,7 @@ model ArticleImage {
   order     Int
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
-  article   Article  @relation(fields: [articleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "article_image_article_id_fk")
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "article_image_article_id_fk")
 
   @@id([articleId, order])
   @@map("article_image")
@@ -85,8 +86,8 @@ model ArticleLike {
   userId    BigInt   @map("user_id")
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
-  article   Article  @relation(fields: [articleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "article_like_article_id_fk")
-  user      User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "article_like_user_id_fk")
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "article_like_article_id_fk")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "article_like_user_id_fk")
 
   @@id([articleId, userId])
   @@index([userId], map: "article_like_user_id_fk")
@@ -119,7 +120,7 @@ model Event {
   category           String       @db.VarChar(100)
   createdAt          DateTime     @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt          DateTime     @default(now()) @map("updated_at") @db.Timestamp(6)
-  user               User         @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "event_user_id_fk")
+  user               User         @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "event_user_id_fk")
   eventImage         EventImage[]
 
   @@index([authorId], map: "event_user_id_fk")
@@ -132,7 +133,7 @@ model EventImage {
   order     Int
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
-  event     Event    @relation(fields: [eventId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "event_image_event_id_fk")
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "event_image_event_id_fk")
 
   @@id([eventId, order])
   @@map("event_image")
@@ -179,8 +180,8 @@ model UserTerm {
   isAccepted Boolean  @map("is_accepted")
   createdAt  DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt  DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
-  term       Term     @relation(fields: [termId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_term_term_id_fk")
-  user       User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_term_user_id_fk")
+  term       Term     @relation(fields: [termId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "user_term_term_id_fk")
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "user_term_user_id_fk")
 
   @@id([userId, termId])
   @@index([termId], map: "user_term_term_id_fk")

@@ -1,5 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+import { IsNumberString } from 'class-validator';
+
+import { TransformToBigint } from '@common/decorators/transform.decorator';
+
 /**
  * GetMeResponseDto (Response DTO)
  * - 서버 → 클라이언트 응답을 내보낼 때 사용
@@ -11,7 +15,9 @@ export class GetMeResponseDto {
   @ApiProperty({
     description: '사용자 ID (서버 → 클라이언트: JSON은 BigInt 그대로 직렬화 불가해서 string으로)',
   })
-  id!: string;
+  @IsNumberString()
+  @TransformToBigint()
+  id!: bigint;
 
   @ApiProperty({
     description: '사용자 이름',

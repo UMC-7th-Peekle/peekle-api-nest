@@ -150,7 +150,7 @@ export class CommunityService {
       data: {
         articleId: dto.article_id,
         content: dto.content,
-        authorId: dto.author_id,
+        authorId: userId,
         isAnonymous: dto.is_anonymous,
         parentCommentId: dto.parent_comment_id, // 대댓글은 부모 댓글 ID를 반드시 포함
       },

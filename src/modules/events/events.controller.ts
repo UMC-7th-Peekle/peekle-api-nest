@@ -34,8 +34,9 @@ export class EventsController {
   @Get(':id')
   @ApiOperation({ summary: '이벤트 상세 조회 API' })
   @ApiOkResponse({ type: GetEventDetailResponseDto })
+  @ResponseMessage('이벤트 상세 내용을 조회했습니다.')
   async detail(@Param() { id }: GetEventDetailParamsDto) {
-    const data = await this.eventsQuery.getEventDetail(id);
-    return { data };
+    const event = await this.eventsQuery.getEventDetail(id);
+    return { event };
   }
 }

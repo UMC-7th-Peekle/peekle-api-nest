@@ -112,7 +112,7 @@ export class EventsQueryService {
       createdAt: event.createdAt,
       updatedAt: event.updatedAt,
       images: event.eventImage.map((img) => ({
-        imageUrl: process.env.CLOUDFRONT_URL + img.imageUrl, // TODO: 이미지 URL 저장 방식에 따라 수정이 필요
+        imageUrl: process.env.CLOUDFRONT_URL + img.imageUrl, // TODO: 이미지 URL 저장 방식에 따라 수정이 필요(할 수도 있고 안 할 수도 있습니다)
         order: img.order,
       })),
     };

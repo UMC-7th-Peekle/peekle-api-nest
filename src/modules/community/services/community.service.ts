@@ -35,16 +35,19 @@ export class CommunityService {
     });
 
     // 이미지 파일이 있으면 각각 DB에 저장
-    for (const [index, file] of files.entries()) {
-      const imageUrl = `/article_images/${file.filename}`; // 추후 업로드 url로 맞게 변경 필요 (앞에 뭔지 경운햄한테 물어보기)
-      await this.prisma.articleImage.create({
-        data: {
-          articleId: createdArticle.id,
-          imageUrl: imageUrl,
-          order: index + 1,
-        },
-      });
-    }
+    // 병렬 실행을 위해 Promise.all을 사용하도록 수정함
+    await Promise.all(
+      files.map((file, index) => {
+        const imageUrl = `/article_images/${file.filename}`;
+        return this.prisma.articleImage.create({
+          data: {
+            articleId: createdArticle.id,
+            imageUrl,
+            order: index + 1,
+          },
+        });
+      }),
+    );
 
     return createdArticle;
   }

@@ -32,13 +32,31 @@ fi
 pnpm install
 echo "📦  의존성 설치가 완료되었습니다."
 
-pnpm run prisma:generate
-echo "🛠️  Prisma 클라이언트 생성이 완료되었습니다."
+# pnpm run prisma:generate
+# echo "🛠️  Prisma 클라이언트 생성이 완료되었습니다."
+
+pnpm run remove-leftovers
+
+echo "🔐 .env 파일이 존재하는지 확인합니다."
+if [ -f ".env" ]; then
+  echo "✅ .env 파일이 존재합니다."
+else
+  echo "❌ .env 파일이 존재하지 않습니다. 환경 변수 파일을 생성하거나 복사하세요."
+  exit 1
+fi
+
+echo "🔐 .env.development 파일이 존재하는지 확인합니다."
+if [ -f ".env.development" ]; then
+  echo "✅ .env.development 파일이 존재합니다."
+else
+  echo "❌ .env.development 파일이 존재하지 않습니다. 환경 변수 파일을 생성하거나 복사하세요."
+  exit 1
+fi
 
 pnpm run build
 echo "🔨  빌드가 완료되었습니다."
 
 echo "🚀  pm2를 이용해 프로세스를 시작합니다."
-pm2 start ecosystem.config.cjs
+pm2 start ecosystem.config.cjs --env development
 
 echo "✅  모든 작업이 성공적으로 완료되었습니다! 🎉"

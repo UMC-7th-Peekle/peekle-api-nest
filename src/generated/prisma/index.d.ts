@@ -11094,6 +11094,8 @@ export namespace Prisma {
     phoneNumber: string | null
     profileImage: string | null
     role: string | null
+    oauthProvider: string | null
+    oauthId: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -11107,6 +11109,8 @@ export namespace Prisma {
     phoneNumber: string | null
     profileImage: string | null
     role: string | null
+    oauthProvider: string | null
+    oauthId: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -11120,6 +11124,8 @@ export namespace Prisma {
     phoneNumber: number
     profileImage: number
     role: number
+    oauthProvider: number
+    oauthId: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -11143,6 +11149,8 @@ export namespace Prisma {
     phoneNumber?: true
     profileImage?: true
     role?: true
+    oauthProvider?: true
+    oauthId?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -11156,6 +11164,8 @@ export namespace Prisma {
     phoneNumber?: true
     profileImage?: true
     role?: true
+    oauthProvider?: true
+    oauthId?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -11169,6 +11179,8 @@ export namespace Prisma {
     phoneNumber?: true
     profileImage?: true
     role?: true
+    oauthProvider?: true
+    oauthId?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -11262,13 +11274,15 @@ export namespace Prisma {
 
   export type UserGroupByOutputType = {
     id: bigint
-    name: string
+    name: string | null
     nickname: string
-    birthdate: Date
+    birthdate: Date | null
     gender: string | null
     phoneNumber: string | null
     profileImage: string | null
     role: string
+    oauthProvider: string | null
+    oauthId: string | null
     createdAt: Date
     updatedAt: Date
     _count: UserCountAggregateOutputType | null
@@ -11301,6 +11315,8 @@ export namespace Prisma {
     phoneNumber?: boolean
     profileImage?: boolean
     role?: boolean
+    oauthProvider?: boolean
+    oauthId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     article?: boolean | User$articleArgs<ExtArgs>
@@ -11323,11 +11339,13 @@ export namespace Prisma {
     phoneNumber?: boolean
     profileImage?: boolean
     role?: boolean
+    oauthProvider?: boolean
+    oauthId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "nickname" | "birthdate" | "gender" | "phoneNumber" | "profileImage" | "role" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "nickname" | "birthdate" | "gender" | "phoneNumber" | "profileImage" | "role" | "oauthProvider" | "oauthId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     article?: boolean | User$articleArgs<ExtArgs>
     articleComment?: boolean | User$articleCommentArgs<ExtArgs>
@@ -11350,13 +11368,15 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: bigint
-      name: string
+      name: string | null
       nickname: string
-      birthdate: Date
+      birthdate: Date | null
       gender: string | null
       phoneNumber: string | null
       profileImage: string | null
       role: string
+      oauthProvider: string | null
+      oauthId: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["user"]>
@@ -11742,6 +11762,8 @@ export namespace Prisma {
     readonly phoneNumber: FieldRef<"User", 'String'>
     readonly profileImage: FieldRef<"User", 'String'>
     readonly role: FieldRef<"User", 'String'>
+    readonly oauthProvider: FieldRef<"User", 'String'>
+    readonly oauthId: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
@@ -13356,6 +13378,8 @@ export namespace Prisma {
     phoneNumber: 'phoneNumber',
     profileImage: 'profileImage',
     role: 'role',
+    oauthProvider: 'oauthProvider',
+    oauthId: 'oauthId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -13454,7 +13478,9 @@ export namespace Prisma {
     gender: 'gender',
     phoneNumber: 'phoneNumber',
     profileImage: 'profileImage',
-    role: 'role'
+    role: 'role',
+    oauthProvider: 'oauthProvider',
+    oauthId: 'oauthId'
   };
 
   export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
@@ -14142,13 +14168,15 @@ export namespace Prisma {
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     id?: BigIntFilter<"User"> | bigint | number
-    name?: StringFilter<"User"> | string
+    name?: StringNullableFilter<"User"> | string | null
     nickname?: StringFilter<"User"> | string
-    birthdate?: DateTimeFilter<"User"> | Date | string
+    birthdate?: DateTimeNullableFilter<"User"> | Date | string | null
     gender?: StringNullableFilter<"User"> | string | null
     phoneNumber?: StringNullableFilter<"User"> | string | null
     profileImage?: StringNullableFilter<"User"> | string | null
     role?: StringFilter<"User"> | string
+    oauthProvider?: StringNullableFilter<"User"> | string | null
+    oauthId?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     article?: ArticleListRelationFilter
@@ -14161,13 +14189,15 @@ export namespace Prisma {
 
   export type UserOrderByWithRelationInput = {
     id?: SortOrder
-    name?: SortOrder
+    name?: SortOrderInput | SortOrder
     nickname?: SortOrder
-    birthdate?: SortOrder
+    birthdate?: SortOrderInput | SortOrder
     gender?: SortOrderInput | SortOrder
     phoneNumber?: SortOrderInput | SortOrder
     profileImage?: SortOrderInput | SortOrder
     role?: SortOrder
+    oauthProvider?: SortOrderInput | SortOrder
+    oauthId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     article?: ArticleOrderByRelationAggregateInput
@@ -14184,13 +14214,15 @@ export namespace Prisma {
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
-    name?: StringFilter<"User"> | string
+    name?: StringNullableFilter<"User"> | string | null
     nickname?: StringFilter<"User"> | string
-    birthdate?: DateTimeFilter<"User"> | Date | string
+    birthdate?: DateTimeNullableFilter<"User"> | Date | string | null
     gender?: StringNullableFilter<"User"> | string | null
     phoneNumber?: StringNullableFilter<"User"> | string | null
     profileImage?: StringNullableFilter<"User"> | string | null
     role?: StringFilter<"User"> | string
+    oauthProvider?: StringNullableFilter<"User"> | string | null
+    oauthId?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     article?: ArticleListRelationFilter
@@ -14203,13 +14235,15 @@ export namespace Prisma {
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
-    name?: SortOrder
+    name?: SortOrderInput | SortOrder
     nickname?: SortOrder
-    birthdate?: SortOrder
+    birthdate?: SortOrderInput | SortOrder
     gender?: SortOrderInput | SortOrder
     phoneNumber?: SortOrderInput | SortOrder
     profileImage?: SortOrderInput | SortOrder
     role?: SortOrder
+    oauthProvider?: SortOrderInput | SortOrder
+    oauthId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
@@ -14224,13 +14258,15 @@ export namespace Prisma {
     OR?: UserScalarWhereWithAggregatesInput[]
     NOT?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
     id?: BigIntWithAggregatesFilter<"User"> | bigint | number
-    name?: StringWithAggregatesFilter<"User"> | string
+    name?: StringNullableWithAggregatesFilter<"User"> | string | null
     nickname?: StringWithAggregatesFilter<"User"> | string
-    birthdate?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    birthdate?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     gender?: StringNullableWithAggregatesFilter<"User"> | string | null
     phoneNumber?: StringNullableWithAggregatesFilter<"User"> | string | null
     profileImage?: StringNullableWithAggregatesFilter<"User"> | string | null
     role?: StringWithAggregatesFilter<"User"> | string
+    oauthProvider?: StringNullableWithAggregatesFilter<"User"> | string | null
+    oauthId?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
@@ -14920,13 +14956,15 @@ export namespace Prisma {
 
   export type UserCreateInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleCreateNestedManyWithoutUserInput
@@ -14939,13 +14977,15 @@ export namespace Prisma {
 
   export type UserUncheckedCreateInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleUncheckedCreateNestedManyWithoutUserInput
@@ -14958,13 +14998,15 @@ export namespace Prisma {
 
   export type UserUpdateInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateManyWithoutUserNestedInput
@@ -14977,13 +15019,15 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUncheckedUpdateManyWithoutUserNestedInput
@@ -14996,39 +15040,45 @@ export namespace Prisma {
 
   export type UserCreateManyInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type UserUpdateManyMutationInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserUncheckedUpdateManyInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15791,6 +15841,17 @@ export namespace Prisma {
     id?: SortOrder
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type EventListRelationFilter = {
     every?: EventWhereInput
     some?: EventWhereInput
@@ -15816,6 +15877,8 @@ export namespace Prisma {
     phoneNumber?: SortOrder
     profileImage?: SortOrder
     role?: SortOrder
+    oauthProvider?: SortOrder
+    oauthId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -15833,6 +15896,8 @@ export namespace Prisma {
     phoneNumber?: SortOrder
     profileImage?: SortOrder
     role?: SortOrder
+    oauthProvider?: SortOrder
+    oauthId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -15846,12 +15911,28 @@ export namespace Prisma {
     phoneNumber?: SortOrder
     profileImage?: SortOrder
     role?: SortOrder
+    oauthProvider?: SortOrder
+    oauthId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type UserSumOrderByAggregateInput = {
     id?: SortOrder
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type TermScalarRelationFilter = {
@@ -16528,6 +16609,10 @@ export namespace Prisma {
     connect?: UserTermWhereUniqueInput | UserTermWhereUniqueInput[]
   }
 
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
   export type ArticleUpdateManyWithoutUserNestedInput = {
     create?: XOR<ArticleCreateWithoutUserInput, ArticleUncheckedCreateWithoutUserInput> | ArticleCreateWithoutUserInput[] | ArticleUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ArticleCreateOrConnectWithoutUserInput | ArticleCreateOrConnectWithoutUserInput[]
@@ -16942,15 +17027,42 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
   export type UserCreateWithoutArticleInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     articleComment?: ArticleCommentCreateNestedManyWithoutUserInput
@@ -16962,13 +17074,15 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutArticleInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     articleComment?: ArticleCommentUncheckedCreateNestedManyWithoutUserInput
@@ -17095,13 +17209,15 @@ export namespace Prisma {
 
   export type UserUpdateWithoutArticleInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     articleComment?: ArticleCommentUpdateManyWithoutUserNestedInput
@@ -17113,13 +17229,15 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutArticleInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     articleComment?: ArticleCommentUncheckedUpdateManyWithoutUserNestedInput
@@ -17239,13 +17357,15 @@ export namespace Prisma {
 
   export type UserCreateWithoutArticleCommentInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleCreateNestedManyWithoutUserInput
@@ -17257,13 +17377,15 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutArticleCommentInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleUncheckedCreateNestedManyWithoutUserInput
@@ -17407,13 +17529,15 @@ export namespace Prisma {
 
   export type UserUpdateWithoutArticleCommentInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateManyWithoutUserNestedInput
@@ -17425,13 +17549,15 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutArticleCommentInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUncheckedUpdateManyWithoutUserNestedInput
@@ -17586,13 +17712,15 @@ export namespace Prisma {
 
   export type UserCreateWithoutArticleCommentLikeInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleCreateNestedManyWithoutUserInput
@@ -17604,13 +17732,15 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutArticleCommentLikeInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleUncheckedCreateNestedManyWithoutUserInput
@@ -17673,13 +17803,15 @@ export namespace Prisma {
 
   export type UserUpdateWithoutArticleCommentLikeInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateManyWithoutUserNestedInput
@@ -17691,13 +17823,15 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutArticleCommentLikeInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUncheckedUpdateManyWithoutUserNestedInput
@@ -17808,13 +17942,15 @@ export namespace Prisma {
 
   export type UserCreateWithoutArticleLikeInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleCreateNestedManyWithoutUserInput
@@ -17826,13 +17962,15 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutArticleLikeInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleUncheckedCreateNestedManyWithoutUserInput
@@ -17897,13 +18035,15 @@ export namespace Prisma {
 
   export type UserUpdateWithoutArticleLikeInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateManyWithoutUserNestedInput
@@ -17915,13 +18055,15 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutArticleLikeInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUncheckedUpdateManyWithoutUserNestedInput
@@ -17999,13 +18141,15 @@ export namespace Prisma {
 
   export type UserCreateWithoutEventInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleCreateNestedManyWithoutUserInput
@@ -18017,13 +18161,15 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutEventInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleUncheckedCreateNestedManyWithoutUserInput
@@ -18075,13 +18221,15 @@ export namespace Prisma {
 
   export type UserUpdateWithoutEventInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateManyWithoutUserNestedInput
@@ -18093,13 +18241,15 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutEventInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUncheckedUpdateManyWithoutUserNestedInput
@@ -18601,13 +18751,15 @@ export namespace Prisma {
 
   export type UserCreateWithoutUserTermInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleCreateNestedManyWithoutUserInput
@@ -18619,13 +18771,15 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutUserTermInput = {
     id?: bigint | number
-    name: string
+    name?: string | null
     nickname: string
-    birthdate: Date | string
+    birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
     profileImage?: string | null
     role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleUncheckedCreateNestedManyWithoutUserInput
@@ -18682,13 +18836,15 @@ export namespace Prisma {
 
   export type UserUpdateWithoutUserTermInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateManyWithoutUserNestedInput
@@ -18700,13 +18856,15 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutUserTermInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    name?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     nickname?: StringFieldUpdateOperationsInput | string
-    birthdate?: DateTimeFieldUpdateOperationsInput | Date | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUncheckedUpdateManyWithoutUserNestedInput

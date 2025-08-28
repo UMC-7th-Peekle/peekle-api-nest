@@ -215,6 +215,8 @@ exports.Prisma.UserScalarFieldEnum = {
   phoneNumber: 'phoneNumber',
   profileImage: 'profileImage',
   role: 'role',
+  oauthProvider: 'oauthProvider',
+  oauthId: 'oauthId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -280,7 +282,9 @@ exports.Prisma.UserOrderByRelevanceFieldEnum = {
   gender: 'gender',
   phoneNumber: 'phoneNumber',
   profileImage: 'profileImage',
-  role: 'role'
+  role: 'role',
+  oauthProvider: 'oauthProvider',
+  oauthId: 'oauthId'
 };
 
 

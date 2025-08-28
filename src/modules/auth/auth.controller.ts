@@ -7,12 +7,20 @@ import {
   Redirect,
   Req,
   Request,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 
+import { Response } from 'express';
+
+import { CookieName } from '@common/constants/cookie.constants';
 import { BypassResponseInterceptor } from '@common/decorators/bypass-response-interceptor.decorator';
 
+import {
+  accessTokenCookieOptions,
+  refreshTokenCookieOptions,
+} from '@modules/auth/config/cookie.config';
 import { Public } from '@modules/auth/decorators/public.decorator';
 import { GoogleOAuthGuard } from '@modules/auth/guards/google-oauth.guard';
 import { RegisterJwtGuard } from '@modules/auth/guards/register-jwt.guard';
@@ -146,12 +154,17 @@ export class AuthController {
   })
   @Public()
   @Get('kakao/callback')
-  async kakaoCallback(@Query('code') code: string) {
+  async kakaoCallback(@Query('code') code: string, @Res({ passthrough: true }) res: Response) {
     this.kakaoUserService.checkAuthorizationCode(code);
     const kakaoAccessToken = await this.kakaoUserService.getKakaoAccessToken(code);
     const kakaoUserInfo = await this.kakaoUserService.getKakaoUserInfo(kakaoAccessToken);
 
     const result = await this.oauthUserService.oauthLoginOrRegister(kakaoUserInfo);
+
+    if (result.type === 'login') {
+      res.cookie(CookieName.ACCESS_TOKEN, result.tokens.accessToken, accessTokenCookieOptions);
+      res.cookie(CookieName.REFRESH_TOKEN, result.tokens.refreshToken, refreshTokenCookieOptions);
+    }
 
     return result;
   }

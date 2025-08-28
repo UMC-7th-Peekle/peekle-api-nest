@@ -7,7 +7,7 @@ import { CreateOAuthUserRequestDto } from '@modules/users/dto/user.dto';
 import {
   GoogleOAuthUserData,
   KakaoUserData,
-  OAuthProvider,
+  OAuthLoginOrRegisterResult,
 } from '@modules/users/types/oauth.users.types';
 
 @Injectable()
@@ -17,7 +17,9 @@ export class OAuthUserService {
     private readonly prismaService: PrismaService,
   ) {}
 
-  async oauthLoginOrRegister(oauthData: GoogleOAuthUserData | KakaoUserData) {
+  async oauthLoginOrRegister(
+    oauthData: GoogleOAuthUserData | KakaoUserData,
+  ): Promise<OAuthLoginOrRegisterResult> {
     const { oauthProvider, oauthId, ...userData } = oauthData;
     const user = await this.prismaService.user.findFirst({
       where: {

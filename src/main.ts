@@ -2,6 +2,8 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+import cookieParser from 'cookie-parser';
+
 import { GlobalExceptionFilter } from '@common/filters/http-exception.filter';
 import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
 
@@ -9,6 +11,8 @@ import { AppModule } from '@modules/app/app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.use(cookieParser());
 
   // DocumentBuilder를 이용해 Swagger 문서 기본 정보 구성
   const config = new DocumentBuilder()

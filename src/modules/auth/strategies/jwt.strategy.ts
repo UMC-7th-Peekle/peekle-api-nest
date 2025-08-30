@@ -2,7 +2,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 
+import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+
+import { CookieName } from '@common/constants/cookie.constants';
 
 import { JwtConfig } from '@modules/auth/config/jwt.config';
 import { AuthService } from '@modules/auth/services/auth.service';
@@ -21,7 +24,12 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     private authService: AuthService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (req: Request) => {
+          // cookie-parser에 의해 생성된 req.cookies 객체에서 토큰을 추출합니다.
+          return req.cookies?.[CookieName.ACCESS_TOKEN];
+        },
+      ]),
       secretOrKey: jwtConfiguration.secret as string,
       ignoreExpiration: false,
     });

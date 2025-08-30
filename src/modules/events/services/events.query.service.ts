@@ -1,7 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { Prisma } from '@peekle/prisma/client';
 
+import { GetEventDetailResponseDto } from '@modules/events/dto/get-event-detail.dto';
 import { GetEventsQueryDto, Order } from '@modules/events/dto/get-events.dto';
 import { PrismaService } from '@modules/prisma/prisma.service';
 
@@ -77,5 +78,43 @@ export class EventsQueryService {
     const nextCursor = last ? last.id.toString() : null;
 
     return { events, nextCursor, hasNextPage };
+  }
+
+  async getEventDetail(id: bigint): Promise<GetEventDetailResponseDto> {
+    const event = await this.prisma.event.findUnique({
+      where: { id },
+      include: {
+        eventImage: {
+          select: { imageUrl: true, order: true },
+          orderBy: { order: 'asc' },
+        },
+      },
+    });
+
+    if (!event) {
+      throw new NotFoundException('해당 이벤트를 찾을 수 없습니다.');
+    }
+
+    return {
+      id: event.id.toString(),
+      title: event.title,
+      startDate: event.startDate,
+      endDate: event.endDate,
+      venueName: event.venueName,
+      venueRoadAddress: event.venueRoadAddress,
+      venueJibunAddress: event.venueJibunAddress,
+      venueDetailAddress: event.venueDetailAddress,
+      price: event.price,
+      link: event.link,
+      description: event.description,
+      authorId: event.authorId.toString(),
+      category: event.category,
+      createdAt: event.createdAt,
+      updatedAt: event.updatedAt,
+      images: event.eventImage.map((img) => ({
+        imageUrl: process.env.CLOUDFRONT_URL + img.imageUrl, // TODO: 이미지 URL 저장 방식에 따라 수정이 필요(할 수도 있고 안 할 수도 있습니다)
+        order: img.order,
+      })),
+    };
   }
 }

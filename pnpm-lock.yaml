@@ -68,6 +68,9 @@ importers:
       uuid:
         specifier: ^11.1.0
         version: 11.1.0
+      zod:
+        specifier: ^4.1.5
+        version: 4.1.5
     devDependencies:
       '@eslint/eslintrc':
         specifier: ^3.3.1
@@ -3878,6 +3881,9 @@ packages:
   yoctocolors-cjs@2.1.2:
     resolution: {integrity: sha512-cYVsTjKl8b+FrnidjibDWskAv7UKOfcwaVZdp/it9n1s9fU3IkgDbhdIRKCW4JDsAlECJY0ytoVPT3sK6kideA==}
     engines: {node: '>=18'}
+
+  zod@4.1.5:
+    resolution: {integrity: sha512-rcUUZqlLJgBC33IT3PNMgsCq6TzLQEG/Ei/KTCU0PedSWRMAXoOUN+4t/0H+Q8bdnLPdqUYnvboJT0bn/229qg==}
 
 snapshots:
 
@@ -8009,3 +8015,5 @@ snapshots:
   yocto-queue@0.1.0: {}
 
   yoctocolors-cjs@2.1.2: {}
+
+  zod@4.1.5: {}

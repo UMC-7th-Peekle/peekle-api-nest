@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 
 import { GlobalExceptionFilter } from '@common/filters/http-exception.filter';
 import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
+import { RequestContextMiddleware } from '@common/middleware/request-context.middleware';
 
 import { AuthModule } from '@modules/auth/auth.module';
 import { GoogleOAuthConfig } from '@modules/auth/config/google-oauth-config';
@@ -16,8 +17,6 @@ import { RegisterJwtConfig } from '@modules/auth/config/register-jwt.config';
 import { configValidationSchema } from '@modules/auth/schemas/validation.schema';
 import { EventsModule } from '@modules/events/events.module';
 import { PrismaModule } from '@modules/prisma/prisma.module';
-import { AlsModule } from '@modules/request-context/als.module';
-import { RequestContextMiddleware } from '@modules/request-context/middleware/request-context.middleware';
 import { UsersModule } from '@modules/users/users.module';
 
 import { AppController } from './app.controller';
@@ -36,7 +35,6 @@ const validate = (config: Record<string, unknown>) => {
       load: [GoogleOAuthConfig, KakaoOAuthConfig, JwtConfig, RefreshJwtConfig, RegisterJwtConfig],
       validate,
     }),
-    AlsModule,
     UsersModule,
     PrismaModule,
     AuthModule,
@@ -44,6 +42,7 @@ const validate = (config: Record<string, unknown>) => {
   ],
   controllers: [AppController],
   providers: [
+    RequestContextMiddleware,
     {
       provide: APP_INTERCEPTOR,
       useClass: ResponseInterceptor,

@@ -32,15 +32,15 @@ async function bootstrap() {
 
   // PIPE, INTERCEPTOR, FILTER 모두 app.module.ts 로 이동되었습니다. Nest.js에서 권장되는 구조를 따라 봅시다!
 
-  await app.listen(process.env.PORT ?? 7777, () => {
-    console.log(
-      `🚀 NEST.JS SERVER RUNNING!\n` +
-        `──────────────────────────────\n` +
-        `📦 PORT      : ${process.env.PORT ?? '[ENV에 PORT 미설정]'}\n` +
-        `🌱 NODE_ENV  : ${process.env.NODE_ENV ?? '[ENV에 NODE_ENV 미설정]'}\n` +
-        `──────────────────────────────`,
-    );
-  });
+  await app.listen(process.env.PORT ?? 7777);
 }
 
-bootstrap();
+bootstrap().then(() => {
+  console.log(
+    `🚀 NEST.JS SERVER RUNNING!\n` +
+      `──────────────────────────────\n` +
+      `📦 PORT      : ${process.env.PORT ?? '[ENV에 PORT 미설정]'}\n` +
+      `🌱 NODE_ENV  : ${process.env.NODE_ENV ?? '[ENV에 NODE_ENV 미설정]'}\n` +
+      `──────────────────────────────`,
+  );
+});

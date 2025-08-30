@@ -1,11 +1,5 @@
-import { Body, Controller, Get, Patch, Post, Query } from '@nestjs/common';
-import {
-  ApiCreatedResponse,
-  ApiHeader,
-  ApiOkResponse,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
+import { Body, Controller, Get, Patch, Query } from '@nestjs/common';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 // 임시 유저 식별 (JWT 붙기 전까지 mock 헤더 사용)
 import { UserId } from '@common/decorators/user-id-decorator';
@@ -25,7 +19,6 @@ import {
   GetTermsHistoryResponseDto,
   UpdateTermsAgreementRequestDto,
 } from '@modules/users/dto/terms.dto';
-import { CreateUserRequestDto, CreateUserResponseDto } from '@modules/users/dto/user.dto';
 import { UsersService } from '@modules/users/services/users.service';
 
 @ApiTags('users')

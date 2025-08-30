@@ -1,4 +1,4 @@
-import { Inject, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService, ConfigType } from '@nestjs/config';
 
 import axios, { HttpStatusCode } from 'axios';
@@ -7,6 +7,7 @@ import { KakaoOAuthConfig } from '@modules/auth/config/kakao-oauth-config';
 import { KakaoUserInfoResponse } from '@modules/auth/types/kakao.types';
 import { KakaoUserData, OAuthProvider } from '@modules/users/types/oauth.users.types';
 
+@Injectable()
 export class KakaoAuthService {
   constructor(
     private readonly configService: ConfigService,

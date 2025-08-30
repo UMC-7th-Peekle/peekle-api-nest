@@ -18,7 +18,7 @@ export class KakaoAuthService {
 
   getKakaoRedirectUrl = () => {
     const kakaoUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${this.kakaoOAuthConfig.restApiKey}&redirect_uri=${this.kakaoOAuthConfig.redirectUrl}&response_type=code`;
-    console.log(kakaoUrl);
+    // console.log(kakaoUrl);
     return {
       url: kakaoUrl,
       statusCode: HttpStatusCode.Found,
@@ -38,7 +38,7 @@ export class KakaoAuthService {
    * 카카오 OAuth 인증 코드를 사용하여 액세스 토큰을 요청하는 함수.
    */
   getKakaoAccessToken = async (authorizationCode) => {
-    console.log(`[getKakaoAccessToken] 인증 코드: ${authorizationCode}`);
+    // console.log(`[getKakaoAccessToken] 인증 코드: ${authorizationCode}`);
     const tokenResponse = await axios.post('https://kauth.kakao.com/oauth/token', null, {
       params: {
         grant_type: 'authorization_code',

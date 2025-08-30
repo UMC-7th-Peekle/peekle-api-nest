@@ -3,6 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsString, Length, Matches } from 'class-validator';
 
+import { IsBigInt } from '@common/decorators/is-bigint.decorator';
 import { TransformToBigint } from '@common/decorators/transform.decorator';
 
 // 허용 문자 셋: 숫자, 영문 대/소, 한글 자모(3131~318E) + 완성형(AC00~D7A3), 공백
@@ -14,7 +15,7 @@ export class CheckNicknameQueryDto {
     maxLength: 10,
   })
   @TransformToBigint()
-  @IsString()
+  @IsBigInt()
   @Length(1, 10)
   @Matches(NICKNAME_CHARSET, {
     message: '닉네임은 한글(자모/완성형), 영문, 숫자, 공백만 사용할 수 있습니다.',

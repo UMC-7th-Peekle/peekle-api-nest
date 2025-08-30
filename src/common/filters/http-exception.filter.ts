@@ -56,6 +56,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         statusCode: status.toString(),
         message,
         data: `REQUEST URL : ${request.url}`,
+        // traceId: response.traceId,
       });
     }
   }

@@ -3,9 +3,12 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 
 import cookieParser from 'cookie-parser';
+import { WinstonModule } from 'nest-winston';
 
+import { winstonLoggerOptions } from '@common/configs/winston.config';
 import { GlobalExceptionFilter } from '@common/filters/http-exception.filter';
 import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
+import { LoggerMiddleware } from '@common/middleware/logger.middleware';
 import { RequestContextMiddleware } from '@common/middleware/request-context.middleware';
 
 import { AuthModule } from '@modules/auth/auth.module';
@@ -35,6 +38,7 @@ const validate = (config: Record<string, unknown>) => {
       load: [GoogleOAuthConfig, KakaoOAuthConfig, JwtConfig, RefreshJwtConfig, RegisterJwtConfig],
       validate,
     }),
+    WinstonModule.forRoot(winstonLoggerOptions),
     UsersModule,
     PrismaModule,
     AuthModule,
@@ -42,7 +46,6 @@ const validate = (config: Record<string, unknown>) => {
   ],
   controllers: [AppController],
   providers: [
-    RequestContextMiddleware,
     {
       provide: APP_INTERCEPTOR,
       useClass: ResponseInterceptor,
@@ -65,6 +68,6 @@ const validate = (config: Record<string, unknown>) => {
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(cookieParser(), RequestContextMiddleware).forRoutes('*');
+    consumer.apply(cookieParser(), RequestContextMiddleware, LoggerMiddleware).forRoutes('*');
   }
 }

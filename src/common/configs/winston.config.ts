@@ -1,3 +1,4 @@
+import { utilities } from 'nest-winston';
 import winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 
@@ -5,7 +6,7 @@ import { RequestContext } from '@common/context/reqeust.context';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-const upperCaseLevelFormat = winston.format((info) => {
+const formatMessage = winston.format((info) => {
   const requestContext = RequestContext.current;
 
   if (requestContext) {
@@ -20,12 +21,18 @@ const upperCaseLevelFormat = winston.format((info) => {
 const consoleTransport = new winston.transports.Console({
   level: isProduction ? 'info' : 'silly',
   format: winston.format.combine(
-    winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-    upperCaseLevelFormat(),
-    winston.format.colorize({ all: true }),
-    winston.format.printf(
-      (info) => `[${info.timestamp}] [${info.traceId || 'APP'}] ${info.level}: ${info.message}`,
-    ),
+    // winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    // formatMessage(),
+    // winston.format.colorize({ all: true }),
+    // winston.format.printf(
+    //   (info) => `[${info.timestamp}] [${info.traceId || 'APP'}] ${info.level}: ${info.message}`,
+    // ),
+    utilities.format.nestLike('peekle', {
+      prettyPrint: true,
+      colors: true,
+      processId: true,
+      appName: true,
+    }),
   ),
 });
 

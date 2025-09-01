@@ -44,7 +44,6 @@ export class OAuthUserService {
   }
 
   async createOAuthUser(user: CreateOAuthUserRequestDto & RegisterJwtPayload) {
-    console.log(user.terms);
     const newUser = await this.prismaService.$transaction(async (txPrisma) => {
       const createdUser = await txPrisma.user.create({
         data: {
@@ -73,6 +72,7 @@ export class OAuthUserService {
             throw new BadRequestException('존재하지 않는 약관입니다.');
           }
         }
+        throw err;
       }
 
       return createdUser;

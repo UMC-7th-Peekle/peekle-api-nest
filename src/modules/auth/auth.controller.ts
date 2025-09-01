@@ -34,7 +34,6 @@ import {
 } from '@modules/users/dto/user.dto';
 import { OAuthUserService } from '@modules/users/services/oauth.users.service';
 import { UsersService } from '@modules/users/services/users.service';
-import { OAuthProvider } from '@modules/users/types/oauth.users.types';
 
 @Controller('auth')
 export class AuthController {
@@ -52,7 +51,6 @@ export class AuthController {
   @Public()
   @Post('register')
   async register(@Body() user: CreateUserRequestDto) {
-    console.log(user);
     return this.usersService.createUser(user);
   }
 
@@ -81,8 +79,9 @@ export class AuthController {
   })
   @ApiBearerAuth()
   @Get('protected')
+  @ResponseMessage('JWT Guard를 Pass 했습니다.')
   async tokenCheck() {
-    return { message: 'JwtGuard를 PASS 했습니다.' };
+    return;
   }
 
   @ApiOperation({

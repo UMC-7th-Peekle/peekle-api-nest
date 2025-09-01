@@ -4,14 +4,18 @@ import {
   ExceptionFilter,
   HttpException,
   HttpStatus,
+  Inject,
   Logger,
 } from '@nestjs/common';
 
 import { Request, Response } from 'express';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+
+import { LOG_LEVELS } from '@common/constants/log-levels.constants';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
-  private readonly logger = new Logger(GlobalExceptionFilter.name);
+  constructor(@Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger) {}
 
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -22,7 +26,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     let message: string | object;
 
     if (exception instanceof HttpException) {
-      console.log(exception);
+      this.logger.log(LOG_LEVELS.VERBOSE, exception);
       // 1. HttpException인 경우
       status = exception.getStatus();
       const errorResponse = exception.getResponse();

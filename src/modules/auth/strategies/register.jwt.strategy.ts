@@ -26,7 +26,6 @@ export class RegisterJwtStrategy extends PassportStrategy(Strategy, 'register-jw
   }
 
   validate(payload: RegisterJwtPayload) {
-    console.log('Register JWT payload:', payload);
     return payload;
   }
 }

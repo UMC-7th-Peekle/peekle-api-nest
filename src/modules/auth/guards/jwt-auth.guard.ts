@@ -1,15 +1,27 @@
-import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ExecutionContext,
+  Inject,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JsonWebTokenError, NotBeforeError, TokenExpiredError } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Observable } from 'rxjs';
+
+import { LOG_LEVELS } from '@common/constants/log-levels.constants';
 
 import { IS_PUBLIC_KEY } from '@modules/auth/decorators/public.decorator';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
-  constructor(private reflector: Reflector) {
+  constructor(
+    private reflector: Reflector,
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+  ) {
     super();
   }
 
@@ -45,7 +57,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         throw new UnauthorizedException('NOT_ACTIVATED_TOKEN');
       }
       // 기타 토큰 관련 에러
-      console.log(info.name);
       if (info.name === 'Error') {
         throw new UnauthorizedException({ message: 'NO_AUTH_TOKEN', code: 'JWT1011' });
       }
@@ -55,7 +66,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
     // 2. Strategy의 validate 메소드에서 발생시킨 에러 확인
     if (err) {
-      console.log(err);
+      this.logger.log(LOG_LEVELS.ERROR, err);
       throw err; // validate에서 던진 커스텀 에러를 그대로 다시 던짐
     }
 

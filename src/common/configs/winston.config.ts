@@ -13,7 +13,7 @@ const formatMessage = winston.format((info) => {
     info.traceId = requestContext.traceId;
   }
 
-  info.level = info.level.toUpperCase();
+  // info.level = info.level.toUpperCase();
   return info;
 });
 
@@ -46,7 +46,11 @@ const dailyRotateFileTransport = new DailyRotateFile({
   zippedArchive: true,
   maxSize: '20m',
   maxFiles: '14d',
-  format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    formatMessage(),
+    winston.format.json(),
+  ),
 });
 
 // nest-winston에서 사용할 설정 객체

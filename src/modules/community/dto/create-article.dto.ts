@@ -3,9 +3,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsInt, IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
 export class CreateArticleDto {
-  @ApiProperty({ example: 1, description: '커뮤니티 ID', type: Number })
-  @IsInt()
-  community_id!: number;
+  @ApiProperty({ example: '1', description: '커뮤니티 ID', type: String })
+  // TODO: IsBigInt 적용
+  community_id!: bigint;
 
   @ApiProperty({ example: '게시글 제목', description: '게시글 제목', maxLength: 50 })
   @IsString()
@@ -23,7 +23,6 @@ export class CreateArticleDto {
   @IsBoolean()
   is_anonymous!: boolean;
 
-  @ApiProperty({ example: 123, description: '작성자 ID', type: Number })
-  @IsInt()
-  author_id!: number;
+  @ApiProperty({ example: 123, description: '작성자 ID', type: String })
+  author_id!: bigint;
 }

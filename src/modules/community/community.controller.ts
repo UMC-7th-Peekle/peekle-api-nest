@@ -1,7 +1,31 @@
-import { Body, Controller, Delete, Get, Patch, Post, Req } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Patch,
+  Post,
+  Req,
+} from '@nestjs/common';
 import { UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { ApiConsumes, ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiProperty,
+  getSchemaPath,
+} from '@nestjs/swagger';
+
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
+
+import { ApiMultiFileAndJson } from '@common/decorators/api-multipart-form.decorator';
+import { ParseJsonPipe } from '@common/pipes/parse-json.pipe';
+
+import { Public } from '@modules/auth/decorators/public.decorator';
 
 import { CreateArticleLikeDto } from './dto/create-article-like.dto';
 import { CreateArticleDto } from './dto/create-article.dto';
@@ -33,18 +57,20 @@ export class CommunityController {
   }
 
   @Post('article')
+  @ApiMultiFileAndJson('article_images', CreateArticleDto)
   @ApiOperation({ summary: '게시글 작성' })
   @ApiCreatedResponse({ description: '게시글 생성 성공', type: CreateArticleDto })
-  @ApiConsumes('multipart/form-data')
   @UseInterceptors(FilesInterceptor('article_images'))
+  @Public()
   async createArticle(
     @UploadedFiles() files: Express.Multer.File[], // form-data 에서 article_images는 이미지 파일들
-    @Body('data') data: string, // form-data 에서 data는 내용 부분 (이미지 제외한 나머지)
+    @Body('data', ParseJsonPipe) data: CreateArticleDto, // form-data 에서 data는 내용 부분 (이미지 제외한 나머지)
     @Req() req,
   ) {
-    const userId = req.user.id;
-    const dto: CreateArticleDto = JSON.parse(data);
-    return await this.communityService.createArticle(dto, files, userId);
+    // const userId = req.user.id;
+    const userId = 1n; // TODO: 임시로 1번 유저로 고정, JWT 인증 도입 후 수정 필요
+
+    return await this.communityService.createArticle(data, files, userId);
   }
 
   @Patch('article/:articleId')

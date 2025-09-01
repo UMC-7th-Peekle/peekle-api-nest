@@ -16,6 +16,7 @@ const eslintConfig = [
       'node_modules/**',
       'dist/**',
       'build/**',
+      'src/generated/**',
 
       // 테스트 및 문서 폴더
       'coverage/**',

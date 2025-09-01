@@ -4,14 +4,18 @@ import {
   ExceptionFilter,
   HttpException,
   HttpStatus,
+  Inject,
   Logger,
 } from '@nestjs/common';
 
 import { Request, Response } from 'express';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+
+import { LOG_LEVELS } from '@common/constants/log-levels.constants';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
-  private readonly logger = new Logger(GlobalExceptionFilter.name);
+  constructor(@Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger) {}
 
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -22,13 +26,17 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     let message: string | object;
 
     if (exception instanceof HttpException) {
+      this.logger.log(LOG_LEVELS.VERBOSE, exception);
       // 1. HttpException인 경우
       status = exception.getStatus();
       const errorResponse = exception.getResponse();
+
       message =
         typeof errorResponse === 'object' && errorResponse !== null
-          ? (errorResponse as any).message || errorResponse
-          : errorResponse;
+          ? // Object일 경우 message / meesage가 없으면 그냥 객체 그 자체 반환
+            (errorResponse as any).message || errorResponse
+          : // string 일 경우 그대로 반환
+            errorResponse;
 
       this.logger.error(
         `[${request.method} ${request.url}] - Status: ${status} - Message: ${JSON.stringify(message)}`,
@@ -45,12 +53,14 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       );
     }
 
+    // 응답이 전송되지 않은 경우에만 Response 전송
     if (!response.headersSent) {
       response.status(status).json({
         status: false,
-        statusCode: status,
+        statusCode: status.toString(),
         message,
-        path: request.url,
+        data: `REQUEST URL : ${request.url}`,
+        // traceId: response.traceId,
       });
     }
   }

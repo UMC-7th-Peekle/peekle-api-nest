@@ -57,8 +57,8 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
 
     return {
       status: true,
-      message,
       statusCode,
+      message,
       data: res,
     };
   }

@@ -19,3 +19,22 @@ export interface KakaoUserData extends OAuthUserInfo {
   email?: string;
   profileImage: string;
 }
+
+export interface OAuthLoginResult {
+  type: 'login';
+  oauthProvider: OAuthProvider;
+  tokens: {
+    accessToken: string;
+    refreshToken: string;
+  };
+}
+
+export interface OAuthRegisterResult {
+  type: 'register';
+  oauthProvider: OAuthProvider;
+  tokens: {
+    registerToken: string;
+  };
+}
+
+export type OAuthLoginOrRegisterResult = OAuthLoginResult | OAuthRegisterResult;

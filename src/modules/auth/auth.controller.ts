@@ -7,12 +7,21 @@ import {
   Redirect,
   Req,
   Request,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 
-import { BypassResponseInterceptor } from '@common/decorators/bypass-response-interceptor.decorator';
+import { Response } from 'express';
 
+import { CookieName } from '@common/constants/cookie.constants';
+import { BypassResponseInterceptor } from '@common/decorators/bypass-response-interceptor.decorator';
+import { ResponseMessage } from '@common/decorators/response-message-decorator';
+
+import {
+  accessTokenCookieOptions,
+  refreshTokenCookieOptions,
+} from '@modules/auth/config/cookie.config';
 import { Public } from '@modules/auth/decorators/public.decorator';
 import { GoogleOAuthGuard } from '@modules/auth/guards/google-oauth.guard';
 import { RegisterJwtGuard } from '@modules/auth/guards/register-jwt.guard';
@@ -25,7 +34,6 @@ import {
 } from '@modules/users/dto/user.dto';
 import { OAuthUserService } from '@modules/users/services/oauth.users.service';
 import { UsersService } from '@modules/users/services/users.service';
-import { OAuthProvider } from '@modules/users/types/oauth.users.types';
 
 @Controller('auth')
 export class AuthController {
@@ -43,7 +51,6 @@ export class AuthController {
   @Public()
   @Post('register')
   async register(@Body() user: CreateUserRequestDto) {
-    console.log(user);
     return this.usersService.createUser(user);
   }
 
@@ -52,17 +59,11 @@ export class AuthController {
     description: 'OAuth로 회원가입을 하고자 하는 사용자의 나머지 정보를 받아서 가입을 처리합니다.',
   })
   @ApiBearerAuth()
-  // @ApiHeader({
-  //   name: 'RegisterToken', // 실제 헤더의 key
-  //   description: '가입용 임시 토큰(Register Token). Token만 평문으로 보내시면 됩니다.',
-  //   required: true,
-  //   example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
-  // })
   @Public()
   @UseGuards(RegisterJwtGuard)
+  @ResponseMessage('OAuth를 통한 회원가입에 성공했습니다.')
   @Post('oauth/register')
   async oauthRegister(@Req() req, @Body() user: CreateOAuthUserRequestDto) {
-    console.log(user);
     return this.oauthUserService.createOAuthUser({ ...req.user, ...user });
   }
 
@@ -78,8 +79,9 @@ export class AuthController {
   })
   @ApiBearerAuth()
   @Get('protected')
+  @ResponseMessage('JWT Guard를 Pass 했습니다.')
   async tokenCheck() {
-    return { message: 'JwtGuard를 PASS 했습니다.' };
+    return;
   }
 
   @ApiOperation({
@@ -117,10 +119,15 @@ export class AuthController {
   @Public()
   @Get('google/callback')
   @UseGuards(GoogleOAuthGuard)
-  async googleCallback(@Request() req: any) {
+  async googleCallback(@Request() req: any, @Res({ passthrough: true }) res: Response) {
     console.log('Google OAuth Callback:', req.user);
 
     const result = await this.oauthUserService.oauthLoginOrRegister(req.user);
+
+    if (result.type === 'login') {
+      res.cookie(CookieName.ACCESS_TOKEN, result.tokens.accessToken, accessTokenCookieOptions);
+      res.cookie(CookieName.REFRESH_TOKEN, result.tokens.refreshToken, refreshTokenCookieOptions);
+    }
 
     return result;
   }
@@ -146,12 +153,17 @@ export class AuthController {
   })
   @Public()
   @Get('kakao/callback')
-  async kakaoCallback(@Query('code') code: string) {
+  async kakaoCallback(@Query('code') code: string, @Res({ passthrough: true }) res: Response) {
     this.kakaoUserService.checkAuthorizationCode(code);
     const kakaoAccessToken = await this.kakaoUserService.getKakaoAccessToken(code);
     const kakaoUserInfo = await this.kakaoUserService.getKakaoUserInfo(kakaoAccessToken);
 
     const result = await this.oauthUserService.oauthLoginOrRegister(kakaoUserInfo);
+
+    if (result.type === 'login') {
+      res.cookie(CookieName.ACCESS_TOKEN, result.tokens.accessToken, accessTokenCookieOptions);
+      res.cookie(CookieName.REFRESH_TOKEN, result.tokens.refreshToken, refreshTokenCookieOptions);
+    }
 
     return result;
   }

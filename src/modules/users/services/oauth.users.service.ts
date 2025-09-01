@@ -1,10 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
+
+import { Prisma } from '@peekle/prisma/client';
 
 import { AuthService } from '@modules/auth/services/auth.service';
 import { RegisterJwtPayload } from '@modules/auth/types/jwt.types';
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { CreateOAuthUserRequestDto } from '@modules/users/dto/user.dto';
-import { GoogleOAuthUserData, KakaoUserData } from '@modules/users/types/oauth.users.types';
+import {
+  GoogleOAuthUserData,
+  KakaoUserData,
+  OAuthLoginOrRegisterResult,
+} from '@modules/users/types/oauth.users.types';
 
 @Injectable()
 export class OAuthUserService {
@@ -13,7 +19,9 @@ export class OAuthUserService {
     private readonly prismaService: PrismaService,
   ) {}
 
-  async oauthLoginOrRegister(oauthData: GoogleOAuthUserData | KakaoUserData) {
+  async oauthLoginOrRegister(
+    oauthData: GoogleOAuthUserData | KakaoUserData,
+  ): Promise<OAuthLoginOrRegisterResult> {
     const { oauthProvider, oauthId } = oauthData;
     const user = await this.prismaService.user.findFirst({
       where: {
@@ -24,15 +32,18 @@ export class OAuthUserService {
 
     if (user) {
       const tokens = await this.authService.generateTokens(user.id);
-      return { type: 'login', tokens };
+      return { type: 'login', oauthProvider: oauthData.oauthProvider, tokens };
     } else {
       const registerToken = await this.authService.generateRegisterToken(oauthData);
-      return { type: 'register', tokens: { registerToken } };
+      return {
+        type: 'register',
+        oauthProvider: oauthData.oauthProvider,
+        tokens: { registerToken },
+      };
     }
   }
 
   async createOAuthUser(user: CreateOAuthUserRequestDto & RegisterJwtPayload) {
-    console.log(user.terms);
     const newUser = await this.prismaService.$transaction(async (txPrisma) => {
       const createdUser = await txPrisma.user.create({
         data: {
@@ -45,13 +56,24 @@ export class OAuthUserService {
         select: { id: true },
       });
 
-      await txPrisma.userTerm.createMany({
-        data: user.terms.map((term) => ({
-          userId: createdUser.id,
-          termId: BigInt(term.termId),
-          isAccepted: term.isAccepted,
-        })),
-      });
+      // TODO: 필수 약관 동의 여부 인증 필요
+      try {
+        await txPrisma.userTerm.createMany({
+          data: user.terms.map((term) => ({
+            userId: createdUser.id,
+            termId: BigInt(term.termId),
+            isAccepted: term.isAccepted,
+          })),
+        });
+      } catch (err) {
+        if (err instanceof Prisma.PrismaClientKnownRequestError) {
+          if (err.code === 'P2003') {
+            console.error('Foreign key constraint failed:', err.message);
+            throw new BadRequestException('존재하지 않는 약관입니다.');
+          }
+        }
+        throw err;
+      }
 
       return createdUser;
     });

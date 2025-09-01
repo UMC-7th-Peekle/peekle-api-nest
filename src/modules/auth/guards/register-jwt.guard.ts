@@ -14,7 +14,6 @@ export class RegisterJwtGuard extends AuthGuard('register-jwt') {
       }
 
       if (info instanceof JsonWebTokenError) {
-        console.log(info.message);
         // 2. 토큰 서명이 유효하지 않거나 형식이 잘못된 경우
         throw new UnauthorizedException('유효하지 않은 토큰입니다.');
       }

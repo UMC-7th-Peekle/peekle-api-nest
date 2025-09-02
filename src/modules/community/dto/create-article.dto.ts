@@ -1,10 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { IsBoolean, IsInt, IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString, MaxLength } from 'class-validator';
+
+import { IsBigInt } from '@common/decorators/is-bigint.decorator';
+import { TransformToBigint } from '@common/decorators/transform.decorator';
 
 export class CreateArticleDto {
   @ApiProperty({ example: '1', description: '커뮤니티 ID', type: String })
   // TODO: IsBigInt 적용
+  @IsBigInt()
+  @TransformToBigint()
   community_id!: bigint;
 
   @ApiProperty({ example: '게시글 제목', description: '게시글 제목', maxLength: 50 })

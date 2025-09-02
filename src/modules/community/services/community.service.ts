@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Inject, Injectable, Logger } from '@nestjs/common';
+
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+
+import { LOG_LEVELS } from '@common/constants/log-levels.constants';
 
 import { PrismaService } from '@modules/prisma/prisma.service';
 
@@ -9,7 +13,10 @@ import { CreateCommentDto } from '../dto/create-comment.dto';
 
 @Injectable()
 export class CommunityService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+  ) {}
   getCommunityHome() {
     return { message: '커뮤니티 홈 조회 (GET /community)' };
   }
@@ -49,7 +56,7 @@ export class CommunityService {
       }),
     );
 
-    return createdArticle;
+    return { createdArticleId: createdArticle.id.toString() };
   }
 
   updateArticle() {

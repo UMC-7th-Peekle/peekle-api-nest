@@ -33,7 +33,7 @@ export class CommunityService {
     // 게시글 생성
     const createdArticle = await this.prisma.article.create({
       data: {
-        communityId: dto.community_id,
+        communityId: dto.communityId,
         title: dto.title,
         content: dto.content,
         isAnonymous: dto.is_anonymous,
@@ -72,7 +72,7 @@ export class CommunityService {
     const existingLike = await this.prisma.articleLike.findUnique({
       where: {
         articleId_userId: {
-          articleId: BigInt(dto.article_id),
+          articleId: BigInt(dto.articleId),
           userId: userId,
         },
       },
@@ -84,8 +84,8 @@ export class CommunityService {
 
     const like = await this.prisma.articleLike.create({
       data: {
-        articleId: BigInt(dto.article_id),
-        userId: BigInt(dto.user_id),
+        articleId: BigInt(dto.articleId),
+        userId: BigInt(dto.userId),
       },
     });
 
@@ -101,7 +101,7 @@ export class CommunityService {
     const existingLike = await this.prisma.articleLike.findUnique({
       where: {
         articleId_userId: {
-          articleId: BigInt(dto.comment_id),
+          articleId: BigInt(dto.commentId),
           userId: userId,
         },
       },
@@ -113,8 +113,8 @@ export class CommunityService {
 
     const like = await this.prisma.articleLike.create({
       data: {
-        articleId: BigInt(dto.comment_id),
-        userId: BigInt(dto.user_id),
+        articleId: BigInt(dto.commentId),
+        userId: BigInt(dto.userId),
       },
     });
 
@@ -132,10 +132,10 @@ export class CommunityService {
   async createComment(dto: CreateCommentDto, userId: bigint) {
     const comment = await this.prisma.articleComment.create({
       data: {
-        articleId: dto.article_id,
+        articleId: dto.articleId,
         content: dto.content,
         authorId: userId,
-        isAnonymous: dto.is_anonymous,
+        isAnonymous: dto.isAnonymous,
         // parent_comment_id는 대댓글 작성에 필요, 현재는 null로 고정
         parentCommentId: null,
       },
@@ -155,11 +155,11 @@ export class CommunityService {
   async createReply(dto: CreateCommentDto, userId: bigint) {
     const reply = await this.prisma.articleComment.create({
       data: {
-        articleId: dto.article_id,
+        articleId: dto.articleId,
         content: dto.content,
         authorId: userId,
-        isAnonymous: dto.is_anonymous,
-        parentCommentId: dto.parent_comment_id, // 대댓글은 부모 댓글 ID를 반드시 포함
+        isAnonymous: dto.isAnonymous,
+        parentCommentId: dto.parentCommentId, // 대댓글은 부모 댓글 ID를 반드시 포함
       },
     });
 

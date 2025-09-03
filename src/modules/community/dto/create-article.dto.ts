@@ -10,7 +10,7 @@ export class CreateArticleDto {
   // TODO: IsBigInt 적용
   @IsBigInt()
   @TransformToBigint()
-  community_id!: bigint;
+  communityId!: bigint;
 
   @ApiProperty({ example: '게시글 제목', description: '게시글 제목', maxLength: 50 })
   @IsString()
@@ -29,5 +29,5 @@ export class CreateArticleDto {
   is_anonymous!: boolean;
 
   @ApiProperty({ example: 123, description: '작성자 ID', type: String })
-  author_id!: bigint;
+  authorId!: bigint;
 }

@@ -5,7 +5,7 @@ import { IsBoolean, IsInt, IsNotEmpty, IsOptional, IsString, MaxLength } from 'c
 export class CreateCommentDto {
   @ApiProperty({ example: 100, description: '댓글이 달릴 게시글 ID', type: Number })
   @IsInt()
-  article_id!: number;
+  articleId!: number;
 
   @ApiProperty({ example: '댓글 내용', description: '댓글 본문', maxLength: 2000 })
   @IsString()
@@ -19,7 +19,7 @@ export class CreateCommentDto {
 
   @ApiProperty({ example: false, description: '익명 여부', type: Boolean })
   @IsBoolean()
-  is_anonymous!: boolean;
+  isAnonymous!: boolean;
 
   @ApiProperty({
     example: 20,
@@ -29,5 +29,5 @@ export class CreateCommentDto {
   })
   @IsInt()
   @IsOptional()
-  parent_comment_id?: number;
+  parentCommentId?: number;
 }

@@ -32,7 +32,6 @@ export class GoogleOAuthStrategy extends PassportStrategy(Strategy, 'google-oaut
     },
     done: VerifyCallback,
   ) {
-    console.log('Google OAuth profile:', profile);
     const user: GoogleOAuthUserData = {
       oauthProvider: OAuthProvider.GOOGLE,
       oauthId: profile.id,

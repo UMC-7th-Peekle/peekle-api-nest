@@ -3,6 +3,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsEnum, IsInt, IsNumberString, IsOptional, Max, Min } from 'class-validator';
 
+import { IsBigInt } from '@common/decorators/is-bigint.decorator';
 import { TransformToBigint } from '@common/decorators/transform.decorator';
 
 export enum EventSortField {
@@ -41,7 +42,7 @@ export class GetEventsQueryDto {
     type: 'string', // Swagger에는 여전히 string으로 표시
   })
   @IsOptional()
-  @IsNumberString()
+  @IsBigInt()
   @TransformToBigint()
   cursor?: bigint;
 }

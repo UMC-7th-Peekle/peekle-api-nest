@@ -3,13 +3,14 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsArray, IsBoolean, IsNumberString, ValidateNested } from 'class-validator';
 
+import { IsBigInt } from '@common/decorators/is-bigint.decorator';
 import { TransformToBigint } from '@common/decorators/transform.decorator';
 
 export class SingleTermAgreeStateDto {
   @ApiProperty({
-    description: '약관 ID (서버 → 클라이언트: JSON은 BigInt 그대로 직렬화 불가해서 string으로)',
+    description: 'Term ID',
   })
-  @IsNumberString()
+  @IsBigInt()
   @TransformToBigint()
   termId!: bigint;
 
@@ -24,7 +25,7 @@ export class TermsHistoryItemDto {
   @ApiProperty({
     description: '약관 ID',
   })
-  @IsNumberString()
+  @IsBigInt()
   @TransformToBigint()
   termId!: bigint;
 
@@ -57,7 +58,7 @@ export class UpdateTermsAgreementItemDto {
     description: '약관 ID',
     example: 1,
   })
-  @IsNumberString()
+  @IsBigInt()
   @TransformToBigint()
   termId!: bigint;
 

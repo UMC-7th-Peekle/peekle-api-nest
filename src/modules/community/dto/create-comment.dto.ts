@@ -1,21 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { IsBoolean, IsInt, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+
+import { IsBigInt } from '@common/decorators/is-bigint.decorator';
+import { TransformToBigint } from '@common/decorators/transform.decorator';
 
 export class CreateCommentDto {
   @ApiProperty({ example: 100, description: '댓글이 달릴 게시글 ID', type: Number })
-  @IsInt()
-  articleId!: number;
+  @IsBigInt()
+  @TransformToBigint()
+  articleId!: bigint;
 
   @ApiProperty({ example: '댓글 내용', description: '댓글 본문', maxLength: 2000 })
   @IsString()
   @IsNotEmpty()
   @MaxLength(2000)
   content!: string;
-
-  @ApiProperty({ example: 123, description: '작성자 ID', type: Number })
-  @IsInt()
-  author_id!: number;
 
   @ApiProperty({ example: false, description: '익명 여부', type: Boolean })
   @IsBoolean()
@@ -27,7 +27,8 @@ export class CreateCommentDto {
     type: Number,
     required: false,
   })
-  @IsInt()
+  @IsBigInt()
+  @TransformToBigint()
   @IsOptional()
-  parentCommentId?: number;
+  parentCommentId?: bigint;
 }

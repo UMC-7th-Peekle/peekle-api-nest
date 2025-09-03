@@ -7,7 +7,6 @@ import { TransformToBigint } from '@common/decorators/transform.decorator';
 
 export class CreateArticleDto {
   @ApiProperty({ example: '1', description: '커뮤니티 ID', type: String })
-  // TODO: IsBigInt 적용
   @IsBigInt()
   @TransformToBigint()
   communityId!: bigint;
@@ -26,8 +25,5 @@ export class CreateArticleDto {
 
   @ApiProperty({ example: false, description: '익명 여부', type: Boolean })
   @IsBoolean()
-  is_anonymous!: boolean;
-
-  @ApiProperty({ example: 123, description: '작성자 ID', type: String })
-  authorId!: bigint;
+  isAnonymous!: boolean;
 }

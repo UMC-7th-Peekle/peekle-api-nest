@@ -6,8 +6,4 @@ export class CreateCommentLikeDto {
   @ApiProperty({ example: 55, description: '좋아요를 누를 댓글 ID', type: Number })
   @IsInt()
   commentId!: number;
-
-  @ApiProperty({ example: 42, description: '좋아요를 누른 사용자 ID', type: Number })
-  @IsInt()
-  userId!: number;
 }

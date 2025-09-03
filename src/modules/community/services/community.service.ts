@@ -36,7 +36,7 @@ export class CommunityService {
         communityId: dto.communityId,
         title: dto.title,
         content: dto.content,
-        isAnonymous: dto.is_anonymous,
+        isAnonymous: dto.isAnonymous,
         authorId: userId, // JWT에서 추출한 사용자 ID 사용
       },
     });
@@ -72,7 +72,7 @@ export class CommunityService {
     const existingLike = await this.prisma.articleLike.findUnique({
       where: {
         articleId_userId: {
-          articleId: BigInt(dto.articleId),
+          articleId: dto.articleId,
           userId: userId,
         },
       },
@@ -85,7 +85,7 @@ export class CommunityService {
     const like = await this.prisma.articleLike.create({
       data: {
         articleId: BigInt(dto.articleId),
-        userId: BigInt(dto.userId),
+        userId: userId,
       },
     });
 
@@ -98,10 +98,10 @@ export class CommunityService {
 
   async createCommentLike(dto: CreateCommentLikeDto, userId: bigint) {
     // 중복 좋아요 확인 (복합 키)
-    const existingLike = await this.prisma.articleLike.findUnique({
+    const existingLike = await this.prisma.articleCommentLike.findUnique({
       where: {
-        articleId_userId: {
-          articleId: BigInt(dto.commentId),
+        commentId_userId: {
+          commentId: dto.commentId,
           userId: userId,
         },
       },
@@ -113,8 +113,8 @@ export class CommunityService {
 
     const like = await this.prisma.articleLike.create({
       data: {
-        articleId: BigInt(dto.commentId),
-        userId: BigInt(dto.userId),
+        articleId: dto.commentId,
+        userId: userId,
       },
     });
 
@@ -137,7 +137,7 @@ export class CommunityService {
         authorId: userId,
         isAnonymous: dto.isAnonymous,
         // parent_comment_id는 대댓글 작성에 필요, 현재는 null로 고정
-        parentCommentId: null,
+        parentCommentId: dto.parentCommentId,
       },
     });
 

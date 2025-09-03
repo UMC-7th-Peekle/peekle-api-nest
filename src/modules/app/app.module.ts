@@ -18,12 +18,12 @@ import { KakaoOAuthConfig } from '@modules/auth/config/kakao-oauth-config';
 import { RefreshJwtConfig } from '@modules/auth/config/refresh-jwt.config';
 import { RegisterJwtConfig } from '@modules/auth/config/register-jwt.config';
 import { configValidationSchema } from '@modules/auth/schemas/validation.schema';
+import { AwsConfig } from '@modules/aws/aws.config';
 import { CommunityModule } from '@modules/community/community.module';
 import { EventsModule } from '@modules/events/events.module';
 import { PrismaModule } from '@modules/prisma/prisma.module';
 import { UsersModule } from '@modules/users/users.module';
 
-import awsConfig from '@/modules/aws/aws.config';
 import { AwsModule } from '@/modules/aws/aws.module';
 
 import { AppController } from './app.controller';
@@ -40,7 +40,7 @@ const validate = (config: Record<string, unknown>) => {
       isGlobal: true,
       envFilePath: ['.env.local', `.env.${process.env.NODE_ENV}`, '.env'],
       load: [
-        awsConfig,
+        AwsConfig,
         GoogleOAuthConfig,
         KakaoOAuthConfig,
         JwtConfig,
@@ -55,6 +55,7 @@ const validate = (config: Record<string, unknown>) => {
     AuthModule,
     EventsModule,
     CommunityModule,
+    AwsModule,
   ],
   controllers: [AppController],
   providers: [

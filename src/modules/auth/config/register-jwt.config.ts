@@ -4,7 +4,7 @@ import { JwtSignOptions } from '@nestjs/jwt';
 export const RegisterJwtConfig = registerAs(
   'register-jwt',
   (): JwtSignOptions => ({
-    secret: process.env.REGISTER_JWT_SECRET,
-    expiresIn: process.env.REGISTER_JWT_EXPIRES_IN,
+    secret: process.env.REGISTER_JWT_SECRET as string,
+    expiresIn: process.env.REGISTER_JWT_EXPIRES_IN as string,
   }),
 );

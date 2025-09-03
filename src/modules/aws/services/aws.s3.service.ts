@@ -1,12 +1,14 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
 
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { randomUUID } from 'crypto';
 
-type Domain = 'events' | 'community';
-type Kind = 'image' | 'video';
+import { AwsConfig } from '@modules/aws/aws.config';
+
+type UploadDomain = 'events' | 'community';
+type UploadFileType = 'image' | 'video';
 
 const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 이미지 1장 최대 10MB
 const MAX_TOTAL_IMAGE_SIZE = 30 * 1024 * 1024; // 한 번 요청 시 총 이미지 용량 30MB
@@ -44,13 +46,13 @@ export class AwsS3Service {
   private readonly bucket: string;
   private readonly cdn: string;
 
-  constructor(private readonly config: ConfigService) {
-    this.bucket = this.config.get<string>('aws.bucket')!;
-    this.cdn = this.config.get<string>('aws.cdnBaseUrl')!;
+  constructor(@Inject(AwsConfig.KEY) private readonly awsConfig: ConfigType<typeof AwsConfig>) {
+    this.bucket = this.awsConfig.bucket as string;
+    this.cdn = this.awsConfig.cdnBaseUrl as string;
 
-    const region = this.config.get<string>('aws.region')!;
-    const accessKeyId = this.config.get<string>('aws.accessKeyId');
-    const secretAccessKey = this.config.get<string>('aws.secretAccessKey');
+    const region = this.awsConfig.region as string;
+    const accessKeyId = this.awsConfig.accessKeyId as string;
+    const secretAccessKey = this.awsConfig.secretAccessKey as string;
 
     this.s3 = new S3Client({
       region,
@@ -59,8 +61,8 @@ export class AwsS3Service {
   }
 
   async getPresignedPutUrl(opts: {
-    domain: Domain; // events나 community
-    kind: Kind; // image나 video
+    domain: UploadDomain; // events나 community
+    kind: UploadFileType; // image나 video
     contentType: string;
     size?: number; // 현재 파일 용량
     totalSize?: number; // 배치 업로드 총합

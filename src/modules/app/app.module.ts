@@ -19,12 +19,11 @@ import { RefreshJwtConfig } from '@modules/auth/config/refresh-jwt.config';
 import { RegisterJwtConfig } from '@modules/auth/config/register-jwt.config';
 import { configValidationSchema } from '@modules/auth/schemas/validation.schema';
 import { AwsConfig } from '@modules/aws/aws.config';
+import { AwsModule } from '@modules/aws/aws.module';
 import { CommunityModule } from '@modules/community/community.module';
 import { EventsModule } from '@modules/events/events.module';
 import { PrismaModule } from '@modules/prisma/prisma.module';
 import { UsersModule } from '@modules/users/users.module';
-
-import { AwsModule } from '@/modules/aws/aws.module';
 
 import { AppController } from './app.controller';
 

@@ -33,6 +33,7 @@ export class GetPresignedUrlDto {
 
   @ApiProperty({ required: false, description: '총 업로드 파일 크기(byte)' })
   @IsOptional()
+  @Min(1)
   @IsInt()
   totalSize?: number;
 

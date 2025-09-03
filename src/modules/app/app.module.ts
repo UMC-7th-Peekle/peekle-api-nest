@@ -18,6 +18,7 @@ import { KakaoOAuthConfig } from '@modules/auth/config/kakao-oauth-config';
 import { RefreshJwtConfig } from '@modules/auth/config/refresh-jwt.config';
 import { RegisterJwtConfig } from '@modules/auth/config/register-jwt.config';
 import { configValidationSchema } from '@modules/auth/schemas/validation.schema';
+import { CommunityModule } from '@modules/community/community.module';
 import { EventsModule } from '@modules/events/events.module';
 import { PrismaModule } from '@modules/prisma/prisma.module';
 import { UsersModule } from '@modules/users/users.module';
@@ -43,6 +44,7 @@ const validate = (config: Record<string, unknown>) => {
     PrismaModule,
     AuthModule,
     EventsModule,
+    CommunityModule,
   ],
   controllers: [AppController],
   providers: [

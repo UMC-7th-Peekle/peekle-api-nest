@@ -18,12 +18,6 @@ export class AuthService {
     private readonly userService: UsersService,
   ) {}
 
-  async authenticateWithUserId(userId: bigint) {
-    const { accessToken, refreshToken } = await this.generateTokens(userId);
-
-    return { accessToken, refreshToken };
-  }
-
   async generateTokens(userId: bigint): Promise<JwtPayload> {
     const payload = {
       userId: userId.toString(),

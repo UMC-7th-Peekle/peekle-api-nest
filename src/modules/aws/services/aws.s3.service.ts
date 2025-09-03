@@ -87,16 +87,24 @@ export class AwsS3Service {
     // 용량 정책
     if (kind === 'image') {
       if (typeof size === 'number' && size > MAX_IMAGE_SIZE) {
-        throw new BadRequestException('이미지 1장 최대 10MB를 초과했습니다.');
+        throw new BadRequestException(
+          `이미지 1장 최대 ${MAX_IMAGE_SIZE / 1024 / 1024}MB를 초과했습니다.`,
+        );
       }
       if (typeof totalSize === 'number' && totalSize > MAX_TOTAL_IMAGE_SIZE) {
-        throw new BadRequestException('이미지 총합이 30MB를 초과했습니다.');
+        throw new BadRequestException(
+          `이미지 총합이 ${MAX_TOTAL_IMAGE_SIZE / 1024 / 1024}MB를 초과했습니다.`,
+        );
       }
       if (typeof batchCount === 'number' && batchCount > MAX_BATCH_IMAGES) {
-        throw new BadRequestException('이미지는 한 번에 최대 30장까지 업로드할 수 있습니다.');
+        throw new BadRequestException(
+          `이미지는 한 번에 최대 ${MAX_BATCH_IMAGES}장까지 업로드할 수 있습니다.`,
+        );
       }
     } else if (kind === 'video' && typeof size === 'number' && size > MAX_VIDEO_SIZE) {
-      throw new BadRequestException('동영상은 최대 2GB까지 업로드할 수 있습니다.');
+      throw new BadRequestException(
+        `동영상은 최대 ${MAX_VIDEO_SIZE / 1024 / 1024 / 1024}GB까지 업로드할 수 있습니다.`,
+      );
     }
 
     const now = new Date();

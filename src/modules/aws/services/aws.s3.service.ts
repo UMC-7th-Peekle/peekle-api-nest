@@ -6,39 +6,24 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { randomUUID } from 'crypto';
 
 import { AwsConfig } from '@modules/aws/aws.config';
-
-type UploadDomain = 'events' | 'community';
-type UploadFileType = 'image' | 'video';
-
-const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 이미지 1장 최대 10MB
-const MAX_TOTAL_IMAGE_SIZE = 30 * 1024 * 1024; // 한 번 요청 시 총 이미지 용량 30MB
-const MAX_BATCH_IMAGES = 30; // 한 번 요청 시 최대 이미지 장수
-const MAX_VIDEO_SIZE = 2 * 1024 * 1024 * 1024; // 동영상 2GB
-
-const ALLOWED_IMAGE_MIME = new Set([
-  'image/jpeg',
-  'image/jpg',
-  'image/png',
-  'image/gif',
-  'image/bmp',
-  'image/webp',
-  'image/heic',
-  'image/heif',
-]);
-
-const ALLOWED_VIDEO_MIME = new Set([
-  'video/mp4',
-  'video/mpeg',
-  'video/mpg',
-  'video/quicktime',
-  'video/x-msvideo',
-  'video/x-ms-wmv',
-  'video/x-matroska',
-  'video/x-flv',
-  'video/3gpp',
-  'video/3gpp2',
-  'video/x-ms-asf',
-]);
+import {
+  ALLOWED_IMAGE_MIME,
+  ALLOWED_VIDEO_MIME,
+  MAX_BATCH_IMAGES,
+  MAX_IMAGE_SIZE,
+  MAX_IMAGE_SIZE_MB,
+  MAX_TOTAL_IMAGE_SIZE,
+  MAX_VIDEO_SIZE,
+  MAX_VIDEO_SIZE_GB,
+} from '@modules/aws/configs/aws-upload.config';
+import {
+  ImageMaximumBatchCountExceededException,
+  SingleImageMaximumSizedExceededException,
+  TotalImageMaximumSizeExceededException,
+  VideoMaximumSizeExceededException,
+} from '@modules/aws/exceptions/aws-upload.exception';
+import { AwsUploadDomain, AwsUploadFileType } from '@modules/aws/types/aws.types';
+import { mimeToExt } from '@modules/aws/utils/mime-transfer';
 
 @Injectable()
 export class AwsS3Service {
@@ -61,8 +46,8 @@ export class AwsS3Service {
   }
 
   async getPresignedPutUrl(opts: {
-    domain: UploadDomain; // events나 community
-    kind: UploadFileType; // image나 video
+    domain: AwsUploadDomain; // events나 community
+    kind: AwsUploadFileType; // image나 video
     contentType: string;
     size?: number; // 현재 파일 용량
     totalSize?: number; // 배치 업로드 총합
@@ -77,8 +62,7 @@ export class AwsS3Service {
       throw new BadRequestException(
         `Unsupported image type. Allowed: ${[...ALLOWED_IMAGE_MIME].join(', ')}`,
       );
-    }
-    if (kind === 'video' && !ALLOWED_VIDEO_MIME.has(contentType)) {
+    } else if (kind === 'video' && !ALLOWED_VIDEO_MIME.has(contentType)) {
       throw new BadRequestException(
         `Unsupported video type. Allowed: ${[...ALLOWED_VIDEO_MIME].join(', ')}`,
       );
@@ -87,24 +71,16 @@ export class AwsS3Service {
     // 용량 정책
     if (kind === 'image') {
       if (typeof size === 'number' && size > MAX_IMAGE_SIZE) {
-        throw new BadRequestException(
-          `이미지 1장 최대 ${MAX_IMAGE_SIZE / 1024 / 1024}MB를 초과했습니다.`,
-        );
+        throw new SingleImageMaximumSizedExceededException();
       }
       if (typeof totalSize === 'number' && totalSize > MAX_TOTAL_IMAGE_SIZE) {
-        throw new BadRequestException(
-          `이미지 총합이 ${MAX_TOTAL_IMAGE_SIZE / 1024 / 1024}MB를 초과했습니다.`,
-        );
+        throw new TotalImageMaximumSizeExceededException();
       }
       if (typeof batchCount === 'number' && batchCount > MAX_BATCH_IMAGES) {
-        throw new BadRequestException(
-          `이미지는 한 번에 최대 ${MAX_BATCH_IMAGES}장까지 업로드할 수 있습니다.`,
-        );
+        throw new ImageMaximumBatchCountExceededException();
       }
     } else if (kind === 'video' && typeof size === 'number' && size > MAX_VIDEO_SIZE) {
-      throw new BadRequestException(
-        `동영상은 최대 ${MAX_VIDEO_SIZE / 1024 / 1024 / 1024}GB까지 업로드할 수 있습니다.`,
-      );
+      throw new VideoMaximumSizeExceededException();
     }
 
     const now = new Date();
@@ -113,8 +89,7 @@ export class AwsS3Service {
     const dd = String(now.getUTCDate()).padStart(2, '0');
 
     const extension = (ext ?? mimeToExt(contentType)).toLowerCase();
-    const folder = kind === 'image' ? 'images' : 'videos';
-    const key = `uploads/${domain}/${folder}/${yyyy}/${mm}/${dd}/${randomUUID()}.${extension}`;
+    const key = `uploads/${domain}/${kind}/${yyyy}/${mm}/${dd}/${randomUUID()}.${extension}`;
 
     const cmd = new PutObjectCommand({
       Bucket: this.bucket,
@@ -127,29 +102,4 @@ export class AwsS3Service {
 
     return { uploadUrl, key, publicUrl, expiresIn };
   }
-}
-
-function mimeToExt(mime: string) {
-  const map: Record<string, string> = {
-    'image/jpeg': 'jpg',
-    'image/jpg': 'jpg',
-    'image/png': 'png',
-    'image/gif': 'gif',
-    'image/bmp': 'bmp',
-    'image/webp': 'webp',
-    'image/heic': 'heic',
-    'image/heif': 'heif',
-    'video/mp4': 'mp4',
-    'video/mpeg': 'mpeg',
-    'video/mpg': 'mpeg',
-    'video/quicktime': 'mov',
-    'video/x-msvideo': 'avi',
-    'video/x-ms-wmv': 'wmv',
-    'video/x-matroska': 'mkv',
-    'video/x-flv': 'flv',
-    'video/3gpp': '3gp',
-    'video/3gpp2': '3gp',
-    'video/x-ms-asf': 'asf',
-  };
-  return map[mime] ?? 'bin';
 }

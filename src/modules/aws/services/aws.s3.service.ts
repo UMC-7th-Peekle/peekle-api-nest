@@ -5,7 +5,6 @@ import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { randomUUID } from 'crypto';
 
-import { AwsConfig } from '@modules/aws/aws.config';
 import {
   ALLOWED_IMAGE_MIME,
   ALLOWED_VIDEO_MIME,
@@ -16,6 +15,7 @@ import {
   MAX_VIDEO_SIZE,
   MAX_VIDEO_SIZE_GB,
 } from '@modules/aws/configs/aws-upload.config';
+import { AwsConfig } from '@modules/aws/configs/aws.config';
 import {
   ImageMaximumBatchCountExceededException,
   SingleImageMaximumSizedExceededException,
@@ -32,12 +32,12 @@ export class AwsS3Service {
   private readonly cdn: string;
 
   constructor(@Inject(AwsConfig.KEY) private readonly awsConfig: ConfigType<typeof AwsConfig>) {
-    this.bucket = this.awsConfig.bucket as string;
-    this.cdn = this.awsConfig.cdnBaseUrl as string;
+    this.bucket = this.awsConfig.bucket;
+    this.cdn = this.awsConfig.cdnBaseUrl;
 
-    const region = this.awsConfig.region as string;
-    const accessKeyId = this.awsConfig.accessKeyId as string;
-    const secretAccessKey = this.awsConfig.secretAccessKey as string;
+    const region = this.awsConfig.region;
+    const accessKeyId = this.awsConfig.accessKeyId;
+    const secretAccessKey = this.awsConfig.secretAccessKey;
 
     this.s3 = new S3Client({
       region,

@@ -34,7 +34,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
           return accessToken;
         },
       ]),
-      secretOrKey: jwtConfiguration.secret as string,
+      secretOrKey: jwtConfiguration.secret,
       ignoreExpiration: false,
     });
   }

@@ -13,6 +13,7 @@ import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Observable } from 'rxjs';
 
 import { LOG_LEVELS } from '@common/constants/log-levels.constants';
+import { inspectObject } from '@common/utils/inspect-object.utils';
 
 import { IS_PUBLIC_KEY } from '@modules/auth/decorators/public.decorator';
 import {
@@ -59,14 +60,10 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       throw new JwtTokenInvalidException();
     } else if (info instanceof NotBeforeError) {
       throw new JwtTokenNotActivatedException();
+    } else {
+      this.logger.log(LOG_LEVELS.ERROR, inspectObject(info));
+      throw new UnauthorizedException(info.message || 'UNAUTHORIZED');
     }
-    // 기타 토큰 관련 에러
-    else if (info.name === 'Error') {
-      this.logger.log(LOG_LEVELS.ERROR, info);
-      console.error(info.message);
-
-      throw new NoJwtTokenException();
-    } else throw new UnauthorizedException(info.message || 'UNAUTHORIZED');
 
     // 2. Strategy의 validate 메소드에서 발생시킨 에러 확인
     if (err) {

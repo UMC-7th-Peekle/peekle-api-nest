@@ -8,6 +8,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { CookieName } from '@common/constants/cookie.constants';
 
 import { JwtConfig } from '@modules/auth/config/jwt.config';
+import { NoJwtTokenException } from '@modules/auth/exceptions/jwt.exeption';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { JwtPayload } from '@modules/auth/types/jwt.types';
 
@@ -27,7 +28,10 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {
           // cookie-parser에 의해 생성된 req.cookies 객체에서 토큰을 추출합니다.
-          return req.cookies?.[CookieName.ACCESS_TOKEN];
+          const accessToken = req.cookies?.[CookieName.ACCESS_TOKEN];
+          if (!accessToken) throw new NoJwtTokenException();
+
+          return accessToken;
         },
       ]),
       secretOrKey: jwtConfiguration.secret as string,

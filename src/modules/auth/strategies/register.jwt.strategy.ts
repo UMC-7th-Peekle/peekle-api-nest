@@ -20,7 +20,7 @@ export class RegisterJwtStrategy extends PassportStrategy(Strategy, 'register-jw
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: registerJwtConfiguration.secret as string,
+      secretOrKey: registerJwtConfiguration.secret,
       ignoreExpiration: false,
     });
   }

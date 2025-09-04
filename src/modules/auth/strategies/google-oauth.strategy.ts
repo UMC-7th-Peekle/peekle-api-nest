@@ -14,8 +14,8 @@ export class GoogleOAuthStrategy extends PassportStrategy(Strategy, 'google-oaut
     private readonly googleOAuthConfig: ConfigType<typeof GoogleOAuthConfig>,
   ) {
     super({
-      clientID: googleOAuthConfig.clientId as string,
-      clientSecret: googleOAuthConfig.clientSecret as string,
+      clientID: googleOAuthConfig.clientId,
+      clientSecret: googleOAuthConfig.clientSecret,
       callbackURL: googleOAuthConfig.callbackURL,
       scope: ['email', 'profile'],
     });

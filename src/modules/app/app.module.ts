@@ -18,6 +18,8 @@ import { KakaoOAuthConfig } from '@modules/auth/config/kakao-oauth-config';
 import { RefreshJwtConfig } from '@modules/auth/config/refresh-jwt.config';
 import { RegisterJwtConfig } from '@modules/auth/config/register-jwt.config';
 import { configValidationSchema } from '@modules/auth/schemas/validation.schema';
+import { AwsModule } from '@modules/aws/aws.module';
+import { AwsConfig } from '@modules/aws/configs/aws.config';
 import { CommunityModule } from '@modules/community/community.module';
 import { EventsModule } from '@modules/events/events.module';
 import { PrismaModule } from '@modules/prisma/prisma.module';
@@ -36,7 +38,14 @@ const validate = (config: Record<string, unknown>) => {
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env.local', `.env.${process.env.NODE_ENV}`, '.env'],
-      load: [GoogleOAuthConfig, KakaoOAuthConfig, JwtConfig, RefreshJwtConfig, RegisterJwtConfig],
+      load: [
+        AwsConfig,
+        GoogleOAuthConfig,
+        KakaoOAuthConfig,
+        JwtConfig,
+        RefreshJwtConfig,
+        RegisterJwtConfig,
+      ],
       validate,
     }),
     WinstonModule.forRoot(winstonLoggerOptions),
@@ -45,6 +54,7 @@ const validate = (config: Record<string, unknown>) => {
     AuthModule,
     EventsModule,
     CommunityModule,
+    AwsModule,
   ],
   controllers: [AppController],
   providers: [

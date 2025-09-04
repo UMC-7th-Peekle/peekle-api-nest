@@ -23,13 +23,18 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
 
     let status: number;
+    let statusCode: string;
     let message: string | object;
 
     if (exception instanceof HttpException) {
       this.logger.log(LOG_LEVELS.VERBOSE, exception);
       // 1. HttpException인 경우
-      status = exception.getStatus();
       const errorResponse = exception.getResponse();
+
+      status = exception.getStatus();
+      statusCode = (errorResponse as any).errorCode ?? status.toString();
+
+      // errorResponse가 string | object | any 형태로 올 수 있어서 분기 처리
 
       message =
         typeof errorResponse === 'object' && errorResponse !== null
@@ -45,6 +50,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     } else {
       // 2. 그 외 모든 알 수 없는 에러인 경우
       status = HttpStatus.INTERNAL_SERVER_ERROR;
+      statusCode = 'COMMON_0001'; // 공통_0001: 알 수 없는 서버 오류
       message = '서버 내부 오류가 발생했습니다. 관리자에게 문의하세요.';
 
       this.logger.error(
@@ -57,7 +63,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     if (!response.headersSent) {
       response.status(status).json({
         status: false,
-        statusCode: status.toString(),
+        statusCode: statusCode,
         message,
         data: `REQUEST URL : ${request.url}`,
         // traceId: response.traceId,

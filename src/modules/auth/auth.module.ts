@@ -11,11 +11,11 @@ import { JwtStrategy } from '@modules/auth/strategies/jwt.strategy';
 import { RegisterJwtStrategy } from '@modules/auth/strategies/register.jwt.strategy';
 import { UsersModule } from '@modules/users/users.module';
 
-import { AuthController } from './auth.controller';
+import { AuthControllerV1 } from './controllers/auth.v1.controller';
 
 @Module({
   imports: [UsersModule, JwtModule.registerAsync(JwtConfig.asProvider())],
-  controllers: [AuthController],
+  controllers: [AuthControllerV1],
   providers: [
     AuthService,
     KakaoAuthService,

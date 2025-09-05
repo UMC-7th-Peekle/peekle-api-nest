@@ -14,7 +14,6 @@ async function bootstrap() {
 
   app.enableVersioning({
     type: VersioningType.URI,
-    defaultVersion: '1',
   });
 
   // DocumentBuilder를 이용해 Swagger 문서 기본 정보 구성

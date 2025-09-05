@@ -35,8 +35,10 @@ import {
 import { OAuthUserService } from '@modules/users/services/oauth.users.service';
 import { UsersService } from '@modules/users/services/users.service';
 
-@Controller('auth')
-export class AuthController {
+@Controller({
+  version: '1',
+})
+export class AuthControllerV1 {
   constructor(
     private readonly usersService: UsersService,
     private readonly authService: AuthService,

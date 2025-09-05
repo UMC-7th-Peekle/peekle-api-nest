@@ -1,10 +1,4 @@
-import {
-  ExecutionContext,
-  Inject,
-  Injectable,
-  Logger,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { ExecutionContext, Inject, Injectable, Logger } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JsonWebTokenError, NotBeforeError, TokenExpiredError } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
@@ -21,7 +15,6 @@ import {
   JwtTokenExpiredException,
   JwtTokenInvalidException,
   JwtTokenNotActivatedException,
-  NoJwtTokenException,
 } from '@modules/auth/exceptions/jwt.exeption';
 
 @Injectable()

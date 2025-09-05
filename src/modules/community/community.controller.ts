@@ -19,6 +19,7 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 import { CommunityService } from './services/community.service';
 
 @Controller({
+  path: 'community',
   version: '1',
 })
 export class CommunityControllerV1 {
@@ -29,7 +30,7 @@ export class CommunityControllerV1 {
   ) {}
 
   // 커뮤니티 홈 관련
-  @Get('')
+  @Get()
   getCommunityHome() {
     // 지금 이 클래스에 주입한 서비스에 접근해야 돼서 this
     return this.communityService.getCommunityHome();

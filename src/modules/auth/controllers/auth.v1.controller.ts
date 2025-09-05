@@ -37,6 +37,7 @@ import { UsersService } from '@modules/users/services/users.service';
 
 @Controller({
   version: '1',
+  path: 'auth',
 })
 export class AuthControllerV1 {
   constructor(

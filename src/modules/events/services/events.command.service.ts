@@ -36,10 +36,10 @@ export class EventsCommandService {
         title: dto.title,
         startDate: dto.startDate,
         endDate: dto.endDate,
-        venueName: dto.venueName ?? null,
-        venueRoadAddress: dto.venueRoadAddress ?? null,
-        venueJibunAddress: dto.venueJibunAddress ?? null,
-        venueDetailAddress: dto.venueDetailAddress ?? null,
+        venueName: dto.venueName,
+        venueRoadAddress: dto.venueRoadAddress,
+        venueJibunAddress: dto.venueJibunAddress,
+        venueDetailAddress: dto.venueDetailAddress,
         price: dto.price,
         link: dto.link ?? null,
         description: dto.description ?? null,
@@ -58,7 +58,7 @@ export class EventsCommandService {
       select: { role: true },
     });
     if (!user) throw new NotFoundException('User not found');
-    if (user.role !== 'ADMIN') {
+    if (user.role !== USER_ROLES.ADMIN) {
       throw new ForbiddenException('Only admins can update events');
     }
 
@@ -75,10 +75,10 @@ export class EventsCommandService {
         title: dto.title,
         startDate: dto.startDate,
         endDate: dto.endDate,
-        venueName: dto.venueName ?? null,
-        venueRoadAddress: dto.venueRoadAddress ?? null,
-        venueJibunAddress: dto.venueJibunAddress ?? null,
-        venueDetailAddress: dto.venueDetailAddress ?? null,
+        venueName: dto.venueName,
+        venueRoadAddress: dto.venueRoadAddress,
+        venueJibunAddress: dto.venueJibunAddress,
+        venueDetailAddress: dto.venueDetailAddress,
         price: dto.price,
         link: dto.link ?? null,
         description: dto.description ?? null,
@@ -96,7 +96,7 @@ export class EventsCommandService {
       select: { role: true },
     });
     if (!user) throw new NotFoundException('User not found');
-    if (user.role !== 'ADMIN') {
+    if (user.role !== USER_ROLES.ADMIN) {
       throw new ForbiddenException('Only admins can delete events');
     }
 

@@ -8,5 +8,5 @@ export class EventIdParamDto {
   @ApiProperty({ example: '123' })
   @IsBigInt()
   @TransformToBigint()
-  id!: string;
+  id!: bigint;
 }

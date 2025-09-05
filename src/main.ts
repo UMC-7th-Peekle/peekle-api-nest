@@ -1,9 +1,7 @@
+import { VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
-import { WinstonModule } from 'nest-winston';
-
-import { winstonLoggerOptions } from '@common/configs/winston.config';
 import { CookieName } from '@common/constants/cookie.constants';
 
 import { AppModule } from '@modules/app/app.module';
@@ -11,7 +9,12 @@ import { AppModule } from '@modules/app/app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: true,
-    logger: WinstonModule.createLogger(winstonLoggerOptions),
+    // logger: WinstonModule.createLogger(winstonLoggerOptions),
+  });
+
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: '1',
   });
 
   // DocumentBuilder를 이용해 Swagger 문서 기본 정보 구성

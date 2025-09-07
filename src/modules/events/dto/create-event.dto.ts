@@ -39,7 +39,7 @@ export class CreateEventDto {
 
   @ApiPropertyOptional({
     description: '장소명',
-    example: '플레이스 홀더',
+    example: '중앙대학교',
     nullable: true,
   })
   @IsOptional()
@@ -49,6 +49,7 @@ export class CreateEventDto {
 
   @ApiPropertyOptional({
     description: '도로명 주소',
+    example: '서울 동작구 흑석로 84',
     nullable: true,
   })
   @IsOptional()
@@ -58,6 +59,7 @@ export class CreateEventDto {
 
   @ApiPropertyOptional({
     description: '지번 주소',
+    example: '서울 동작구 흑석동 251-1',
     nullable: true,
   })
   @IsOptional()
@@ -67,6 +69,7 @@ export class CreateEventDto {
 
   @ApiPropertyOptional({
     description: '상세 주소',
+    example: '중앙대학교 310관',
     nullable: true,
   })
   @IsOptional()

@@ -1,5 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiCookieAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { CreateEventDto } from '@modules/events/dto/create-event.dto';
 import { EventIdParamDto } from '@modules/events/dto/event-id.param';
@@ -47,36 +53,35 @@ export class EventsController {
     return { event };
   }
 
-  @Public() // TODO: 제거 및 관리자 권한 체크 데코레이터로 변경 필요
+  @ApiCookieAuth('peekleAccessToken')
   @Post()
   @ApiOperation({ summary: '이벤트 생성 API' })
   @ApiCreatedResponse({ description: '이벤트 생성 성공', schema: { example: { id: '123' } } })
   @ResponseMessage('이벤트를 생성했습니다.')
   async create(@Body() dto: CreateEventDto, @Req() req: any) {
-    // req.user.id 에서 작성자 ID 추출
-    const authorId: bigint = BigInt(req.user.id);
+    const authorId: bigint = 1n; // TODO: req.user.id로 변경 필요
     const result = await this.eventsCommand.createEvent(authorId, dto);
     return result;
   }
 
-  @Public() // TODO: 제거 및 관리자 권한 체크 데코레이터로 변경 필요
+  @ApiCookieAuth('peekleAccessToken')
   @Patch(':id')
   @ApiOperation({ summary: '이벤트 수정 API' })
   @ApiOkResponse({ description: '이벤트 수정 성공', schema: { example: { id: '123' } } })
   @ResponseMessage('이벤트를 수정했습니다.')
   async update(@Param() { id }: EventIdParamDto, @Body() dto: UpdateEventDto, @Req() req: any) {
-    const userId: bigint = BigInt(req.user.id);
+    const userId: bigint = 1n; // TODO: req.user.id로 변경 필요
     const result = await this.eventsCommand.updateEvent(id, userId, dto);
     return result;
   }
 
-  @Public() // TODO: 제거 및 관리자 권한 체크 데코레이터로 변경 필요
+  @ApiCookieAuth('peekleAccessToken')
   @Delete(':id')
   @ApiOperation({ summary: '이벤트 삭제 API' })
   @ApiOkResponse({ description: '이벤트 삭제 성공', schema: { example: { id: '123' } } })
   @ResponseMessage('이벤트를 삭제했습니다.')
   async remove(@Param() { id }: EventIdParamDto, @Req() req: any) {
-    const userId: bigint = BigInt(req.user.id);
+    const userId: bigint = 1n; // TODO: req.user.id로 변경 필요
     const result = await this.eventsCommand.deleteEvent(id, userId);
     return result;
   }

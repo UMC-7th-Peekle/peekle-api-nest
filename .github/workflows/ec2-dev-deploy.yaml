@@ -31,7 +31,7 @@ jobs:
 
       # 2. Docker Hub 로그인 (GitHub Secrets 사용)
       - name: Log in to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -39,7 +39,7 @@ jobs:
       # 3. Docker 이미지 빌드 및 푸시
       # 위에서 작성한 Dockerfile을 사용하여 이미지를 빌드하고 태깅하여 푸시합니다.
       - name: Build and push Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: scripts/ec2-dev/dockerfile
@@ -53,13 +53,9 @@ jobs:
     needs: docker-image-build
     runs-on: ubuntu-latest
     steps:
-      - name: Terminate workflow early
-        run: |
-          echo "임시로 여기서 워크플로우를 종료합니다."
-          exit 0
       # 1. EC2 인스턴스에 SSH로 접속하여 배포 스크립트 실행
       - name: Deploy to EC2
-        uses: appleboy/ssh-action@v0.1.10
+        uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.DEV_EC2_HOST }}
           username: ${{ secrets.DEV_EC2_USERNAME }}

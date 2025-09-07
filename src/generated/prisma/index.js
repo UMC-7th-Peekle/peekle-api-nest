@@ -35,12 +35,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.13.0
- * Query Engine version: 361e86d0ea4987e9f53a565309b3eed797a6bcbd
+ * Prisma Client JS version: 6.15.0
+ * Query Engine version: 85179d7826409ee107a6ba334b5e305ae3fba9fb
  */
 Prisma.prismaVersion = {
-  client: "6.13.0",
-  engine: "361e86d0ea4987e9f53a565309b3eed797a6bcbd"
+  client: "6.15.0",
+  engine: "85179d7826409ee107a6ba334b5e305ae3fba9fb"
 }
 
 Prisma.PrismaClientKnownRequestError = PrismaClientKnownRequestError;
@@ -293,7 +293,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/jaemin/Documents/GitHub/peekle-api-nest/src/generated/prisma",
+      "value": "/Users/haneul/GitHub/Projects/peekle/peekle-api-nest-review/src/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -327,7 +327,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/jaemin/Documents/GitHub/peekle-api-nest/prisma/schema.prisma",
+    "sourceFilePath": "/Users/haneul/GitHub/Projects/peekle/peekle-api-nest-review/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -335,8 +335,8 @@ const config = {
     "schemaEnvPath": "../../../.env"
   },
   "relativePath": "../../../prisma",
-  "clientVersion": "6.13.0",
-  "engineVersion": "361e86d0ea4987e9f53a565309b3eed797a6bcbd",
+  "clientVersion": "6.15.0",
+  "engineVersion": "85179d7826409ee107a6ba334b5e305ae3fba9fb",
   "datasourceNames": [
     "db"
   ],

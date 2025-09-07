@@ -1,5 +1,5 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Controller, Delete, Get, Param, Post, Query, Req } from '@nestjs/common';
+import { ApiCookieAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import {
   GetEventDetailParamsDto,
@@ -7,6 +7,7 @@ import {
 } from '@modules/events/dto/get-event-detail.dto';
 import { GetEventsQueryDto } from '@modules/events/dto/get-events.dto';
 import { EventsQueryService } from '@modules/events/services/events.query.service';
+import { EventsScrapService } from '@modules/events/services/events.scrap.service';
 
 import { ResponseMessage } from '@/common/decorators/response-message-decorator';
 import { Public } from '@/modules/auth/decorators/public.decorator';
@@ -14,7 +15,10 @@ import { Public } from '@/modules/auth/decorators/public.decorator';
 @ApiTags('events')
 @Controller('events')
 export class EventsController {
-  constructor(private readonly eventsQuery: EventsQueryService) {}
+  constructor(
+    private readonly eventsQuery: EventsQueryService,
+    private readonly eventScrap: EventsScrapService,
+  ) {}
 
   @Public()
   @Get()
@@ -38,5 +42,28 @@ export class EventsController {
   async detail(@Param() { id }: GetEventDetailParamsDto) {
     const event = await this.eventsQuery.getEventDetail(id);
     return { event };
+  }
+
+  @ApiCookieAuth('peekleAccessToken')
+  @Post(':id/scrap')
+  @ApiOperation({ summary: '이벤트 찜하기 API' })
+  @ApiOkResponse({ description: '이벤트 찜 성공' })
+  @ResponseMessage('이벤트를 찜했습니다.')
+  async scrap(@Param('id') id: string, @Req() req: any) {
+    const userId: bigint = 1n; // TODO: req.user.id로 변경 필요
+    const result = await this.eventScrap.scrapEvent(userId, BigInt(id));
+    return result;
+  }
+
+  // TODO: JWT 토큰 관련 문제 해결 시 테스트 후 수정 필요
+  @ApiCookieAuth('peekleAccessToken')
+  @Delete(':id/scrap')
+  @ApiOperation({ summary: '이벤트 찜 취소 API' })
+  @ApiOkResponse({ description: '이벤트 찜 취소 성공' })
+  @ResponseMessage('이벤트 찜을 취소했습니다.')
+  async unscrap(@Param('id') id: string, @Req() req: any) {
+    const userId: bigint = 1n; // TODO: req.user.id로 변경 필요
+    const result = await this.eventScrap.unscrapEvent(userId, BigInt(id));
+    return result;
   }
 }

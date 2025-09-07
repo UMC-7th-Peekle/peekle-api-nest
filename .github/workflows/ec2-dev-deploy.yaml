@@ -71,8 +71,8 @@ jobs:
               -p 80:7777 \
               --name peekle-dev \
               --restart always \
-              --env-file /home/ubuntu/env/peekle.env \  # <-- ⭐️ 이 부분 추가
-              peekle/peekle-develop:latest # <-- ⭐️ 이미지 이름 수정
+              --env-file /home/ubuntu/.env \ 
+              peekle/peekle-develop:latest 
 
             # 4. (선택적) 불필요하게 쌓인 옛날 이미지들 정리
             docker image prune -f

@@ -19,6 +19,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # 2. QEMU 설정 (다른 아키텍처 에뮬레이션)
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      # Docker Buildx 빌더 설정 (가장 중요)
+      # ⭐️ 이 스텝이 누락되면 질문하신 에러가 발생합니다.
+      # (이 스텝이 multi-arch를 지원하는 드라이버로 자동 전환해 줍니다.)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       # 2. Docker Hub 로그인 (GitHub Secrets 사용)
       - name: Log in to Docker Hub
         uses: docker/login-action@v2

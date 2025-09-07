@@ -40,12 +40,12 @@ import { inspectObject } from '@common/utils/inspect-object.utils';
 
 import { Public } from '@modules/auth/decorators/public.decorator';
 
-import { CreateArticleLikeDto } from './dto/create-article-like.dto';
 import { CreateArticleDto, GetArticleDto } from './dto/article.dto';
-import { CreateCommentLikeDto } from './dto/create-comment-like.dto';
-import { CreateCommentDto } from './dto/comment.dto';
-import { CommunityService } from './services/community.service';
+import { CreateCommentDto, GetCommentDto } from './dto/comment.dto';
 import { GetCommunityDto } from './dto/community.dto';
+import { CreateArticleLikeDto } from './dto/create-article-like.dto';
+import { CreateCommentLikeDto } from './dto/create-comment-like.dto';
+import { CommunityService } from './services/community.service';
 
 @Controller('community')
 export class CommunityController {
@@ -62,9 +62,8 @@ export class CommunityController {
   @ApiOkResponse({ description: '커뮤니티 홈 데이터 반환', type: GetCommunityDto })
   @ResponseMessage('커뮤니티 홈이 조회되었습니다.')
   @Public() // TODO: 임시로 Public 처리, 추후 인증 도입 시 제거 필요
-  async getCommunityHome(@Req() req) {
-    const userId = req.user.id; // JWT 도입 후 사용
-    return await this.communityService.getCommunityHome(userId);
+  async getCommunityHome(@Param('communityId') communityId: bigint) {
+    return await this.communityService.getCommunityHome(communityId);
   }
 
   // 게시글 목록 조회
@@ -153,7 +152,7 @@ export class CommunityController {
   @Get('article/comment')
   @ApiOperation({ summary: '게시글 댓글 목록 조회' })
   @ApiCookieAuth()
-  @ApiOkResponse({ description: '해당 게시글의 댓글 목록 반환', type: [Object] })
+  @ApiOkResponse({ description: '해당 게시글의 댓글 목록 반환', type: [GetCommentDto] })
   @ApiQuery({
     name: 'articleId',
     required: true,

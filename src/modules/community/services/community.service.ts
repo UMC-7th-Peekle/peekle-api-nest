@@ -6,10 +6,10 @@ import { LOG_LEVELS } from '@common/constants/log-levels.constants';
 
 import { PrismaService } from '@modules/prisma/prisma.service';
 
-import { CreateArticleLikeDto } from '../dto/create-article-like.dto';
 import { CreateArticleDto, GetArticleDto } from '../dto/article.dto';
-import { CreateCommentLikeDto } from '../dto/create-comment-like.dto';
 import { CreateCommentDto, GetCommentDto } from '../dto/comment.dto';
+import { CreateArticleLikeDto } from '../dto/create-article-like.dto';
+import { CreateCommentLikeDto } from '../dto/create-comment-like.dto';
 
 @Injectable()
 export class CommunityService {
@@ -17,8 +17,29 @@ export class CommunityService {
     private readonly prisma: PrismaService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {}
-  getCommunityHome(userId: bigint) {
-    return { message: '커뮤니티 홈 조회 (GET /community)' };
+
+  // 커뮤니티 홈 조회
+  async getCommunityHome(communityId: bigint) {
+    const community = await this.prisma.community.findUnique({
+      where: { id: communityId },
+      select: {
+        id: true,
+        name: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    if (!community) {
+      throw new NotFoundException('해당 커뮤니티를 찾을 수 없습니다.');
+    }
+
+    return {
+      id: community.id.toString(),
+      name: community.name,
+      createdAt: community.createdAt.toISOString(),
+      updatedAt: community.updatedAt.toISOString(),
+    };
   }
 
   // 게시글 목록 조회
@@ -33,19 +54,30 @@ export class CommunityService {
         take: limit,
         orderBy: { createdAt: 'desc' },
         include: {
-          _count: { select: { articleLike: true } },
+          articleImage: {
+            select: { imageUrl: true, order: true },
+            orderBy: { order: 'asc' },
+          },
         },
       }),
       this.prisma.article.count(),
     ]);
 
-    return {
-      page,
-      limit,
-      totalCount,
-      totalPages: Math.ceil(totalCount / limit),
-      articles,
-    };
+    const articleList = articles.map((article) => ({
+      id: article.id,
+      title: article.title,
+      content: article.content,
+      isAnonymous: article.isAnonymous,
+      authorId: article.authorId,
+      createdAt: article.createdAt.toISOString(),
+      updatedAt: article.updatedAt.toISOString(),
+      images: article.articleImage.map((img) => ({
+        imageUrl: img.imageUrl,
+        order: img.order,
+      })),
+    }));
+
+    return articleList;
   }
 
   // 게시글 상세 조회
@@ -54,7 +86,8 @@ export class CommunityService {
     const article = await this.prisma.article.findUnique({
       where: { id: articleId },
       include: {
-        articleImage: {   // 게시글 이미지 포함
+        articleImage: {
+          // 게시글 이미지 포함
           select: {
             imageUrl: true,
             order: true,
@@ -76,13 +109,13 @@ export class CommunityService {
       authorId: article.authorId,
       createdAt: article.createdAt.toISOString(),
       updatedAt: article.updatedAt.toISOString(),
-      images: article.articleImage?.map((img) => ({   // 이미지미이 매핑
-      imageUrl: img.imageUrl,
-      order: img.order,
+      images: article.articleImage?.map((img) => ({
+        // 이미지미이 매핑
+        imageUrl: img.imageUrl,
+        order: img.order,
       })),
     };
   }
-
 
   async createArticle(dto: CreateArticleDto, files: Express.Multer.File[], userId: bigint) {
     // 게시글 생성
@@ -191,11 +224,11 @@ export class CommunityService {
       throw new NotFoundException('해당 게시글에 댓글이 없습니다.');
     }
 
-    return comments.map(comment => ({
-      id: comment.id, 
-      articleId: comment.articleId, 
+    return comments.map((comment) => ({
+      id: comment.id,
+      articleId: comment.articleId,
       content: comment.content,
-      authorId: comment.authorId, 
+      authorId: comment.authorId,
       isAnonymous: comment.isAnonymous,
       createdAt: comment.createdAt.toISOString(),
       updatedAt: comment.updatedAt.toISOString(),

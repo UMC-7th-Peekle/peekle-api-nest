@@ -35,23 +35,36 @@ export class CreateCommentDto {
 
 export class GetCommentDto {
   @ApiProperty({ example: 1, description: '댓글 ID', type: String })
+  @IsBigInt()
+  @TransformToBigint()
   id!: bigint;
 
   @ApiProperty({ example: 100, description: '게시글 ID', type: String })
+  @IsBigInt()
+  @TransformToBigint()
   articleId!: bigint;
 
   @ApiProperty({ example: '댓글 내용', description: '댓글 본문', maxLength: 2000 })
+  @IsString()
+  @IsNotEmpty()
   content!: string;
 
   @ApiProperty({ example: 5001, description: '작성자 ID', type: String })
+  @IsBigInt()
+  @TransformToBigint()
   authorId!: bigint;
 
   @ApiProperty({ example: false, description: '익명 여부', type: Boolean })
+  @IsBoolean()
   isAnonymous!: boolean;
 
   @ApiProperty({ example: '2025-09-07T10:31:00.000Z', description: '작성일', type: String })
+  @IsString()
+  @IsNotEmpty()
   createdAt!: string;
 
   @ApiProperty({ example: '2025-09-07T10:31:00.000Z', description: '수정일', type: String })
+  @IsString()
+  @IsNotEmpty()
   updatedAt!: string;
 }

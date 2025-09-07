@@ -2,14 +2,11 @@ import { ConflictException, Inject, Injectable, Logger, NotFoundException } from
 
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 
-import { LOG_LEVELS } from '@common/constants/log-levels.constants';
-
+import { CreateArticleDto, GetArticleDto } from '@modules/community/dto/article.dto';
+import { CreateCommentDto, GetCommentDto } from '@modules/community/dto/comment.dto';
+import { CreateArticleLikeDto } from '@modules/community/dto/create-article-like.dto';
+import { CreateCommentLikeDto } from '@modules/community/dto/create-comment-like.dto';
 import { PrismaService } from '@modules/prisma/prisma.service';
-
-import { CreateArticleDto, GetArticleDto } from '../dto/article.dto';
-import { CreateCommentDto, GetCommentDto } from '../dto/comment.dto';
-import { CreateArticleLikeDto } from '../dto/create-article-like.dto';
-import { CreateCommentLikeDto } from '../dto/create-comment-like.dto';
 
 @Injectable()
 export class CommunityService {

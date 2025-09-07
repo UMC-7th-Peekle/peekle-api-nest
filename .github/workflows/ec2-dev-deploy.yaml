@@ -31,10 +31,11 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: . # Dockerfile이 있는 경로
-          file: scripts/ec2-dev/dockerfile # Dockerfile 이름
+          context: .
+          file: scripts/ec2-dev/dockerfile
           push: true # 빌드 후 푸시 실행
-          tags: peekle/peekle-develop:latest # [중요] '사용자명/이미지명:태그'로 수정
+          tags: peekle/peekle-develop:latest
+          platforms: linux/amd64,linux/arm64
 
   # 2. EC2에 접속하여 배포하는 잡
   deploy-to-ec2:
@@ -42,6 +43,10 @@ jobs:
     needs: docker-image-build
     runs-on: ubuntu-latest
     steps:
+      - name: Terminate workflow early
+        run: |
+          echo "임시로 여기서 워크플로우를 종료합니다."
+          exit 0
       # 1. EC2 인스턴스에 SSH로 접속하여 배포 스크립트 실행
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.10

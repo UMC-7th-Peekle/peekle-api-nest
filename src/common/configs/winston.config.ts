@@ -1,4 +1,3 @@
-import { utilities } from 'nest-winston';
 import winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 
@@ -13,7 +12,9 @@ const formatMessage = winston.format((info) => {
     info.traceId = requestContext.traceId;
   }
 
-  // info.level = info.level.toUpperCase();
+  // console.log(info);
+
+  info.level = info.level.toUpperCase();
   return info;
 });
 
@@ -21,18 +22,25 @@ const formatMessage = winston.format((info) => {
 const consoleTransport = new winston.transports.Console({
   level: isProduction ? 'info' : 'silly',
   format: winston.format.combine(
-    // winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-    // formatMessage(),
-    // winston.format.colorize({ all: true }),
-    // winston.format.printf(
-    //   (info) => `[${info.timestamp}] [${info.traceId || 'APP'}] ${info.level}: ${info.message}`,
-    // ),
-    utilities.format.nestLike('peekle', {
-      prettyPrint: true,
-      colors: true,
-      processId: true,
-      appName: true,
+    formatMessage(),
+    winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    winston.format.colorize({ all: true }),
+    winston.format.printf(({ timestamp, level, message, context, traceId, stack }) => {
+      let log = `${timestamp} [${level}] [${traceId || 'no-trace-id'}] [${context || '-'}] ${message}`;
+
+      // 에러 스택이 있으면 추가로 출력
+      if (stack) {
+        log += `\n${stack}`;
+      }
+
+      return log;
     }),
+    // utilities.format.nestLike('Peekle', {
+    //   prettyPrint: true,
+    //   colors: true,
+    //   processId: true,
+    //   appName: true,
+    // }),
   ),
 });
 

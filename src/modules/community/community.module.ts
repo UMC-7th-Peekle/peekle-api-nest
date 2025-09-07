@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 
 import { PrismaModule } from '@modules/prisma/prisma.module';
 
-import { CommunityController } from './community.controller';
+import { CommunityV1Controller } from './community.controller';
 import { CommunityService } from './services/community.service';
 
 @Module({
   imports: [PrismaModule],
-  controllers: [CommunityController],
+  controllers: [CommunityV1Controller],
   providers: [CommunityService],
 })
 export class CommunityModule {}

@@ -1,4 +1,4 @@
-import { ConflictException, Inject, Injectable, Logger } from '@nestjs/common';
+import { ConflictException, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 
@@ -7,9 +7,9 @@ import { LOG_LEVELS } from '@common/constants/log-levels.constants';
 import { PrismaService } from '@modules/prisma/prisma.service';
 
 import { CreateArticleLikeDto } from '../dto/create-article-like.dto';
-import { CreateArticleDto } from '../dto/create-article.dto';
+import { CreateArticleDto, GetArticleDto } from '../dto/article.dto';
 import { CreateCommentLikeDto } from '../dto/create-comment-like.dto';
-import { CreateCommentDto } from '../dto/create-comment.dto';
+import { CreateCommentDto, GetCommentDto } from '../dto/comment.dto';
 
 @Injectable()
 export class CommunityService {
@@ -17,17 +17,72 @@ export class CommunityService {
     private readonly prisma: PrismaService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {}
-  getCommunityHome() {
+  getCommunityHome(userId: bigint) {
     return { message: '커뮤니티 홈 조회 (GET /community)' };
   }
 
-  getArticle() {
-    return { message: '게시글 조회 (GET /community/article)' };
+  // 게시글 목록 조회
+  async getArticle(query: { page?: number; limit?: number }, userId: bigint) {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
+    const skip = (page - 1) * limit;
+
+    const [articles, totalCount] = await this.prisma.$transaction([
+      this.prisma.article.findMany({
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          _count: { select: { articleLike: true } },
+        },
+      }),
+      this.prisma.article.count(),
+    ]);
+
+    return {
+      page,
+      limit,
+      totalCount,
+      totalPages: Math.ceil(totalCount / limit),
+      articles,
+    };
   }
 
-  getArticleDetail() {
-    return { message: '게시글 상세 조회 (GET /community/article/:articleId)' };
+  // 게시글 상세 조회
+  /* 가입 하지 않은 유저도 조회 가능 */
+  async getArticleDetail(articleId: bigint): Promise<GetArticleDto> {
+    const article = await this.prisma.article.findUnique({
+      where: { id: articleId },
+      include: {
+        articleImage: {   // 게시글 이미지 포함
+          select: {
+            imageUrl: true,
+            order: true,
+          },
+          orderBy: { order: 'asc' },
+        },
+      },
+    });
+
+    if (!article) {
+      throw new NotFoundException('해당 게시글을 찾을 수 없습니다.');
+    }
+
+    return {
+      id: article.id,
+      title: article.title,
+      content: article.content,
+      isAnonymous: article.isAnonymous,
+      authorId: article.authorId,
+      createdAt: article.createdAt.toISOString(),
+      updatedAt: article.updatedAt.toISOString(),
+      images: article.articleImage?.map((img) => ({   // 이미지미이 매핑
+      imageUrl: img.imageUrl,
+      order: img.order,
+      })),
+    };
   }
+
 
   async createArticle(dto: CreateArticleDto, files: Express.Multer.File[], userId: bigint) {
     // 게시글 생성
@@ -125,8 +180,26 @@ export class CommunityService {
     return { message: '게시글 댓글 좋아요 취소 (DELETE /community/article/comment/like)' };
   }
 
-  getComment() {
-    return { message: '게시글 댓글 조회 (GET /community/article/comment)' };
+  async getComment(articleId: bigint): Promise<GetCommentDto[]> {
+    // 댓글 목록 조회
+    const comments = await this.prisma.articleComment.findMany({
+      where: { articleId: articleId },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (!comments || comments.length === 0) {
+      throw new NotFoundException('해당 게시글에 댓글이 없습니다.');
+    }
+
+    return comments.map(comment => ({
+      id: comment.id, 
+      articleId: comment.articleId, 
+      content: comment.content,
+      authorId: comment.authorId, 
+      isAnonymous: comment.isAnonymous,
+      createdAt: comment.createdAt.toISOString(),
+      updatedAt: comment.updatedAt.toISOString(),
+    }));
   }
 
   async createComment(dto: CreateCommentDto, userId: bigint) {

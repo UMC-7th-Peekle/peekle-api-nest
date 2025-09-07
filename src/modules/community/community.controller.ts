@@ -6,9 +6,12 @@ import {
   Get,
   Inject,
   Logger,
+  Param,
   Patch,
   Post,
+  Query,
   Req,
+  Res,
 } from '@nestjs/common';
 import { UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -17,8 +20,10 @@ import {
   ApiConsumes,
   ApiCookieAuth,
   ApiCreatedResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiProperty,
+  ApiQuery,
   getSchemaPath,
 } from '@nestjs/swagger';
 
@@ -36,10 +41,11 @@ import { inspectObject } from '@common/utils/inspect-object.utils';
 import { Public } from '@modules/auth/decorators/public.decorator';
 
 import { CreateArticleLikeDto } from './dto/create-article-like.dto';
-import { CreateArticleDto } from './dto/create-article.dto';
+import { CreateArticleDto, GetArticleDto } from './dto/article.dto';
 import { CreateCommentLikeDto } from './dto/create-comment-like.dto';
-import { CreateCommentDto } from './dto/create-comment.dto';
+import { CreateCommentDto } from './dto/comment.dto';
 import { CommunityService } from './services/community.service';
+import { GetCommunityDto } from './dto/community.dto';
 
 @Controller('community')
 export class CommunityController {
@@ -51,20 +57,40 @@ export class CommunityController {
 
   // 커뮤니티 홈 관련
   @Get('')
-  getCommunityHome() {
-    // 지금 이 클래스에 주입한 서비스에 접근해야 돼서 this
-    return this.communityService.getCommunityHome();
+  @ApiOperation({ summary: '커뮤니티 홈 조회' })
+  @ApiCookieAuth()
+  @ApiOkResponse({ description: '커뮤니티 홈 데이터 반환', type: GetCommunityDto })
+  @ResponseMessage('커뮤니티 홈이 조회되었습니다.')
+  @Public() // TODO: 임시로 Public 처리, 추후 인증 도입 시 제거 필요
+  async getCommunityHome(@Req() req) {
+    const userId = req.user.id; // JWT 도입 후 사용
+    return await this.communityService.getCommunityHome(userId);
   }
 
-  // 게시글 관련
+  // 게시글 목록 조회
   @Get('article')
-  getArticle() {
-    return this.communityService.getArticle();
+  @ApiOperation({ summary: '게시글 목록 조회' })
+  @ApiCookieAuth()
+  @ApiOkResponse({ description: '게시글 목록 반환', type: [GetArticleDto] })
+  @ApiQuery({ name: 'page', required: false, type: Number, description: '페이지 번호' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, description: '페이지 당 개수' })
+  @ResponseMessage('게시글 목록이 조회되었습니다.')
+  @Public() // TODO: 임시로 Public 처리, 추후 인증 도입 시 제거 필요
+  async getArticle(@Query() query: { page?: number; limit?: number }, @Req() req) {
+    const userId = req.user.id;
+    return await this.communityService.getArticle(query, userId);
   }
 
+  // 게시글 상세 조회
   @Get('article/:articleId')
-  getArticleDetail() {
-    return this.communityService.getArticleDetail();
+  @ApiOperation({ summary: '게시글 상세 조회' })
+  @ApiCookieAuth()
+  @ApiOkResponse({ description: '게시글 상세 데이터 반환', type: GetArticleDto })
+  @ResponseMessage('게시글이 조회되었습니다.')
+  // @Public() // TODO: 임시로 Public 처리, 추후 인증 도입 시 제거 필요
+  async getArticleDetail(@Param('articleId') articleId: bigint, @Req() req) {
+    // const userId = req.user?.userId;   // 생각해보니 userId가 필요없네
+    return await this.communityService.getArticleDetail(articleId);
   }
 
   @Post('article')
@@ -123,9 +149,22 @@ export class CommunityController {
     return this.communityService.deleteCommentLike();
   }
 
+  // 댓글 목록 조회
   @Get('article/comment')
-  getComment() {
-    return this.communityService.getComment();
+  @ApiOperation({ summary: '게시글 댓글 목록 조회' })
+  @ApiCookieAuth()
+  @ApiOkResponse({ description: '해당 게시글의 댓글 목록 반환', type: [Object] })
+  @ApiQuery({
+    name: 'articleId',
+    required: true,
+    type: Number,
+    description: '댓글을 조회할 게시글 ID',
+  })
+  @ResponseMessage('댓글 목록이 조회되었습니다.')
+  @Public() // TODO: 임시로 Public 처리, 추후 인증 도입 시 제거 필요
+  async getComment(@Query('articleId') articleId: bigint, @Req() req) {
+    // const userId = req.user.id;    // userId가 필요없음
+    return await this.communityService.getComment(articleId);
   }
 
   @Post('article/comment')

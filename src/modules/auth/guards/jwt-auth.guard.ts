@@ -44,16 +44,15 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
     // 1. 토큰 자체의 에러 확인 (만료, 잘못된 형식 등)
     if (info instanceof JsonWebTokenError) {
+      // 만료된 토큰인 경우
       if (info instanceof TokenExpiredError) {
-        if (info.name === 'TokenExpiredError') {
-          // 원하는 커스텀 에러 메시지나 코드로 예외를 발생시킵니다.
-          throw new JwtTokenExpiredException();
-        }
-      } else if (info instanceof NotBeforeError) {
+        throw new JwtTokenExpiredException();
+      }
+      // 아직 활성화되지 않은 토큰인 경우
+      else if (info instanceof NotBeforeError) {
         throw new JwtTokenNotActivatedException();
       }
-
-      // 토큰 서명이 잘못되었거나 형식이 잘못된 경우
+      // 그 외 : 토큰 서명이 잘못되었거나 형식이 잘못된 경우
       throw new JwtTokenInvalidException();
     }
 

@@ -9,7 +9,7 @@ on:
 
 jobs:
   # 1. Docker 이미지를 빌드하고 Docker Hub에 Push하는 잡
-  build-and-push:
+  docker-image-build:
     runs-on: ubuntu-latest
     steps:
       # 1. 리포지토리 코드 체크아웃
@@ -34,9 +34,9 @@ jobs:
           tags: peekle/peekle-develop:latest # [중요] '사용자명/이미지명:태그'로 수정
 
   # 2. EC2에 접속하여 배포하는 잡
-  deploy:
+  deploy-to-ec2:
     # 'build-and-push' 잡이 성공해야만 이 잡이 실행됩니다.
-    needs: build-and-push
+    needs: docker-image-build
     runs-on: ubuntu-latest
     steps:
       # 1. EC2 인스턴스에 SSH로 접속하여 배포 스크립트 실행

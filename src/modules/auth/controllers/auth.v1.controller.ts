@@ -39,7 +39,7 @@ import { UsersService } from '@modules/users/services/users.service';
   version: '1',
   path: 'auth',
 })
-export class AuthControllerV1 {
+export class AuthV1Controller {
   constructor(
     private readonly usersService: UsersService,
     private readonly authService: AuthService,

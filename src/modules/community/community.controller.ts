@@ -12,17 +12,17 @@ import { ResponseMessage } from '@common/decorators/response-message-decorator';
 import { ParseJsonPipe } from '@common/pipes/parse-json.pipe';
 import { inspectObject } from '@common/utils/inspect-object.utils';
 
-import { CreateArticleLikeDto } from './dto/create-article-like.dto';
-import { CreateArticleDto } from './dto/create-article.dto';
-import { CreateCommentLikeDto } from './dto/create-comment-like.dto';
-import { CreateCommentDto } from './dto/create-comment.dto';
-import { CommunityService } from './services/community.service';
+import { CreateArticleLikeDto } from '@modules/community/dto/create-article-like.dto';
+import { CreateArticleDto } from '@modules/community/dto/create-article.dto';
+import { CreateCommentLikeDto } from '@modules/community/dto/create-comment-like.dto';
+import { CreateCommentDto } from '@modules/community/dto/create-comment.dto';
+import { CommunityService } from '@modules/community/services/community.service';
 
 @Controller({
   path: 'community',
   version: '1',
 })
-export class CommunityControllerV1 {
+export class CommunityV1Controller {
   // 서비스 주입
   constructor(
     private readonly communityService: CommunityService,

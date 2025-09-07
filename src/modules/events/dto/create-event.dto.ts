@@ -27,7 +27,7 @@ export class CreateEventDto {
     default: () => new Date().toISOString().slice(0, 10),
   })
   @IsDateString()
-  startDate!: Date;
+  startDate!: string;
 
   @ApiProperty({
     description: '종료일(YYYY-MM-DD)',
@@ -35,7 +35,7 @@ export class CreateEventDto {
     default: () => new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
   })
   @IsDateString()
-  endDate!: Date;
+  endDate!: string;
 
   @ApiPropertyOptional({
     description: '장소명',

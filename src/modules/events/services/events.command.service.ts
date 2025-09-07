@@ -34,12 +34,12 @@ export class EventsCommandService {
       throw new ForbiddenException('관리자만 이벤트를 생성할 수 있습니다.');
     }
 
-    if (dto.endDate && dto.endDate < dto.startDate) {
-      throw new BadRequestException('종료일은 시작일보다 빠를 수 없습니다.');
-    }
-
     const start = this.toDate(dto.startDate);
     const end = this.toDate(dto.endDate);
+
+    if (end < start) {
+      throw new BadRequestException('종료일은 시작일보다 빠를 수 없습니다.');
+    }
 
     const event = await this.prisma.event.create({
       data: {
@@ -72,16 +72,16 @@ export class EventsCommandService {
       throw new ForbiddenException('관리자만 이벤트를 수정할 수 있습니다.');
     }
 
-    if (dto.startDate && dto.endDate && dto.endDate < dto.startDate) {
-      throw new BadRequestException('종료일은 시작일보다 빠를 수 없습니다.');
-    }
-
     const found = await this.prisma.event.findUnique({ where: { id } });
     if (!found) throw new NotFoundException('이벤트가 존재하지 않습니다.');
 
     // 값이 안 들어오면 기존 DB에 있던 날짜(found.startDate / found.endDate)를 유지
     const start = dto.startDate !== undefined ? this.toDate(dto.startDate) : found.startDate;
     const end = dto.endDate !== undefined ? this.toDate(dto.endDate) : found.endDate;
+
+    if (end < start) {
+      throw new BadRequestException('종료일은 시작일보다 빠를 수 없습니다.');
+    }
 
     const updated = await this.prisma.event.update({
       where: { id },

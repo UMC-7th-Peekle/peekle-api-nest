@@ -1,10 +1,4 @@
-import {
-  ExecutionContext,
-  Inject,
-  Injectable,
-  Logger,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { ExecutionContext, Inject, Injectable, Logger } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JsonWebTokenError, NotBeforeError, TokenExpiredError } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
@@ -21,7 +15,6 @@ import {
   JwtTokenExpiredException,
   JwtTokenInvalidException,
   JwtTokenNotActivatedException,
-  NoJwtTokenException,
 } from '@modules/auth/exceptions/jwt.exeption';
 
 @Injectable()
@@ -50,24 +43,22 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     // user: validate 메소드가 성공적으로 유저 객체를 반환했을 때의 값
 
     // 1. 토큰 자체의 에러 확인 (만료, 잘못된 형식 등)
-    if (info instanceof TokenExpiredError) {
-      if (info.name === 'TokenExpiredError') {
-        // 원하는 커스텀 에러 메시지나 코드로 예외를 발생시킵니다.
+    if (info instanceof JsonWebTokenError) {
+      // 만료된 토큰인 경우
+      if (info instanceof TokenExpiredError) {
         throw new JwtTokenExpiredException();
       }
-    } else if (info instanceof JsonWebTokenError) {
-      // 토큰 서명이 잘못되었거나 형식이 잘못된 경우
+      // 아직 활성화되지 않은 토큰인 경우
+      else if (info instanceof NotBeforeError) {
+        throw new JwtTokenNotActivatedException();
+      }
+      // 그 외 : 토큰 서명이 잘못되었거나 형식이 잘못된 경우
       throw new JwtTokenInvalidException();
-    } else if (info instanceof NotBeforeError) {
-      throw new JwtTokenNotActivatedException();
-    } else {
-      this.logger.log(LOG_LEVELS.ERROR, inspectObject(info));
-      throw new UnauthorizedException(info.message || 'UNAUTHORIZED');
     }
 
     // 2. Strategy의 validate 메소드에서 발생시킨 에러 확인
     if (err) {
-      this.logger.log(LOG_LEVELS.ERROR, err);
+      this.logger.log(LOG_LEVELS.ERROR, `JWT AUTH GUARD ERROR: ${inspectObject(err)}`);
       throw err; // validate에서 던진 커스텀 에러를 그대로 다시 던짐
     }
 

@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -11,24 +10,17 @@ import {
   Post,
   Query,
   Req,
-  Res,
 } from '@nestjs/common';
 import { UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import {
-  ApiBody,
-  ApiConsumes,
   ApiCookieAuth,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiProperty,
   ApiQuery,
-  getSchemaPath,
 } from '@nestjs/swagger';
 
-import { plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 
 import { LOG_LEVELS } from '@common/constants/log-levels.constants';
@@ -39,16 +31,18 @@ import { ParseJsonPipe } from '@common/pipes/parse-json.pipe';
 import { inspectObject } from '@common/utils/inspect-object.utils';
 
 import { Public } from '@modules/auth/decorators/public.decorator';
+import { CreateArticleDto, GetArticleDto } from '@modules/community/dto/article.dto';
+import { CreateCommentDto, GetCommentDto } from '@modules/community/dto/comment.dto';
+import { GetCommunityDto } from '@modules/community/dto/community.dto';
+import { CreateArticleLikeDto } from '@modules/community/dto/create-article-like.dto';
+import { CreateCommentLikeDto } from '@modules/community/dto/create-comment-like.dto';
+import { CommunityService } from '@modules/community/services/community.service';
 
-import { CreateArticleDto, GetArticleDto } from './dto/article.dto';
-import { CreateCommentDto, GetCommentDto } from './dto/comment.dto';
-import { GetCommunityDto } from './dto/community.dto';
-import { CreateArticleLikeDto } from './dto/create-article-like.dto';
-import { CreateCommentLikeDto } from './dto/create-comment-like.dto';
-import { CommunityService } from './services/community.service';
-
-@Controller('community')
-export class CommunityController {
+@Controller({
+  path: 'community',
+  version: '1',
+})
+export class CommunityV1Controller {
   // 서비스 주입
   constructor(
     private readonly communityService: CommunityService,

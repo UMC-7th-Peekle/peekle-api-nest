@@ -10,7 +10,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCookieAuth, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 
 import { Response } from 'express';
 
@@ -35,8 +35,11 @@ import {
 import { OAuthUserService } from '@modules/users/services/oauth.users.service';
 import { UsersService } from '@modules/users/services/users.service';
 
-@Controller('auth')
-export class AuthController {
+@Controller({
+  version: '1',
+  path: 'auth',
+})
+export class AuthV1Controller {
   constructor(
     private readonly usersService: UsersService,
     private readonly authService: AuthService,
@@ -77,11 +80,17 @@ export class AuthController {
     summary: '토큰 검증 API',
     description: 'GET 요청을 보냈을 때 JwtGuard를 통과했는지 확인합니다.',
   })
-  @ApiBearerAuth()
+  @ApiCookieAuth()
   @Get('protected')
   @ResponseMessage('JWT Guard를 Pass 했습니다.')
-  async tokenCheck() {
-    return;
+  async tokenCheck(@Req() req) {
+    const { userId, name, nickname } = req.user;
+
+    return {
+      userId: userId.toString(),
+      name,
+      nickname,
+    };
   }
 
   @ApiOperation({

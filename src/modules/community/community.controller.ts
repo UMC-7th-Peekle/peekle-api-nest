@@ -1,29 +1,8 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Inject,
-  Logger,
-  Patch,
-  Post,
-  Req,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Logger, Patch, Post, Req } from '@nestjs/common';
 import { UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import {
-  ApiBody,
-  ApiConsumes,
-  ApiCookieAuth,
-  ApiCreatedResponse,
-  ApiOperation,
-  ApiProperty,
-  getSchemaPath,
-} from '@nestjs/swagger';
+import { ApiCookieAuth, ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
 
-import { plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 
 import { LOG_LEVELS } from '@common/constants/log-levels.constants';
@@ -33,16 +12,17 @@ import { ResponseMessage } from '@common/decorators/response-message-decorator';
 import { ParseJsonPipe } from '@common/pipes/parse-json.pipe';
 import { inspectObject } from '@common/utils/inspect-object.utils';
 
-import { Public } from '@modules/auth/decorators/public.decorator';
+import { CreateArticleLikeDto } from '@modules/community/dto/create-article-like.dto';
+import { CreateArticleDto } from '@modules/community/dto/create-article.dto';
+import { CreateCommentLikeDto } from '@modules/community/dto/create-comment-like.dto';
+import { CreateCommentDto } from '@modules/community/dto/create-comment.dto';
+import { CommunityService } from '@modules/community/services/community.service';
 
-import { CreateArticleLikeDto } from './dto/create-article-like.dto';
-import { CreateArticleDto } from './dto/create-article.dto';
-import { CreateCommentLikeDto } from './dto/create-comment-like.dto';
-import { CreateCommentDto } from './dto/create-comment.dto';
-import { CommunityService } from './services/community.service';
-
-@Controller('community')
-export class CommunityController {
+@Controller({
+  path: 'community',
+  version: '1',
+})
+export class CommunityV1Controller {
   // 서비스 주입
   constructor(
     private readonly communityService: CommunityService,
@@ -50,7 +30,7 @@ export class CommunityController {
   ) {}
 
   // 커뮤니티 홈 관련
-  @Get('')
+  @Get()
   getCommunityHome() {
     // 지금 이 클래스에 주입한 서비스에 접근해야 돼서 this
     return this.communityService.getCommunityHome();

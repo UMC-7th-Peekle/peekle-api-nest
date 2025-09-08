@@ -65,8 +65,16 @@ docker run \
   -p 80:7777 \
   --name peekle-dev \
   --restart always \
-  --env-file .env \
+  --env-file /home/ubuntu/.env \
   peekle/peekle-develop:latest
+  
+# docker run \
+#   -d \
+#   -p 80:7777 \
+#   --name peekle-dev \
+#   --restart always \
+#   --env-file .env \
+#   peekle/peekle-develop:latest
 echo "✅ 새 컨테이너 실행 완료"
 
 echo "=============================="

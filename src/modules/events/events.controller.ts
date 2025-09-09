@@ -6,8 +6,10 @@ import {
   GetEventDetailResponseDto,
 } from '@modules/events/dto/get-event-detail.dto';
 import { GetEventsQueryDto } from '@modules/events/dto/get-events.dto';
+import { GetMyScrappedEventsQueryDto } from '@modules/events/dto/get-scrapped-events.dto';
 import { EventsQueryService } from '@modules/events/services/events.query.service';
 import { EventsScrapService } from '@modules/events/services/events.scrap.command.service';
+import { EventsScrapQueryService } from '@modules/events/services/events.scrap.query.service';
 
 import { ResponseMessage } from '@/common/decorators/response-message-decorator';
 import { Public } from '@/modules/auth/decorators/public.decorator';
@@ -18,6 +20,7 @@ export class EventsController {
   constructor(
     private readonly eventsQuery: EventsQueryService,
     private readonly eventScrap: EventsScrapService,
+    private readonly eventsScrapQuery: EventsScrapQueryService,
   ) {}
 
   @Public()
@@ -65,5 +68,19 @@ export class EventsController {
     const userId: bigint = 1n; // TODO: req.user.id로 변경 필요
     const result = await this.eventScrap.unscrapEvent(userId, BigInt(id));
     return result;
+  }
+
+  @ApiCookieAuth('peekleAccessToken')
+  @Get('scraps')
+  @ApiOperation({ summary: '내가 찜한 이벤트 목록 조회 API' })
+  @ApiOkResponse({ description: '스크랩 목록 조회 성공' })
+  @ResponseMessage('찜한 이벤트 목록을 조회했습니다.')
+  async myScraps(@Query() q: GetMyScrappedEventsQueryDto, @Req() req: any) {
+    const userId: bigint = 1n; // TODO: req.user.id로 변경 필요
+    const { events, nextCursor, hasNextPage } = await this.eventsScrapQuery.getMyScrappedList(
+      userId,
+      q,
+    );
+    return { events, nextCursor, hasNextPage };
   }
 }

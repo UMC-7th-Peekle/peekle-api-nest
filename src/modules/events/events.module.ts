@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 
 import { EventsScrapService } from '@modules/events/services/events.scrap.command.service';
+import { EventsScrapQueryService } from '@modules/events/services/events.scrap.query.service';
 import { PrismaModule } from '@modules/prisma/prisma.module';
 
 import { EventsController } from './events.controller';
@@ -9,6 +10,6 @@ import { EventsQueryService } from './services/events.query.service';
 @Module({
   imports: [PrismaModule],
   controllers: [EventsController],
-  providers: [EventsQueryService, EventsScrapService],
+  providers: [EventsQueryService, EventsScrapService, EventsScrapQueryService],
 })
 export class EventsModule {}

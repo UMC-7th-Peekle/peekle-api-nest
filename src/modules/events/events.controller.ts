@@ -7,7 +7,7 @@ import {
 } from '@modules/events/dto/get-event-detail.dto';
 import { GetEventsQueryDto } from '@modules/events/dto/get-events.dto';
 import { EventsQueryService } from '@modules/events/services/events.query.service';
-import { EventsScrapService } from '@modules/events/services/events.scrap.service';
+import { EventsScrapService } from '@modules/events/services/events.scrap.command.service';
 
 import { ResponseMessage } from '@/common/decorators/response-message-decorator';
 import { Public } from '@/modules/auth/decorators/public.decorator';

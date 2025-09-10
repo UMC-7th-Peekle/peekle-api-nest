@@ -78,6 +78,7 @@ export class EventsScrapQueryService {
       isScrapped: true,
     }));
 
+    // TODO: 추후 createdAt 활용 커서로 변경
     // 다음 커서: 현재 페이지의 마지막 아이템 id
     const last = sliced.at(-1);
     const nextCursor = last ? last.eventId.toString() : null;

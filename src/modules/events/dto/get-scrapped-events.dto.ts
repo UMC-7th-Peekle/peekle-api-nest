@@ -23,7 +23,7 @@ export class GetMyScrappedEventsQueryDto {
 
   @ApiPropertyOptional({
     description: '마지막으로 본 스크랩 eventId (커서)',
-    example: '1013944',
+    example: '1',
     type: 'string',
   })
   @IsOptional()

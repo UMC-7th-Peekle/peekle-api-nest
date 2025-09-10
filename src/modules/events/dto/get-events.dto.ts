@@ -1,14 +1,26 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 import { Type } from 'class-transformer';
-import { IsEnum, IsInt, IsNumberString, IsOptional, Max, Min } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsDateString,
+  IsEnum,
+  IsInt,
+  IsOptional,
+  Max,
+  Min,
+} from 'class-validator';
 
 import { IsBigInt } from '@common/decorators/is-bigint.decorator';
 import { TransformToBigint } from '@common/decorators/transform.decorator';
 
 export enum EventSortField {
-  DATE = 'date',
+  DATE = 'date', // 가까운 날짜순
+  PRICE = 'price', // 낮은 금액순
+  DISTANCE = 'distance', // 가까운 거리순
 }
+
 export enum Order {
   ASC = 'asc',
   DESC = 'desc',
@@ -22,12 +34,6 @@ export class GetEventsQueryDto {
   @Max(50)
   limit: number = 20;
 
-  /**
-   * id DESC 기반 커서 페이지네이션
-   * - 첫 페이지: cursor 없음
-   * - 다음 페이지: 응답의 pageInfo.nextCursor 그대로 전달
-   */
-
   @ApiPropertyOptional({ enum: EventSortField, default: EventSortField.DATE })
   @IsEnum(EventSortField)
   sort: EventSortField = EventSortField.DATE;
@@ -38,11 +44,48 @@ export class GetEventsQueryDto {
 
   @ApiPropertyOptional({
     description: '마지막으로 본 이벤트 id (BigInt string)',
-    example: '9007199254740991', // Swagger 예시 추가
-    type: 'string', // Swagger에는 여전히 string으로 표시
+    example: '1',
+    type: 'string',
   })
   @IsOptional()
   @IsBigInt()
   @TransformToBigint()
   cursor?: bigint;
+
+  // 기간 필터
+  @ApiPropertyOptional({ description: '시작일 (YYYY-MM-DD)', example: '2025-09-01' })
+  @IsOptional()
+  @IsDateString()
+  startDate?: string;
+
+  @ApiPropertyOptional({ description: '종료일 (YYYY-MM-DD)', example: '2025-09-30' })
+  @IsOptional()
+  @IsDateString()
+  endDate?: string;
+
+  // 가격 필터
+  @ApiPropertyOptional({ description: '무료 여부 (true면 무료만, false면 유료만)', example: true })
+  @IsOptional()
+  isFree?: boolean;
+
+  // 위치 필터
+  @ApiPropertyOptional({
+    description: '활동 지역 리스트 (중복 선택 가능)',
+    example: ['강남/서초/잠실', '종로/중구/용산'],
+    type: [String],
+  })
+  @IsOptional()
+  @IsArray()
+  @ArrayNotEmpty()
+  locations?: string[];
+
+  // 카테고리 필터
+  @ApiPropertyOptional({
+    description: '카테고리 리스트 (중복 선택 가능)',
+    example: ['교육', '문화'],
+    type: [String],
+  })
+  @IsOptional()
+  @IsArray()
+  categories?: string[];
 }

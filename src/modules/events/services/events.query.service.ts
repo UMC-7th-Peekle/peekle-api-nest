@@ -74,11 +74,24 @@ export class EventsQueryService {
 
     // orderBy 절
     let orderBy: Prisma.EventOrderByWithRelationInput[] = [];
+
     switch (query.sort) {
       case EventSortField.DATE:
+        // 가까운 날짜순 (startDate 기준)
         orderBy = [{ startDate: sortOrder }, { id: sortOrder }];
         break;
+
+      case EventSortField.PRICE:
+        // 낮은 금액순 (price 기준)
+        orderBy = [{ price: sortOrder }, { id: sortOrder }];
+        break;
+
+      case EventSortField.DISTANCE:
+        // Prisma는 기본적으로 distance 정렬을 지원하지 않아서 MySQL/DB 함수 (ST_Distance_Sphere 등)를 raw query로 써야 함.
+        throw new BadRequestException('거리순 정렬은 현재 지원되지 않습니다.');
+
       default:
+        // 안전 기본값: 날짜순
         orderBy = [{ startDate: sortOrder }, { id: sortOrder }];
         break;
     }

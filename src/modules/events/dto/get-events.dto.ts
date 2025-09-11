@@ -79,10 +79,12 @@ export class GetEventsQueryDto {
   // 위치 필터
   @ApiPropertyOptional({
     description: '활동 지역 리스트 (중복 선택 가능)',
-    example: ['강남/서초/잠실', '종로/중구/용산'],
+    example: ['강남', '종로'],
     type: [String],
   })
   @IsOptional()
+  // query string이 단일 문자열일 때도 배열로 변환되도록 보정
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   @IsArray()
   @ArrayNotEmpty()
   locations?: string[];
@@ -95,5 +97,7 @@ export class GetEventsQueryDto {
   })
   @IsOptional()
   @IsArray()
+  // 단일 값이 들어와도 배열로 변환 (예: "교육" → ["교육"])
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   categories?: string[];
 }

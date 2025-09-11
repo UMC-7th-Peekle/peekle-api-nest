@@ -62,17 +62,17 @@ export class EventsQueryService {
 
     // 위치 필터(부분 일치, 대소문자 무시)
     if (query.locations?.length) {
-      // 각 키워드에 대해 venue* 4개 필드 중 하나라도 매칭 -> OR
-      const perKeywordOrs: Prisma.EventWhereInput[] = query.locations.map((kw) => ({
-        OR: [
-          { venueName: { contains: kw, mode: 'insensitive' } },
-          { venueRoadAddress: { contains: kw, mode: 'insensitive' } },
-          { venueJibunAddress: { contains: kw, mode: 'insensitive' } },
-          { venueDetailAddress: { contains: kw, mode: 'insensitive' } },
-        ],
-      }));
-      // 여러 키워드 중 하나라도 매칭 -> OR
-      andConds.push({ OR: perKeywordOrs });
+      // 모든 키워드들을 venue* 네 필드에 평탄화해서 OR로 묶음
+      const locOr: Prisma.EventWhereInput[] = [];
+      for (const keyword of query.locations) {
+        locOr.push(
+          { venueName: { contains: keyword } },
+          { venueRoadAddress: { contains: keyword } },
+          { venueJibunAddress: { contains: keyword } },
+          { venueDetailAddress: { contains: keyword } },
+        );
+      }
+      andConds.push({ OR: locOr });
     }
 
     const where: Prisma.EventWhereInput = andConds.length ? { AND: andConds } : {};

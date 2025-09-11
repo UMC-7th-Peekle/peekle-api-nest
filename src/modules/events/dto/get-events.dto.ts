@@ -83,10 +83,9 @@ export class GetEventsQueryDto {
     type: [String],
   })
   @IsOptional()
-  // query string이 단일 문자열일 때도 배열로 변환되도록 보정
+  // 단일 값이 들어와도 배열로 변환 (예: "강남" → ["강남"])
   @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   @IsArray()
-  @ArrayNotEmpty()
   locations?: string[];
 
   // 카테고리 필터

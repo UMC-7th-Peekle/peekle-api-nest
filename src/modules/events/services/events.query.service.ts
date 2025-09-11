@@ -13,7 +13,7 @@ export class EventsQueryService {
   async getEventsList(query: GetEventsQueryDto) {
     const sortOrder: 'asc' | 'desc' = query.order === Order.ASC ? 'asc' : 'desc';
 
-    // where 절:  where 조건을 유연하게 조립하기 위해 조건들을 배열에 모아놓고 나중에 { AND: [...] } 형태로 합침
+    // where 절: where 조건을 유연하게 조립하기 위해 조건들을 배열에 모아놓고 나중에 { AND: [...] } 형태로 합침
     const andConds: Prisma.EventWhereInput[] = [];
 
     // 커서(id 기반)
@@ -47,7 +47,6 @@ export class EventsQueryService {
 
     // 가격 필터
     if (typeof query.isFree === 'boolean') {
-      console.log('isFree raw:', query.isFree, typeof query.isFree);
       if (query.isFree === true) {
         andConds.push({ price: 0 });
       } else if (query.isFree === false) {

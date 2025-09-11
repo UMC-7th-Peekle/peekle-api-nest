@@ -47,7 +47,12 @@ export class EventsQueryService {
 
     // 가격 필터
     if (typeof query.isFree === 'boolean') {
-      andConds.push({ price: query.isFree ? 0 : { gt: 0 } });
+      console.log('isFree raw:', query.isFree, typeof query.isFree);
+      if (query.isFree === true) {
+        andConds.push({ price: 0 });
+      } else if (query.isFree === false) {
+        andConds.push({ price: { not: 0 } });
+      }
     }
 
     // 카테고리 필터(다중)

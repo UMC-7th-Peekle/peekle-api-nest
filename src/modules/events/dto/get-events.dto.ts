@@ -1,9 +1,10 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   ArrayNotEmpty,
   IsArray,
+  IsBoolean,
   IsDateString,
   IsEnum,
   IsInt,
@@ -66,6 +67,13 @@ export class GetEventsQueryDto {
   // 가격 필터
   @ApiPropertyOptional({ description: '무료 여부 (true면 무료만, false면 유료만)', example: true })
   @IsOptional()
+  // query string에서 들어온 "true"/"false" 문자열을 실제 boolean 값으로 변환하기 위함
+  // (class-transformer의 기본 Boolean 변환은 "false" 문자열도 truthy로 처리 → 항상 true가 되는 문제 방지)
+  @Transform(({ value }) => {
+    if (value === 'true' || value === true) return true;
+    if (value === 'false' || value === false) return false;
+    return undefined;
+  })
   isFree?: boolean;
 
   // 위치 필터

@@ -213,6 +213,18 @@ exports.Prisma.TermScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.UploadScalarFieldEnum = {
+  id: 'id',
+  domain: 'domain',
+  kind: 'kind',
+  key: 'key',
+  url: 'url',
+  mimeType: 'mimeType',
+  size: 'size',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -283,6 +295,14 @@ exports.Prisma.TermOrderByRelevanceFieldEnum = {
   content: 'content'
 };
 
+exports.Prisma.UploadOrderByRelevanceFieldEnum = {
+  domain: 'domain',
+  kind: 'kind',
+  key: 'key',
+  url: 'url',
+  mimeType: 'mimeType'
+};
+
 exports.Prisma.UserOrderByRelevanceFieldEnum = {
   name: 'name',
   nickname: 'nickname',
@@ -306,6 +326,7 @@ exports.Prisma.ModelName = {
   EventImage: 'EventImage',
   EventScrap: 'EventScrap',
   Term: 'Term',
+  Upload: 'Upload',
   User: 'User',
   UserTerm: 'UserTerm'
 };

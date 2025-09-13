@@ -325,12 +325,13 @@ export class CommunityService {
     return commentList;
   }
 
-  async createComment(dto: CreateCommentDto, userId: bigint) {
+  // 댓글 작성
+  async createComment(dto: CreateCommentDto, userId: string) {
     const comment = await this.prisma.articleComment.create({
       data: {
         articleId: BigInt(dto.articleId),
         content: dto.content,
-        authorId: userId,
+        authorId: BigInt(userId),
         isAnonymous: dto.isAnonymous,
         parentCommentId: dto.parentCommentId ? BigInt(dto.parentCommentId) : null,
       },
@@ -379,13 +380,24 @@ export class CommunityService {
   }
 
   async createReply(dto: CreateCommentDto, userId: bigint) {
+    const parentCommentId = dto.parentCommentId ? BigInt(dto.parentCommentId) : null;
+
+    if (parentCommentId) {
+      const exists = await this.prisma.articleComment.findUnique({
+        where: { id: parentCommentId },
+      });
+      if (!exists) {
+        throw new NotFoundException('존재하지 않는 부모 댓글입니다.');
+      }
+    }
+
     const reply = await this.prisma.articleComment.create({
       data: {
         articleId: BigInt(dto.articleId),
         content: dto.content,
         authorId: userId,
         isAnonymous: dto.isAnonymous,
-        parentCommentId: dto.parentCommentId ? BigInt(dto.parentCommentId) : null, // null 처리 꼭 해야 함
+        parentCommentId,
       },
     });
 

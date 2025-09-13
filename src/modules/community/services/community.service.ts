@@ -49,7 +49,7 @@ export class CommunityService {
   // 게시글 목록 조회
   async getArticle(
     { communityId, page, limit }: { communityId: bigint; page?: number; limit?: number },
-    userId: bigint,
+    // userId: string,
   ) {
     const skip = ((page ?? 1) - 1) * (limit ?? 10);
 
@@ -295,41 +295,61 @@ export class CommunityService {
     return { status: true, message: '댓글 좋아요 취소 성공' };
   }
 
-  async getComment(articleId: bigint): Promise<GetCommentDto[]> {
-    // 댓글 목록 조회
-    const comments = await this.prisma.articleComment.findMany({
-      where: { articleId: articleId },
-      orderBy: { createdAt: 'desc' },
-    });
+  // 댓글 목록 조회
+  async getComment(
+    { articleId, page, limit }: { articleId: bigint; page?: number; limit?: number },
+    // userId: string,
+  ) {
+    const skip = ((page ?? 1) - 1) * (limit ?? 10);
 
-    if (!comments || comments.length === 0) {
-      throw new NotFoundException('해당 게시글에 댓글이 없습니다.');
-    }
+    const [comments, totalCount] = await this.prisma.$transaction([
+      this.prisma.articleComment.findMany({
+        where: { articleId },
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.articleComment.count({ where: { articleId } }),
+    ]);
 
-    return comments.map((comment) => ({
-      id: comment.id,
-      articleId: comment.articleId,
+    const commentList = comments.map((comment) => ({
+      id: comment.id.toString(),
+      articleId: comment.articleId.toString(),
       content: comment.content,
-      authorId: comment.authorId,
       isAnonymous: comment.isAnonymous,
+      authorId: comment.authorId.toString(),
       createdAt: comment.createdAt.toISOString(),
       updatedAt: comment.updatedAt.toISOString(),
     }));
+
+    return commentList;
   }
 
   async createComment(dto: CreateCommentDto, userId: bigint) {
     const comment = await this.prisma.articleComment.create({
       data: {
-        articleId: dto.articleId,
+        articleId: BigInt(dto.articleId),
         content: dto.content,
         authorId: userId,
         isAnonymous: dto.isAnonymous,
-        // parent_comment_id는 대댓글 작성에 필요, 현재는 null로 고정
-        parentCommentId: dto.parentCommentId,
+        parentCommentId: dto.parentCommentId ? BigInt(dto.parentCommentId) : null,
       },
     });
 
-    return { status: true, message: '댓글이 작성되었습니다.', data: comment };
+    return {
+      status: true,
+      message: '댓글이 작성되었습니다.',
+      data: {
+        id: comment.id.toString(),
+        articleId: comment.articleId.toString(),
+        content: comment.content,
+        authorId: comment.authorId.toString(),
+        isAnonymous: comment.isAnonymous,
+        parentCommentId: comment.parentCommentId ? comment.parentCommentId.toString() : null,
+        createdAt: comment.createdAt.toISOString(),
+        updatedAt: comment.updatedAt.toISOString(),
+      },
+    };
   }
 
   updateComment() {
@@ -361,14 +381,27 @@ export class CommunityService {
   async createReply(dto: CreateCommentDto, userId: bigint) {
     const reply = await this.prisma.articleComment.create({
       data: {
-        articleId: dto.articleId,
+        articleId: BigInt(dto.articleId),
         content: dto.content,
         authorId: userId,
         isAnonymous: dto.isAnonymous,
-        parentCommentId: dto.parentCommentId, // 대댓글은 부모 댓글 ID를 반드시 포함
+        parentCommentId: dto.parentCommentId ? BigInt(dto.parentCommentId) : null, // null 처리 꼭 해야 함
       },
     });
 
-    return { status: true, message: '대댓글이 작성되었습니다.', data: reply };
+    return {
+      status: true,
+      message: '대댓글이 작성되었습니다.',
+      data: {
+        id: reply.id.toString(),
+        articleId: reply.articleId.toString(),
+        content: reply.content,
+        authorId: reply.authorId.toString(),
+        isAnonymous: reply.isAnonymous,
+        parentCommentId: reply.parentCommentId ? reply.parentCommentId.toString() : null,
+        createdAt: reply.createdAt.toISOString(),
+        updatedAt: reply.updatedAt.toISOString(),
+      },
+    };
   }
 }

@@ -47,13 +47,15 @@ export class CommunityService {
   }
 
   // 게시글 목록 조회
-  async getArticle(query: { page?: number; limit?: number }, userId: bigint) {
-    const page = query.page ?? 1;
-    const limit = query.limit ?? 10;
-    const skip = (page - 1) * limit;
+  async getArticle(
+    { communityId, page, limit }: { communityId: bigint; page?: number; limit?: number },
+    userId: bigint,
+  ) {
+    const skip = ((page ?? 1) - 1) * (limit ?? 10);
 
     const [articles, totalCount] = await this.prisma.$transaction([
       this.prisma.article.findMany({
+        where: { communityId },
         skip,
         take: limit,
         orderBy: { createdAt: 'desc' },
@@ -64,15 +66,15 @@ export class CommunityService {
           },
         },
       }),
-      this.prisma.article.count(),
+      this.prisma.article.count({ where: { communityId } }),
     ]);
 
     const articleList = articles.map((article) => ({
-      id: article.id,
+      id: article.id.toString(),
       title: article.title,
       content: article.content,
       isAnonymous: article.isAnonymous,
-      authorId: article.authorId,
+      authorId: article.authorId.toString(),
       createdAt: article.createdAt.toISOString(),
       updatedAt: article.updatedAt.toISOString(),
       images: article.articleImage.map((img) => ({

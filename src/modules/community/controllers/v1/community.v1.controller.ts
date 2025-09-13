@@ -61,17 +61,26 @@ export class CommunityV1Controller {
   }
 
   // 게시글 목록 조회
-  @Get('article')
+  @Get(':communityId/article')
   @ApiOperation({ summary: '게시글 목록 조회' })
   @ApiCookieAuth()
   @ApiOkResponse({ description: '게시글 목록 반환', type: [GetArticleDto] })
   @ApiQuery({ name: 'page', required: false, type: Number, description: '페이지 번호' })
   @ApiQuery({ name: 'limit', required: false, type: Number, description: '페이지 당 개수' })
   @ResponseMessage('게시글 목록이 조회되었습니다.')
-  @Public() // TODO: 임시로 Public 처리, 추후 인증 도입 시 제거 필요
-  async getArticle(@Query() query: { page?: number; limit?: number }, @Req() req) {
-    const userId = req.user.id;
-    return await this.communityService.getArticle(query, userId);
+  @Public()
+  async getArticle(
+    @Param('communityId') communityId: string,
+    @Query() query: { page?: string; limit?: string },
+    @Req() req,
+  ) {
+    const page = query.page ? Number(query.page) : 1;
+    const limit = query.limit ? Number(query.limit) : 10;
+    const userId = req.user?.userId;
+    return await this.communityService.getArticle(
+      { communityId: BigInt(communityId), page, limit },
+      userId,
+    );
   }
 
   // 게시글 상세 조회

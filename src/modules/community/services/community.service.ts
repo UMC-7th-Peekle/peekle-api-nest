@@ -93,7 +93,6 @@ export class CommunityService {
       where: { id: articleId },
       include: {
         articleImage: {
-          // 게시글 이미지 포함
           select: {
             imageUrl: true,
             order: true,
@@ -108,15 +107,14 @@ export class CommunityService {
     }
 
     return {
-      id: article.id,
+      id: article.id.toString(),
       title: article.title,
       content: article.content,
       isAnonymous: article.isAnonymous,
-      authorId: article.authorId,
+      authorId: article.authorId.toString(),
       createdAt: article.createdAt.toISOString(),
       updatedAt: article.updatedAt.toISOString(),
       images: article.articleImage?.map((img) => ({
-        // 이미지미이 매핑
         imageUrl: img.imageUrl,
         order: img.order,
       })),

@@ -90,9 +90,9 @@ export class CommunityV1Controller {
   @ApiOkResponse({ description: '게시글 상세 데이터 반환', type: GetArticleDto })
   @ResponseMessage('게시글이 조회되었습니다.')
   // @Public() // TODO: 임시로 Public 처리, 추후 인증 도입 시 제거 필요
-  async getArticleDetail(@Param('articleId') articleId: bigint, @Req() req) {
+  async getArticleDetail(@Param('articleId') articleId: string, @Req() req) {
     // const userId = req.user?.userId;   // 생각해보니 userId가 필요없네
-    return await this.communityService.getArticleDetail(articleId);
+    return await this.communityService.getArticleDetail(BigInt(articleId));
   }
 
   @Post('article')

@@ -41,7 +41,7 @@ export class GetArticleDto {
   @ApiProperty({ example: '1', description: '게시글 ID', type: String })
   @IsBigInt()
   @TransformToBigint()
-  id!: bigint;
+  id!: string;
 
   @ApiProperty({ example: '게시글 제목', description: '게시글 제목', maxLength: 50 })
   @IsString()
@@ -62,7 +62,7 @@ export class GetArticleDto {
   @ApiProperty({ example: '2', description: '작성자 ID', type: String })
   @IsBigInt()
   @TransformToBigint()
-  authorId!: bigint;
+  authorId!: string;
 
   @ApiProperty({ example: '2025-09-07T10:31:00.000Z', description: '작성일', type: String })
   createdAt!: string;

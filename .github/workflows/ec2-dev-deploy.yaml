@@ -2,12 +2,12 @@ name: Deploy NestJS to EC2
 
 # 이 워크플로우가 실행될 시점: main 브랜치에 push가 발생했을 때
 on:
-  push:
-    branches:
-      - develop
-  pull_request:
-    branches:
-      - develop
+  #  push:
+  #    branches:
+  #      - develop
+  #  pull_request:
+  #    branches:
+  #      - develop
   workflow_dispatch:
 
 jobs:

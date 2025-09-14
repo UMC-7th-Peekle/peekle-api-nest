@@ -27,8 +27,8 @@ import { Public } from '@/modules/auth/decorators/public.decorator';
 export class EventsController {
   constructor(
     private readonly eventsQuery: EventsQueryService,
-    private readonly eventsCommand: EventsCommandService, EventsScrapService
-
+    private readonly eventsCommand: EventsCommandService,
+    private readonly eventScrap: EventsScrapService,
   ) {}
 
   @Public()
@@ -85,6 +85,7 @@ export class EventsController {
   async remove(@Param() { id }: EventIdParamDto, @Req() req: any) {
     const userId: bigint = 1n; // TODO: req.user.id로 변경 필요
     const result = await this.eventsCommand.deleteEvent(id, userId);
+  }
 
   @Post(':id/scrap')
   @ApiOperation({ summary: '이벤트 찜하기 API' })

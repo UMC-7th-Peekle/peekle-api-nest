@@ -24,6 +24,7 @@ import {
 } from '@modules/aws/exceptions/aws-upload.exception';
 import { AwsUploadDomain, AwsUploadFileType } from '@modules/aws/types/aws.types';
 import { mimeToExt } from '@modules/aws/utils/mime-transfer';
+import { PrismaService } from '@modules/prisma/prisma.service';
 
 @Injectable()
 export class AwsS3Service {
@@ -31,7 +32,10 @@ export class AwsS3Service {
   private readonly bucket: string;
   private readonly cdn: string;
 
-  constructor(@Inject(AwsConfig.KEY) private readonly awsConfig: ConfigType<typeof AwsConfig>) {
+  constructor(
+    @Inject(AwsConfig.KEY) private readonly awsConfig: ConfigType<typeof AwsConfig>,
+    private readonly prisma: PrismaService,
+  ) {
     this.bucket = this.awsConfig.bucket;
     this.cdn = this.awsConfig.cdnBaseUrl;
 
@@ -100,6 +104,30 @@ export class AwsS3Service {
     const uploadUrl = await getSignedUrl(this.s3, cmd, { expiresIn });
     const publicUrl = `${this.cdn.replace(/\/+$/, '')}/${key}`;
 
-    return { uploadUrl, key, publicUrl, expiresIn };
+    // DB 저장
+    const created = await this.prisma.upload.create({
+      data: {
+        domain,
+        kind,
+        key,
+        url: publicUrl,
+        mimeType: contentType,
+        size: size ?? null,
+      },
+    });
+
+    // JSON 직렬화에서 안 터지도록 BigInt → string
+    const upload = {
+      id: created.id.toString(),
+      domain: created.domain,
+      kind: created.kind,
+      key: created.key,
+      url: created.url,
+      mimeType: created.mimeType,
+      size: created.size,
+      createdAt: created.createdAt,
+    };
+
+    return { uploadUrl, key, publicUrl, expiresIn, upload };
   }
 }

@@ -175,6 +175,20 @@ model Term {
   @@map("term")
 }
 
+model Upload {
+  id        BigInt   @id @default(autoincrement())
+  domain    String   @db.VarChar(50) // 업로드된 파일이 속한 도메인 (예: 'events', 'community')
+  kind      String   @db.VarChar(20) // 파일 종류: 'image' | 'video'
+  key       String   @unique @db.VarChar(500) // S3 object key
+  url       String   @db.VarChar(1024) // CDN 공개 URL
+  mimeType  String   @map("mime_type") @db.VarChar(100) // ex. image/jpeg
+  size      Int? // 파일 크기 (byte 단위)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+
+  @@map("upload")
+}
+
 model User {
   id                 BigInt               @id @default(autoincrement())
   name               String?              @db.VarChar(10)

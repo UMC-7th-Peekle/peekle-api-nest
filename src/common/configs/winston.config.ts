@@ -26,7 +26,8 @@ const consoleTransport = new winston.transports.Console({
     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
     winston.format.colorize({ all: true }),
     winston.format.printf(({ timestamp, level, message, context, traceId, stack }) => {
-      let log = `${timestamp} [${level}] [${traceId || 'no-trace-id'}] [${context || '-'}] ${message}`;
+      const formattedTraceId = typeof traceId === 'string' ? traceId.slice(0, 4) : 'no-trace-id';
+      let log = `${timestamp} [${level}] [${formattedTraceId}] [${context || '-'}] ${message}`;
 
       // 에러 스택이 있으면 추가로 출력
       if (stack) {

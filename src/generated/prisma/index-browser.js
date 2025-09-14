@@ -20,12 +20,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.13.0
- * Query Engine version: 361e86d0ea4987e9f53a565309b3eed797a6bcbd
+ * Prisma Client JS version: 6.15.0
+ * Query Engine version: 85179d7826409ee107a6ba334b5e305ae3fba9fb
  */
 Prisma.prismaVersion = {
-  client: "6.13.0",
-  engine: "361e86d0ea4987e9f53a565309b3eed797a6bcbd"
+  client: "6.15.0",
+  engine: "85179d7826409ee107a6ba334b5e305ae3fba9fb"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -213,6 +213,18 @@ exports.Prisma.TermScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.UploadScalarFieldEnum = {
+  id: 'id',
+  domain: 'domain',
+  kind: 'kind',
+  key: 'key',
+  url: 'url',
+  mimeType: 'mimeType',
+  size: 'size',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -283,6 +295,14 @@ exports.Prisma.TermOrderByRelevanceFieldEnum = {
   content: 'content'
 };
 
+exports.Prisma.UploadOrderByRelevanceFieldEnum = {
+  domain: 'domain',
+  kind: 'kind',
+  key: 'key',
+  url: 'url',
+  mimeType: 'mimeType'
+};
+
 exports.Prisma.UserOrderByRelevanceFieldEnum = {
   name: 'name',
   nickname: 'nickname',
@@ -306,6 +326,7 @@ exports.Prisma.ModelName = {
   EventImage: 'EventImage',
   EventScrap: 'EventScrap',
   Term: 'Term',
+  Upload: 'Upload',
   User: 'User',
   UserTerm: 'UserTerm'
 };

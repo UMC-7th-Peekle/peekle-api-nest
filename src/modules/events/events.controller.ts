@@ -1,11 +1,21 @@
-import { Controller, Delete, Get, Param, Post, Query, Req } from '@nestjs/common';
-import { ApiCookieAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req } from '@nestjs/common';
+import {
+  ApiCookieAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 
+import { CreateEventDto } from '@modules/events/dto/create-event.dto';
+import { EventIdParamDto } from '@modules/events/dto/event-id.param';
 import {
   GetEventDetailParamsDto,
   GetEventDetailResponseDto,
 } from '@modules/events/dto/get-event-detail.dto';
 import { GetEventsQueryDto } from '@modules/events/dto/get-events.dto';
+import { UpdateEventDto } from '@modules/events/dto/update-event.dto';
+import { EventsCommandService } from '@modules/events/services/events.command.service';
 import { EventsQueryService } from '@modules/events/services/events.query.service';
 import { EventsScrapService } from '@modules/events/services/events.scrap.service';
 
@@ -17,6 +27,7 @@ import { Public } from '@/modules/auth/decorators/public.decorator';
 export class EventsController {
   constructor(
     private readonly eventsQuery: EventsQueryService,
+    private readonly eventsCommand: EventsCommandService,
     private readonly eventScrap: EventsScrapService,
   ) {}
 
@@ -45,6 +56,37 @@ export class EventsController {
   }
 
   @ApiCookieAuth('peekleAccessToken')
+  @Post()
+  @ApiOperation({ summary: '이벤트 생성 API' })
+  @ApiCreatedResponse({ description: '이벤트 생성 성공', schema: { example: { id: '123' } } })
+  @ResponseMessage('이벤트를 생성했습니다.')
+  async create(@Body() dto: CreateEventDto, @Req() req: any) {
+    const authorId: bigint = 1n; // TODO: req.user.id로 변경 필요
+    const result = await this.eventsCommand.createEvent(authorId, dto);
+    return result;
+  }
+
+  @ApiCookieAuth('peekleAccessToken')
+  @Patch(':id')
+  @ApiOperation({ summary: '이벤트 수정 API' })
+  @ApiOkResponse({ description: '이벤트 수정 성공', schema: { example: { id: '123' } } })
+  @ResponseMessage('이벤트를 수정했습니다.')
+  async update(@Param() { id }: EventIdParamDto, @Body() dto: UpdateEventDto, @Req() req: any) {
+    const userId: bigint = 1n; // TODO: req.user.id로 변경 필요
+    const result = await this.eventsCommand.updateEvent(id, userId, dto);
+    return result;
+  }
+
+  @ApiCookieAuth('peekleAccessToken')
+  @Delete(':id')
+  @ApiOperation({ summary: '이벤트 삭제 API' })
+  @ApiOkResponse({ description: '이벤트 삭제 성공', schema: { example: { id: '123' } } })
+  @ResponseMessage('이벤트를 삭제했습니다.')
+  async remove(@Param() { id }: EventIdParamDto, @Req() req: any) {
+    const userId: bigint = 1n; // TODO: req.user.id로 변경 필요
+    const result = await this.eventsCommand.deleteEvent(id, userId);
+  }
+
   @Post(':id/scrap')
   @ApiOperation({ summary: '이벤트 찜하기 API' })
   @ApiOkResponse({ description: '이벤트 찜 성공' })
@@ -64,6 +106,7 @@ export class EventsController {
   async unscrap(@Param('id') id: string, @Req() req: any) {
     const userId: bigint = 1n; // TODO: req.user.id로 변경 필요
     const result = await this.eventScrap.unscrapEvent(userId, BigInt(id));
+
     return result;
   }
 }

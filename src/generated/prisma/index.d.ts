@@ -54,6 +54,11 @@ export type Event = $Result.DefaultSelection<Prisma.$EventPayload>
  */
 export type EventImage = $Result.DefaultSelection<Prisma.$EventImagePayload>
 /**
+ * Model EventScrap
+ * 
+ */
+export type EventScrap = $Result.DefaultSelection<Prisma.$EventScrapPayload>
+/**
  * Model Term
  * 
  */
@@ -117,6 +122,13 @@ export class PrismaClient<
    * Disconnect from the database
    */
   $disconnect(): $Utils.JsPromise<void>;
+
+  /**
+   * Add a middleware
+   * @deprecated since 4.16.0. For new code, prefer client extensions instead.
+   * @see https://pris.ly/d/extensions
+   */
+  $use(cb: Prisma.Middleware): void
 
 /**
    * Executes a prepared raw query and returns the number of affected rows.
@@ -268,6 +280,16 @@ export class PrismaClient<
   get eventImage(): Prisma.EventImageDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.eventScrap`: Exposes CRUD operations for the **EventScrap** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EventScraps
+    * const eventScraps = await prisma.eventScrap.findMany()
+    * ```
+    */
+  get eventScrap(): Prisma.EventScrapDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.term`: Exposes CRUD operations for the **Term** model.
     * Example usage:
     * ```ts
@@ -354,8 +376,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.15.0
-   * Query Engine version: 85179d7826409ee107a6ba334b5e305ae3fba9fb
+   * Prisma Client JS version: 6.13.0
+   * Query Engine version: 361e86d0ea4987e9f53a565309b3eed797a6bcbd
    */
   export type PrismaVersion = {
     client: string
@@ -744,6 +766,7 @@ export namespace Prisma {
     Community: 'Community',
     Event: 'Event',
     EventImage: 'EventImage',
+    EventScrap: 'EventScrap',
     Term: 'Term',
     User: 'User',
     UserTerm: 'UserTerm'
@@ -765,7 +788,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "article" | "articleComment" | "articleCommentLike" | "articleImage" | "articleLike" | "community" | "event" | "eventImage" | "term" | "user" | "userTerm"
+      modelProps: "article" | "articleComment" | "articleCommentLike" | "articleImage" | "articleLike" | "community" | "event" | "eventImage" | "eventScrap" | "term" | "user" | "userTerm"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1297,6 +1320,72 @@ export namespace Prisma {
           }
         }
       }
+      EventScrap: {
+        payload: Prisma.$EventScrapPayload<ExtArgs>
+        fields: Prisma.EventScrapFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EventScrapFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventScrapPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EventScrapFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventScrapPayload>
+          }
+          findFirst: {
+            args: Prisma.EventScrapFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventScrapPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EventScrapFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventScrapPayload>
+          }
+          findMany: {
+            args: Prisma.EventScrapFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventScrapPayload>[]
+          }
+          create: {
+            args: Prisma.EventScrapCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventScrapPayload>
+          }
+          createMany: {
+            args: Prisma.EventScrapCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.EventScrapDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventScrapPayload>
+          }
+          update: {
+            args: Prisma.EventScrapUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventScrapPayload>
+          }
+          deleteMany: {
+            args: Prisma.EventScrapDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EventScrapUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.EventScrapUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventScrapPayload>
+          }
+          aggregate: {
+            args: Prisma.EventScrapAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEventScrap>
+          }
+          groupBy: {
+            args: Prisma.EventScrapGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EventScrapGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EventScrapCountArgs<ExtArgs>
+            result: $Utils.Optional<EventScrapCountAggregateOutputType> | number
+          }
+        }
+      }
       Term: {
         payload: Prisma.$TermPayload<ExtArgs>
         fields: Prisma.TermFieldRefs
@@ -1595,6 +1684,7 @@ export namespace Prisma {
     community?: CommunityOmit
     event?: EventOmit
     eventImage?: EventImageOmit
+    eventScrap?: EventScrapOmit
     term?: TermOmit
     user?: UserOmit
     userTerm?: UserTermOmit
@@ -1655,6 +1745,25 @@ export namespace Prisma {
     | 'runCommandRaw'
     | 'findRaw'
     | 'groupBy'
+
+  /**
+   * These options are being passed into the middleware as "params"
+   */
+  export type MiddlewareParams = {
+    model?: ModelName
+    action: PrismaAction
+    args: any
+    dataPath: string[]
+    runInTransaction: boolean
+  }
+
+  /**
+   * The `T` type makes sure, that the `return proceed` is not forgotten in the middleware implementation
+   */
+  export type Middleware<T = any> = (
+    params: MiddlewareParams,
+    next: (params: MiddlewareParams) => $Utils.JsPromise<T>,
+  ) => $Utils.JsPromise<T>
 
   // tested in getLogLevel.test.ts
   export function getLogLevel(log: Array<LogLevel | LogDefinition>): LogLevel | undefined;
@@ -1799,10 +1908,12 @@ export namespace Prisma {
 
   export type EventCountOutputType = {
     eventImage: number
+    eventScrap: number
   }
 
   export type EventCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     eventImage?: boolean | EventCountOutputTypeCountEventImageArgs
+    eventScrap?: boolean | EventCountOutputTypeCountEventScrapArgs
   }
 
   // Custom InputTypes
@@ -1821,6 +1932,13 @@ export namespace Prisma {
    */
   export type EventCountOutputTypeCountEventImageArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: EventImageWhereInput
+  }
+
+  /**
+   * EventCountOutputType without action
+   */
+  export type EventCountOutputTypeCountEventScrapArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EventScrapWhereInput
   }
 
 
@@ -1865,6 +1983,7 @@ export namespace Prisma {
     articleCommentLike: number
     articleLike: number
     event: number
+    eventScrap: number
     userTerm: number
   }
 
@@ -1874,6 +1993,7 @@ export namespace Prisma {
     articleCommentLike?: boolean | UserCountOutputTypeCountArticleCommentLikeArgs
     articleLike?: boolean | UserCountOutputTypeCountArticleLikeArgs
     event?: boolean | UserCountOutputTypeCountEventArgs
+    eventScrap?: boolean | UserCountOutputTypeCountEventScrapArgs
     userTerm?: boolean | UserCountOutputTypeCountUserTermArgs
   }
 
@@ -1921,6 +2041,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountEventArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: EventWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountEventScrapArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EventScrapWhereInput
   }
 
   /**
@@ -8275,6 +8402,7 @@ export namespace Prisma {
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     eventImage?: boolean | Event$eventImageArgs<ExtArgs>
+    eventScrap?: boolean | Event$eventScrapArgs<ExtArgs>
     _count?: boolean | EventCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["event"]>
 
@@ -8302,6 +8430,7 @@ export namespace Prisma {
   export type EventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     eventImage?: boolean | Event$eventImageArgs<ExtArgs>
+    eventScrap?: boolean | Event$eventScrapArgs<ExtArgs>
     _count?: boolean | EventCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -8310,6 +8439,7 @@ export namespace Prisma {
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
       eventImage: Prisma.$EventImagePayload<ExtArgs>[]
+      eventScrap: Prisma.$EventScrapPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: bigint
@@ -8669,6 +8799,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     eventImage<T extends Event$eventImageArgs<ExtArgs> = {}>(args?: Subset<T, Event$eventImageArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventImagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    eventScrap<T extends Event$eventScrapArgs<ExtArgs> = {}>(args?: Subset<T, Event$eventScrapArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventScrapPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9077,6 +9208,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: EventImageScalarFieldEnum | EventImageScalarFieldEnum[]
+  }
+
+  /**
+   * Event.eventScrap
+   */
+  export type Event$eventScrapArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventScrap
+     */
+    select?: EventScrapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventScrap
+     */
+    omit?: EventScrapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventScrapInclude<ExtArgs> | null
+    where?: EventScrapWhereInput
+    orderBy?: EventScrapOrderByWithRelationInput | EventScrapOrderByWithRelationInput[]
+    cursor?: EventScrapWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: EventScrapScalarFieldEnum | EventScrapScalarFieldEnum[]
   }
 
   /**
@@ -10062,6 +10217,966 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: EventImageInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model EventScrap
+   */
+
+  export type AggregateEventScrap = {
+    _count: EventScrapCountAggregateOutputType | null
+    _avg: EventScrapAvgAggregateOutputType | null
+    _sum: EventScrapSumAggregateOutputType | null
+    _min: EventScrapMinAggregateOutputType | null
+    _max: EventScrapMaxAggregateOutputType | null
+  }
+
+  export type EventScrapAvgAggregateOutputType = {
+    userId: number | null
+    eventId: number | null
+  }
+
+  export type EventScrapSumAggregateOutputType = {
+    userId: bigint | null
+    eventId: bigint | null
+  }
+
+  export type EventScrapMinAggregateOutputType = {
+    userId: bigint | null
+    eventId: bigint | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EventScrapMaxAggregateOutputType = {
+    userId: bigint | null
+    eventId: bigint | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EventScrapCountAggregateOutputType = {
+    userId: number
+    eventId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type EventScrapAvgAggregateInputType = {
+    userId?: true
+    eventId?: true
+  }
+
+  export type EventScrapSumAggregateInputType = {
+    userId?: true
+    eventId?: true
+  }
+
+  export type EventScrapMinAggregateInputType = {
+    userId?: true
+    eventId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EventScrapMaxAggregateInputType = {
+    userId?: true
+    eventId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EventScrapCountAggregateInputType = {
+    userId?: true
+    eventId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type EventScrapAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EventScrap to aggregate.
+     */
+    where?: EventScrapWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EventScraps to fetch.
+     */
+    orderBy?: EventScrapOrderByWithRelationInput | EventScrapOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EventScrapWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EventScraps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EventScraps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned EventScraps
+    **/
+    _count?: true | EventScrapCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: EventScrapAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: EventScrapSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EventScrapMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EventScrapMaxAggregateInputType
+  }
+
+  export type GetEventScrapAggregateType<T extends EventScrapAggregateArgs> = {
+        [P in keyof T & keyof AggregateEventScrap]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEventScrap[P]>
+      : GetScalarType<T[P], AggregateEventScrap[P]>
+  }
+
+
+
+
+  export type EventScrapGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EventScrapWhereInput
+    orderBy?: EventScrapOrderByWithAggregationInput | EventScrapOrderByWithAggregationInput[]
+    by: EventScrapScalarFieldEnum[] | EventScrapScalarFieldEnum
+    having?: EventScrapScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EventScrapCountAggregateInputType | true
+    _avg?: EventScrapAvgAggregateInputType
+    _sum?: EventScrapSumAggregateInputType
+    _min?: EventScrapMinAggregateInputType
+    _max?: EventScrapMaxAggregateInputType
+  }
+
+  export type EventScrapGroupByOutputType = {
+    userId: bigint
+    eventId: bigint
+    createdAt: Date
+    updatedAt: Date
+    _count: EventScrapCountAggregateOutputType | null
+    _avg: EventScrapAvgAggregateOutputType | null
+    _sum: EventScrapSumAggregateOutputType | null
+    _min: EventScrapMinAggregateOutputType | null
+    _max: EventScrapMaxAggregateOutputType | null
+  }
+
+  type GetEventScrapGroupByPayload<T extends EventScrapGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EventScrapGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EventScrapGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EventScrapGroupByOutputType[P]>
+            : GetScalarType<T[P], EventScrapGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EventScrapSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    userId?: boolean
+    eventId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    event?: boolean | EventDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["eventScrap"]>
+
+
+
+  export type EventScrapSelectScalar = {
+    userId?: boolean
+    eventId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type EventScrapOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"userId" | "eventId" | "createdAt" | "updatedAt", ExtArgs["result"]["eventScrap"]>
+  export type EventScrapInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    event?: boolean | EventDefaultArgs<ExtArgs>
+  }
+
+  export type $EventScrapPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "EventScrap"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      event: Prisma.$EventPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      userId: bigint
+      eventId: bigint
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["eventScrap"]>
+    composites: {}
+  }
+
+  type EventScrapGetPayload<S extends boolean | null | undefined | EventScrapDefaultArgs> = $Result.GetResult<Prisma.$EventScrapPayload, S>
+
+  type EventScrapCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EventScrapFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EventScrapCountAggregateInputType | true
+    }
+
+  export interface EventScrapDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EventScrap'], meta: { name: 'EventScrap' } }
+    /**
+     * Find zero or one EventScrap that matches the filter.
+     * @param {EventScrapFindUniqueArgs} args - Arguments to find a EventScrap
+     * @example
+     * // Get one EventScrap
+     * const eventScrap = await prisma.eventScrap.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EventScrapFindUniqueArgs>(args: SelectSubset<T, EventScrapFindUniqueArgs<ExtArgs>>): Prisma__EventScrapClient<$Result.GetResult<Prisma.$EventScrapPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one EventScrap that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EventScrapFindUniqueOrThrowArgs} args - Arguments to find a EventScrap
+     * @example
+     * // Get one EventScrap
+     * const eventScrap = await prisma.eventScrap.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EventScrapFindUniqueOrThrowArgs>(args: SelectSubset<T, EventScrapFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EventScrapClient<$Result.GetResult<Prisma.$EventScrapPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EventScrap that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventScrapFindFirstArgs} args - Arguments to find a EventScrap
+     * @example
+     * // Get one EventScrap
+     * const eventScrap = await prisma.eventScrap.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EventScrapFindFirstArgs>(args?: SelectSubset<T, EventScrapFindFirstArgs<ExtArgs>>): Prisma__EventScrapClient<$Result.GetResult<Prisma.$EventScrapPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EventScrap that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventScrapFindFirstOrThrowArgs} args - Arguments to find a EventScrap
+     * @example
+     * // Get one EventScrap
+     * const eventScrap = await prisma.eventScrap.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EventScrapFindFirstOrThrowArgs>(args?: SelectSubset<T, EventScrapFindFirstOrThrowArgs<ExtArgs>>): Prisma__EventScrapClient<$Result.GetResult<Prisma.$EventScrapPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more EventScraps that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventScrapFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all EventScraps
+     * const eventScraps = await prisma.eventScrap.findMany()
+     * 
+     * // Get first 10 EventScraps
+     * const eventScraps = await prisma.eventScrap.findMany({ take: 10 })
+     * 
+     * // Only select the `userId`
+     * const eventScrapWithUserIdOnly = await prisma.eventScrap.findMany({ select: { userId: true } })
+     * 
+     */
+    findMany<T extends EventScrapFindManyArgs>(args?: SelectSubset<T, EventScrapFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventScrapPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a EventScrap.
+     * @param {EventScrapCreateArgs} args - Arguments to create a EventScrap.
+     * @example
+     * // Create one EventScrap
+     * const EventScrap = await prisma.eventScrap.create({
+     *   data: {
+     *     // ... data to create a EventScrap
+     *   }
+     * })
+     * 
+     */
+    create<T extends EventScrapCreateArgs>(args: SelectSubset<T, EventScrapCreateArgs<ExtArgs>>): Prisma__EventScrapClient<$Result.GetResult<Prisma.$EventScrapPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many EventScraps.
+     * @param {EventScrapCreateManyArgs} args - Arguments to create many EventScraps.
+     * @example
+     * // Create many EventScraps
+     * const eventScrap = await prisma.eventScrap.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EventScrapCreateManyArgs>(args?: SelectSubset<T, EventScrapCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a EventScrap.
+     * @param {EventScrapDeleteArgs} args - Arguments to delete one EventScrap.
+     * @example
+     * // Delete one EventScrap
+     * const EventScrap = await prisma.eventScrap.delete({
+     *   where: {
+     *     // ... filter to delete one EventScrap
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EventScrapDeleteArgs>(args: SelectSubset<T, EventScrapDeleteArgs<ExtArgs>>): Prisma__EventScrapClient<$Result.GetResult<Prisma.$EventScrapPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one EventScrap.
+     * @param {EventScrapUpdateArgs} args - Arguments to update one EventScrap.
+     * @example
+     * // Update one EventScrap
+     * const eventScrap = await prisma.eventScrap.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EventScrapUpdateArgs>(args: SelectSubset<T, EventScrapUpdateArgs<ExtArgs>>): Prisma__EventScrapClient<$Result.GetResult<Prisma.$EventScrapPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more EventScraps.
+     * @param {EventScrapDeleteManyArgs} args - Arguments to filter EventScraps to delete.
+     * @example
+     * // Delete a few EventScraps
+     * const { count } = await prisma.eventScrap.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EventScrapDeleteManyArgs>(args?: SelectSubset<T, EventScrapDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EventScraps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventScrapUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many EventScraps
+     * const eventScrap = await prisma.eventScrap.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EventScrapUpdateManyArgs>(args: SelectSubset<T, EventScrapUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one EventScrap.
+     * @param {EventScrapUpsertArgs} args - Arguments to update or create a EventScrap.
+     * @example
+     * // Update or create a EventScrap
+     * const eventScrap = await prisma.eventScrap.upsert({
+     *   create: {
+     *     // ... data to create a EventScrap
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the EventScrap we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EventScrapUpsertArgs>(args: SelectSubset<T, EventScrapUpsertArgs<ExtArgs>>): Prisma__EventScrapClient<$Result.GetResult<Prisma.$EventScrapPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of EventScraps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventScrapCountArgs} args - Arguments to filter EventScraps to count.
+     * @example
+     * // Count the number of EventScraps
+     * const count = await prisma.eventScrap.count({
+     *   where: {
+     *     // ... the filter for the EventScraps we want to count
+     *   }
+     * })
+    **/
+    count<T extends EventScrapCountArgs>(
+      args?: Subset<T, EventScrapCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EventScrapCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a EventScrap.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventScrapAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EventScrapAggregateArgs>(args: Subset<T, EventScrapAggregateArgs>): Prisma.PrismaPromise<GetEventScrapAggregateType<T>>
+
+    /**
+     * Group by EventScrap.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventScrapGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EventScrapGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EventScrapGroupByArgs['orderBy'] }
+        : { orderBy?: EventScrapGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EventScrapGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEventScrapGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the EventScrap model
+   */
+  readonly fields: EventScrapFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for EventScrap.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EventScrapClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    event<T extends EventDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EventDefaultArgs<ExtArgs>>): Prisma__EventClient<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the EventScrap model
+   */
+  interface EventScrapFieldRefs {
+    readonly userId: FieldRef<"EventScrap", 'BigInt'>
+    readonly eventId: FieldRef<"EventScrap", 'BigInt'>
+    readonly createdAt: FieldRef<"EventScrap", 'DateTime'>
+    readonly updatedAt: FieldRef<"EventScrap", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * EventScrap findUnique
+   */
+  export type EventScrapFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventScrap
+     */
+    select?: EventScrapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventScrap
+     */
+    omit?: EventScrapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventScrapInclude<ExtArgs> | null
+    /**
+     * Filter, which EventScrap to fetch.
+     */
+    where: EventScrapWhereUniqueInput
+  }
+
+  /**
+   * EventScrap findUniqueOrThrow
+   */
+  export type EventScrapFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventScrap
+     */
+    select?: EventScrapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventScrap
+     */
+    omit?: EventScrapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventScrapInclude<ExtArgs> | null
+    /**
+     * Filter, which EventScrap to fetch.
+     */
+    where: EventScrapWhereUniqueInput
+  }
+
+  /**
+   * EventScrap findFirst
+   */
+  export type EventScrapFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventScrap
+     */
+    select?: EventScrapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventScrap
+     */
+    omit?: EventScrapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventScrapInclude<ExtArgs> | null
+    /**
+     * Filter, which EventScrap to fetch.
+     */
+    where?: EventScrapWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EventScraps to fetch.
+     */
+    orderBy?: EventScrapOrderByWithRelationInput | EventScrapOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EventScraps.
+     */
+    cursor?: EventScrapWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EventScraps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EventScraps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EventScraps.
+     */
+    distinct?: EventScrapScalarFieldEnum | EventScrapScalarFieldEnum[]
+  }
+
+  /**
+   * EventScrap findFirstOrThrow
+   */
+  export type EventScrapFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventScrap
+     */
+    select?: EventScrapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventScrap
+     */
+    omit?: EventScrapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventScrapInclude<ExtArgs> | null
+    /**
+     * Filter, which EventScrap to fetch.
+     */
+    where?: EventScrapWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EventScraps to fetch.
+     */
+    orderBy?: EventScrapOrderByWithRelationInput | EventScrapOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EventScraps.
+     */
+    cursor?: EventScrapWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EventScraps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EventScraps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EventScraps.
+     */
+    distinct?: EventScrapScalarFieldEnum | EventScrapScalarFieldEnum[]
+  }
+
+  /**
+   * EventScrap findMany
+   */
+  export type EventScrapFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventScrap
+     */
+    select?: EventScrapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventScrap
+     */
+    omit?: EventScrapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventScrapInclude<ExtArgs> | null
+    /**
+     * Filter, which EventScraps to fetch.
+     */
+    where?: EventScrapWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EventScraps to fetch.
+     */
+    orderBy?: EventScrapOrderByWithRelationInput | EventScrapOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing EventScraps.
+     */
+    cursor?: EventScrapWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EventScraps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EventScraps.
+     */
+    skip?: number
+    distinct?: EventScrapScalarFieldEnum | EventScrapScalarFieldEnum[]
+  }
+
+  /**
+   * EventScrap create
+   */
+  export type EventScrapCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventScrap
+     */
+    select?: EventScrapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventScrap
+     */
+    omit?: EventScrapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventScrapInclude<ExtArgs> | null
+    /**
+     * The data needed to create a EventScrap.
+     */
+    data: XOR<EventScrapCreateInput, EventScrapUncheckedCreateInput>
+  }
+
+  /**
+   * EventScrap createMany
+   */
+  export type EventScrapCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many EventScraps.
+     */
+    data: EventScrapCreateManyInput | EventScrapCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EventScrap update
+   */
+  export type EventScrapUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventScrap
+     */
+    select?: EventScrapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventScrap
+     */
+    omit?: EventScrapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventScrapInclude<ExtArgs> | null
+    /**
+     * The data needed to update a EventScrap.
+     */
+    data: XOR<EventScrapUpdateInput, EventScrapUncheckedUpdateInput>
+    /**
+     * Choose, which EventScrap to update.
+     */
+    where: EventScrapWhereUniqueInput
+  }
+
+  /**
+   * EventScrap updateMany
+   */
+  export type EventScrapUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update EventScraps.
+     */
+    data: XOR<EventScrapUpdateManyMutationInput, EventScrapUncheckedUpdateManyInput>
+    /**
+     * Filter which EventScraps to update
+     */
+    where?: EventScrapWhereInput
+    /**
+     * Limit how many EventScraps to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EventScrap upsert
+   */
+  export type EventScrapUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventScrap
+     */
+    select?: EventScrapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventScrap
+     */
+    omit?: EventScrapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventScrapInclude<ExtArgs> | null
+    /**
+     * The filter to search for the EventScrap to update in case it exists.
+     */
+    where: EventScrapWhereUniqueInput
+    /**
+     * In case the EventScrap found by the `where` argument doesn't exist, create a new EventScrap with this data.
+     */
+    create: XOR<EventScrapCreateInput, EventScrapUncheckedCreateInput>
+    /**
+     * In case the EventScrap was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EventScrapUpdateInput, EventScrapUncheckedUpdateInput>
+  }
+
+  /**
+   * EventScrap delete
+   */
+  export type EventScrapDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventScrap
+     */
+    select?: EventScrapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventScrap
+     */
+    omit?: EventScrapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventScrapInclude<ExtArgs> | null
+    /**
+     * Filter which EventScrap to delete.
+     */
+    where: EventScrapWhereUniqueInput
+  }
+
+  /**
+   * EventScrap deleteMany
+   */
+  export type EventScrapDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EventScraps to delete
+     */
+    where?: EventScrapWhereInput
+    /**
+     * Limit how many EventScraps to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * EventScrap without action
+   */
+  export type EventScrapDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventScrap
+     */
+    select?: EventScrapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventScrap
+     */
+    omit?: EventScrapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventScrapInclude<ExtArgs> | null
   }
 
 
@@ -11324,6 +12439,7 @@ export namespace Prisma {
     articleCommentLike?: boolean | User$articleCommentLikeArgs<ExtArgs>
     articleLike?: boolean | User$articleLikeArgs<ExtArgs>
     event?: boolean | User$eventArgs<ExtArgs>
+    eventScrap?: boolean | User$eventScrapArgs<ExtArgs>
     userTerm?: boolean | User$userTermArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
@@ -11352,6 +12468,7 @@ export namespace Prisma {
     articleCommentLike?: boolean | User$articleCommentLikeArgs<ExtArgs>
     articleLike?: boolean | User$articleLikeArgs<ExtArgs>
     event?: boolean | User$eventArgs<ExtArgs>
+    eventScrap?: boolean | User$eventScrapArgs<ExtArgs>
     userTerm?: boolean | User$userTermArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -11364,6 +12481,7 @@ export namespace Prisma {
       articleCommentLike: Prisma.$ArticleCommentLikePayload<ExtArgs>[]
       articleLike: Prisma.$ArticleLikePayload<ExtArgs>[]
       event: Prisma.$EventPayload<ExtArgs>[]
+      eventScrap: Prisma.$EventScrapPayload<ExtArgs>[]
       userTerm: Prisma.$UserTermPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -11724,6 +12842,7 @@ export namespace Prisma {
     articleCommentLike<T extends User$articleCommentLikeArgs<ExtArgs> = {}>(args?: Subset<T, User$articleCommentLikeArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ArticleCommentLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     articleLike<T extends User$articleLikeArgs<ExtArgs> = {}>(args?: Subset<T, User$articleLikeArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ArticleLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     event<T extends User$eventArgs<ExtArgs> = {}>(args?: Subset<T, User$eventArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    eventScrap<T extends User$eventScrapArgs<ExtArgs> = {}>(args?: Subset<T, User$eventScrapArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventScrapPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     userTerm<T extends User$userTermArgs<ExtArgs> = {}>(args?: Subset<T, User$userTermArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserTermPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -12226,6 +13345,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: EventScalarFieldEnum | EventScalarFieldEnum[]
+  }
+
+  /**
+   * User.eventScrap
+   */
+  export type User$eventScrapArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventScrap
+     */
+    select?: EventScrapSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventScrap
+     */
+    omit?: EventScrapOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventScrapInclude<ExtArgs> | null
+    where?: EventScrapWhereInput
+    orderBy?: EventScrapOrderByWithRelationInput | EventScrapOrderByWithRelationInput[]
+    cursor?: EventScrapWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: EventScrapScalarFieldEnum | EventScrapScalarFieldEnum[]
   }
 
   /**
@@ -13357,6 +14500,16 @@ export namespace Prisma {
   export type EventImageScalarFieldEnum = (typeof EventImageScalarFieldEnum)[keyof typeof EventImageScalarFieldEnum]
 
 
+  export const EventScrapScalarFieldEnum: {
+    userId: 'userId',
+    eventId: 'eventId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type EventScrapScalarFieldEnum = (typeof EventScrapScalarFieldEnum)[keyof typeof EventScrapScalarFieldEnum]
+
+
   export const TermScalarFieldEnum: {
     id: 'id',
     title: 'title',
@@ -13951,6 +15104,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Event"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     eventImage?: EventImageListRelationFilter
+    eventScrap?: EventScrapListRelationFilter
   }
 
   export type EventOrderByWithRelationInput = {
@@ -13971,6 +15125,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
     eventImage?: EventImageOrderByRelationAggregateInput
+    eventScrap?: EventScrapOrderByRelationAggregateInput
     _relevance?: EventOrderByRelevanceInput
   }
 
@@ -13995,6 +15150,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Event"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     eventImage?: EventImageListRelationFilter
+    eventScrap?: EventScrapListRelationFilter
   }, "id">
 
   export type EventOrderByWithAggregationInput = {
@@ -14100,6 +15256,62 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"EventImage"> | Date | string
   }
 
+  export type EventScrapWhereInput = {
+    AND?: EventScrapWhereInput | EventScrapWhereInput[]
+    OR?: EventScrapWhereInput[]
+    NOT?: EventScrapWhereInput | EventScrapWhereInput[]
+    userId?: BigIntFilter<"EventScrap"> | bigint | number
+    eventId?: BigIntFilter<"EventScrap"> | bigint | number
+    createdAt?: DateTimeFilter<"EventScrap"> | Date | string
+    updatedAt?: DateTimeFilter<"EventScrap"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    event?: XOR<EventScalarRelationFilter, EventWhereInput>
+  }
+
+  export type EventScrapOrderByWithRelationInput = {
+    userId?: SortOrder
+    eventId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    event?: EventOrderByWithRelationInput
+  }
+
+  export type EventScrapWhereUniqueInput = Prisma.AtLeast<{
+    userId_eventId?: EventScrapUserIdEventIdCompoundUniqueInput
+    AND?: EventScrapWhereInput | EventScrapWhereInput[]
+    OR?: EventScrapWhereInput[]
+    NOT?: EventScrapWhereInput | EventScrapWhereInput[]
+    userId?: BigIntFilter<"EventScrap"> | bigint | number
+    eventId?: BigIntFilter<"EventScrap"> | bigint | number
+    createdAt?: DateTimeFilter<"EventScrap"> | Date | string
+    updatedAt?: DateTimeFilter<"EventScrap"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    event?: XOR<EventScalarRelationFilter, EventWhereInput>
+  }, "userId_eventId">
+
+  export type EventScrapOrderByWithAggregationInput = {
+    userId?: SortOrder
+    eventId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: EventScrapCountOrderByAggregateInput
+    _avg?: EventScrapAvgOrderByAggregateInput
+    _max?: EventScrapMaxOrderByAggregateInput
+    _min?: EventScrapMinOrderByAggregateInput
+    _sum?: EventScrapSumOrderByAggregateInput
+  }
+
+  export type EventScrapScalarWhereWithAggregatesInput = {
+    AND?: EventScrapScalarWhereWithAggregatesInput | EventScrapScalarWhereWithAggregatesInput[]
+    OR?: EventScrapScalarWhereWithAggregatesInput[]
+    NOT?: EventScrapScalarWhereWithAggregatesInput | EventScrapScalarWhereWithAggregatesInput[]
+    userId?: BigIntWithAggregatesFilter<"EventScrap"> | bigint | number
+    eventId?: BigIntWithAggregatesFilter<"EventScrap"> | bigint | number
+    createdAt?: DateTimeWithAggregatesFilter<"EventScrap"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"EventScrap"> | Date | string
+  }
+
   export type TermWhereInput = {
     AND?: TermWhereInput | TermWhereInput[]
     OR?: TermWhereInput[]
@@ -14184,6 +15396,7 @@ export namespace Prisma {
     articleCommentLike?: ArticleCommentLikeListRelationFilter
     articleLike?: ArticleLikeListRelationFilter
     event?: EventListRelationFilter
+    eventScrap?: EventScrapListRelationFilter
     userTerm?: UserTermListRelationFilter
   }
 
@@ -14205,6 +15418,7 @@ export namespace Prisma {
     articleCommentLike?: ArticleCommentLikeOrderByRelationAggregateInput
     articleLike?: ArticleLikeOrderByRelationAggregateInput
     event?: EventOrderByRelationAggregateInput
+    eventScrap?: EventScrapOrderByRelationAggregateInput
     userTerm?: UserTermOrderByRelationAggregateInput
     _relevance?: UserOrderByRelevanceInput
   }
@@ -14230,6 +15444,7 @@ export namespace Prisma {
     articleCommentLike?: ArticleCommentLikeListRelationFilter
     articleLike?: ArticleLikeListRelationFilter
     event?: EventListRelationFilter
+    eventScrap?: EventScrapListRelationFilter
     userTerm?: UserTermListRelationFilter
   }, "id">
 
@@ -14720,6 +15935,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutEventInput
     eventImage?: EventImageCreateNestedManyWithoutEventInput
+    eventScrap?: EventScrapCreateNestedManyWithoutEventInput
   }
 
   export type EventUncheckedCreateInput = {
@@ -14739,6 +15955,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     eventImage?: EventImageUncheckedCreateNestedManyWithoutEventInput
+    eventScrap?: EventScrapUncheckedCreateNestedManyWithoutEventInput
   }
 
   export type EventUpdateInput = {
@@ -14758,6 +15975,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutEventNestedInput
     eventImage?: EventImageUpdateManyWithoutEventNestedInput
+    eventScrap?: EventScrapUpdateManyWithoutEventNestedInput
   }
 
   export type EventUncheckedUpdateInput = {
@@ -14777,6 +15995,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     eventImage?: EventImageUncheckedUpdateManyWithoutEventNestedInput
+    eventScrap?: EventScrapUncheckedUpdateManyWithoutEventNestedInput
   }
 
   export type EventCreateManyInput = {
@@ -14887,6 +16106,53 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type EventScrapCreateInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutEventScrapInput
+    event: EventCreateNestedOneWithoutEventScrapInput
+  }
+
+  export type EventScrapUncheckedCreateInput = {
+    userId: bigint | number
+    eventId: bigint | number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EventScrapUpdateInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutEventScrapNestedInput
+    event?: EventUpdateOneRequiredWithoutEventScrapNestedInput
+  }
+
+  export type EventScrapUncheckedUpdateInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    eventId?: BigIntFieldUpdateOperationsInput | bigint | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EventScrapCreateManyInput = {
+    userId: bigint | number
+    eventId: bigint | number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EventScrapUpdateManyMutationInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EventScrapUncheckedUpdateManyInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    eventId?: BigIntFieldUpdateOperationsInput | bigint | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type TermCreateInput = {
     id?: bigint | number
     title: string
@@ -14972,6 +16238,7 @@ export namespace Prisma {
     articleCommentLike?: ArticleCommentLikeCreateNestedManyWithoutUserInput
     articleLike?: ArticleLikeCreateNestedManyWithoutUserInput
     event?: EventCreateNestedManyWithoutUserInput
+    eventScrap?: EventScrapCreateNestedManyWithoutUserInput
     userTerm?: UserTermCreateNestedManyWithoutUserInput
   }
 
@@ -14993,6 +16260,7 @@ export namespace Prisma {
     articleCommentLike?: ArticleCommentLikeUncheckedCreateNestedManyWithoutUserInput
     articleLike?: ArticleLikeUncheckedCreateNestedManyWithoutUserInput
     event?: EventUncheckedCreateNestedManyWithoutUserInput
+    eventScrap?: EventScrapUncheckedCreateNestedManyWithoutUserInput
     userTerm?: UserTermUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -15014,6 +16282,7 @@ export namespace Prisma {
     articleCommentLike?: ArticleCommentLikeUpdateManyWithoutUserNestedInput
     articleLike?: ArticleLikeUpdateManyWithoutUserNestedInput
     event?: EventUpdateManyWithoutUserNestedInput
+    eventScrap?: EventScrapUpdateManyWithoutUserNestedInput
     userTerm?: UserTermUpdateManyWithoutUserNestedInput
   }
 
@@ -15035,6 +16304,7 @@ export namespace Prisma {
     articleCommentLike?: ArticleCommentLikeUncheckedUpdateManyWithoutUserNestedInput
     articleLike?: ArticleLikeUncheckedUpdateManyWithoutUserNestedInput
     event?: EventUncheckedUpdateManyWithoutUserNestedInput
+    eventScrap?: EventScrapUncheckedUpdateManyWithoutUserNestedInput
     userTerm?: UserTermUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -15646,7 +16916,17 @@ export namespace Prisma {
     none?: EventImageWhereInput
   }
 
+  export type EventScrapListRelationFilter = {
+    every?: EventScrapWhereInput
+    some?: EventScrapWhereInput
+    none?: EventScrapWhereInput
+  }
+
   export type EventImageOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type EventScrapOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -15788,6 +17068,42 @@ export namespace Prisma {
   export type EventImageSumOrderByAggregateInput = {
     eventId?: SortOrder
     order?: SortOrder
+  }
+
+  export type EventScrapUserIdEventIdCompoundUniqueInput = {
+    userId: bigint | number
+    eventId: bigint | number
+  }
+
+  export type EventScrapCountOrderByAggregateInput = {
+    userId?: SortOrder
+    eventId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EventScrapAvgOrderByAggregateInput = {
+    userId?: SortOrder
+    eventId?: SortOrder
+  }
+
+  export type EventScrapMaxOrderByAggregateInput = {
+    userId?: SortOrder
+    eventId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EventScrapMinOrderByAggregateInput = {
+    userId?: SortOrder
+    eventId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EventScrapSumOrderByAggregateInput = {
+    userId?: SortOrder
+    eventId?: SortOrder
   }
 
   export type UserTermListRelationFilter = {
@@ -16422,11 +17738,25 @@ export namespace Prisma {
     connect?: EventImageWhereUniqueInput | EventImageWhereUniqueInput[]
   }
 
+  export type EventScrapCreateNestedManyWithoutEventInput = {
+    create?: XOR<EventScrapCreateWithoutEventInput, EventScrapUncheckedCreateWithoutEventInput> | EventScrapCreateWithoutEventInput[] | EventScrapUncheckedCreateWithoutEventInput[]
+    connectOrCreate?: EventScrapCreateOrConnectWithoutEventInput | EventScrapCreateOrConnectWithoutEventInput[]
+    createMany?: EventScrapCreateManyEventInputEnvelope
+    connect?: EventScrapWhereUniqueInput | EventScrapWhereUniqueInput[]
+  }
+
   export type EventImageUncheckedCreateNestedManyWithoutEventInput = {
     create?: XOR<EventImageCreateWithoutEventInput, EventImageUncheckedCreateWithoutEventInput> | EventImageCreateWithoutEventInput[] | EventImageUncheckedCreateWithoutEventInput[]
     connectOrCreate?: EventImageCreateOrConnectWithoutEventInput | EventImageCreateOrConnectWithoutEventInput[]
     createMany?: EventImageCreateManyEventInputEnvelope
     connect?: EventImageWhereUniqueInput | EventImageWhereUniqueInput[]
+  }
+
+  export type EventScrapUncheckedCreateNestedManyWithoutEventInput = {
+    create?: XOR<EventScrapCreateWithoutEventInput, EventScrapUncheckedCreateWithoutEventInput> | EventScrapCreateWithoutEventInput[] | EventScrapUncheckedCreateWithoutEventInput[]
+    connectOrCreate?: EventScrapCreateOrConnectWithoutEventInput | EventScrapCreateOrConnectWithoutEventInput[]
+    createMany?: EventScrapCreateManyEventInputEnvelope
+    connect?: EventScrapWhereUniqueInput | EventScrapWhereUniqueInput[]
   }
 
   export type NullableStringFieldUpdateOperationsInput = {
@@ -16455,6 +17785,20 @@ export namespace Prisma {
     deleteMany?: EventImageScalarWhereInput | EventImageScalarWhereInput[]
   }
 
+  export type EventScrapUpdateManyWithoutEventNestedInput = {
+    create?: XOR<EventScrapCreateWithoutEventInput, EventScrapUncheckedCreateWithoutEventInput> | EventScrapCreateWithoutEventInput[] | EventScrapUncheckedCreateWithoutEventInput[]
+    connectOrCreate?: EventScrapCreateOrConnectWithoutEventInput | EventScrapCreateOrConnectWithoutEventInput[]
+    upsert?: EventScrapUpsertWithWhereUniqueWithoutEventInput | EventScrapUpsertWithWhereUniqueWithoutEventInput[]
+    createMany?: EventScrapCreateManyEventInputEnvelope
+    set?: EventScrapWhereUniqueInput | EventScrapWhereUniqueInput[]
+    disconnect?: EventScrapWhereUniqueInput | EventScrapWhereUniqueInput[]
+    delete?: EventScrapWhereUniqueInput | EventScrapWhereUniqueInput[]
+    connect?: EventScrapWhereUniqueInput | EventScrapWhereUniqueInput[]
+    update?: EventScrapUpdateWithWhereUniqueWithoutEventInput | EventScrapUpdateWithWhereUniqueWithoutEventInput[]
+    updateMany?: EventScrapUpdateManyWithWhereWithoutEventInput | EventScrapUpdateManyWithWhereWithoutEventInput[]
+    deleteMany?: EventScrapScalarWhereInput | EventScrapScalarWhereInput[]
+  }
+
   export type EventImageUncheckedUpdateManyWithoutEventNestedInput = {
     create?: XOR<EventImageCreateWithoutEventInput, EventImageUncheckedCreateWithoutEventInput> | EventImageCreateWithoutEventInput[] | EventImageUncheckedCreateWithoutEventInput[]
     connectOrCreate?: EventImageCreateOrConnectWithoutEventInput | EventImageCreateOrConnectWithoutEventInput[]
@@ -16469,6 +17813,20 @@ export namespace Prisma {
     deleteMany?: EventImageScalarWhereInput | EventImageScalarWhereInput[]
   }
 
+  export type EventScrapUncheckedUpdateManyWithoutEventNestedInput = {
+    create?: XOR<EventScrapCreateWithoutEventInput, EventScrapUncheckedCreateWithoutEventInput> | EventScrapCreateWithoutEventInput[] | EventScrapUncheckedCreateWithoutEventInput[]
+    connectOrCreate?: EventScrapCreateOrConnectWithoutEventInput | EventScrapCreateOrConnectWithoutEventInput[]
+    upsert?: EventScrapUpsertWithWhereUniqueWithoutEventInput | EventScrapUpsertWithWhereUniqueWithoutEventInput[]
+    createMany?: EventScrapCreateManyEventInputEnvelope
+    set?: EventScrapWhereUniqueInput | EventScrapWhereUniqueInput[]
+    disconnect?: EventScrapWhereUniqueInput | EventScrapWhereUniqueInput[]
+    delete?: EventScrapWhereUniqueInput | EventScrapWhereUniqueInput[]
+    connect?: EventScrapWhereUniqueInput | EventScrapWhereUniqueInput[]
+    update?: EventScrapUpdateWithWhereUniqueWithoutEventInput | EventScrapUpdateWithWhereUniqueWithoutEventInput[]
+    updateMany?: EventScrapUpdateManyWithWhereWithoutEventInput | EventScrapUpdateManyWithWhereWithoutEventInput[]
+    deleteMany?: EventScrapScalarWhereInput | EventScrapScalarWhereInput[]
+  }
+
   export type EventCreateNestedOneWithoutEventImageInput = {
     create?: XOR<EventCreateWithoutEventImageInput, EventUncheckedCreateWithoutEventImageInput>
     connectOrCreate?: EventCreateOrConnectWithoutEventImageInput
@@ -16481,6 +17839,34 @@ export namespace Prisma {
     upsert?: EventUpsertWithoutEventImageInput
     connect?: EventWhereUniqueInput
     update?: XOR<XOR<EventUpdateToOneWithWhereWithoutEventImageInput, EventUpdateWithoutEventImageInput>, EventUncheckedUpdateWithoutEventImageInput>
+  }
+
+  export type UserCreateNestedOneWithoutEventScrapInput = {
+    create?: XOR<UserCreateWithoutEventScrapInput, UserUncheckedCreateWithoutEventScrapInput>
+    connectOrCreate?: UserCreateOrConnectWithoutEventScrapInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EventCreateNestedOneWithoutEventScrapInput = {
+    create?: XOR<EventCreateWithoutEventScrapInput, EventUncheckedCreateWithoutEventScrapInput>
+    connectOrCreate?: EventCreateOrConnectWithoutEventScrapInput
+    connect?: EventWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutEventScrapNestedInput = {
+    create?: XOR<UserCreateWithoutEventScrapInput, UserUncheckedCreateWithoutEventScrapInput>
+    connectOrCreate?: UserCreateOrConnectWithoutEventScrapInput
+    upsert?: UserUpsertWithoutEventScrapInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutEventScrapInput, UserUpdateWithoutEventScrapInput>, UserUncheckedUpdateWithoutEventScrapInput>
+  }
+
+  export type EventUpdateOneRequiredWithoutEventScrapNestedInput = {
+    create?: XOR<EventCreateWithoutEventScrapInput, EventUncheckedCreateWithoutEventScrapInput>
+    connectOrCreate?: EventCreateOrConnectWithoutEventScrapInput
+    upsert?: EventUpsertWithoutEventScrapInput
+    connect?: EventWhereUniqueInput
+    update?: XOR<XOR<EventUpdateToOneWithWhereWithoutEventScrapInput, EventUpdateWithoutEventScrapInput>, EventUncheckedUpdateWithoutEventScrapInput>
   }
 
   export type UserTermCreateNestedManyWithoutTermInput = {
@@ -16560,6 +17946,13 @@ export namespace Prisma {
     connect?: EventWhereUniqueInput | EventWhereUniqueInput[]
   }
 
+  export type EventScrapCreateNestedManyWithoutUserInput = {
+    create?: XOR<EventScrapCreateWithoutUserInput, EventScrapUncheckedCreateWithoutUserInput> | EventScrapCreateWithoutUserInput[] | EventScrapUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EventScrapCreateOrConnectWithoutUserInput | EventScrapCreateOrConnectWithoutUserInput[]
+    createMany?: EventScrapCreateManyUserInputEnvelope
+    connect?: EventScrapWhereUniqueInput | EventScrapWhereUniqueInput[]
+  }
+
   export type UserTermCreateNestedManyWithoutUserInput = {
     create?: XOR<UserTermCreateWithoutUserInput, UserTermUncheckedCreateWithoutUserInput> | UserTermCreateWithoutUserInput[] | UserTermUncheckedCreateWithoutUserInput[]
     connectOrCreate?: UserTermCreateOrConnectWithoutUserInput | UserTermCreateOrConnectWithoutUserInput[]
@@ -16600,6 +17993,13 @@ export namespace Prisma {
     connectOrCreate?: EventCreateOrConnectWithoutUserInput | EventCreateOrConnectWithoutUserInput[]
     createMany?: EventCreateManyUserInputEnvelope
     connect?: EventWhereUniqueInput | EventWhereUniqueInput[]
+  }
+
+  export type EventScrapUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<EventScrapCreateWithoutUserInput, EventScrapUncheckedCreateWithoutUserInput> | EventScrapCreateWithoutUserInput[] | EventScrapUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EventScrapCreateOrConnectWithoutUserInput | EventScrapCreateOrConnectWithoutUserInput[]
+    createMany?: EventScrapCreateManyUserInputEnvelope
+    connect?: EventScrapWhereUniqueInput | EventScrapWhereUniqueInput[]
   }
 
   export type UserTermUncheckedCreateNestedManyWithoutUserInput = {
@@ -16681,6 +18081,20 @@ export namespace Prisma {
     update?: EventUpdateWithWhereUniqueWithoutUserInput | EventUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: EventUpdateManyWithWhereWithoutUserInput | EventUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: EventScalarWhereInput | EventScalarWhereInput[]
+  }
+
+  export type EventScrapUpdateManyWithoutUserNestedInput = {
+    create?: XOR<EventScrapCreateWithoutUserInput, EventScrapUncheckedCreateWithoutUserInput> | EventScrapCreateWithoutUserInput[] | EventScrapUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EventScrapCreateOrConnectWithoutUserInput | EventScrapCreateOrConnectWithoutUserInput[]
+    upsert?: EventScrapUpsertWithWhereUniqueWithoutUserInput | EventScrapUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: EventScrapCreateManyUserInputEnvelope
+    set?: EventScrapWhereUniqueInput | EventScrapWhereUniqueInput[]
+    disconnect?: EventScrapWhereUniqueInput | EventScrapWhereUniqueInput[]
+    delete?: EventScrapWhereUniqueInput | EventScrapWhereUniqueInput[]
+    connect?: EventScrapWhereUniqueInput | EventScrapWhereUniqueInput[]
+    update?: EventScrapUpdateWithWhereUniqueWithoutUserInput | EventScrapUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: EventScrapUpdateManyWithWhereWithoutUserInput | EventScrapUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: EventScrapScalarWhereInput | EventScrapScalarWhereInput[]
   }
 
   export type UserTermUpdateManyWithoutUserNestedInput = {
@@ -16765,6 +18179,20 @@ export namespace Prisma {
     update?: EventUpdateWithWhereUniqueWithoutUserInput | EventUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: EventUpdateManyWithWhereWithoutUserInput | EventUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: EventScalarWhereInput | EventScalarWhereInput[]
+  }
+
+  export type EventScrapUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<EventScrapCreateWithoutUserInput, EventScrapUncheckedCreateWithoutUserInput> | EventScrapCreateWithoutUserInput[] | EventScrapUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EventScrapCreateOrConnectWithoutUserInput | EventScrapCreateOrConnectWithoutUserInput[]
+    upsert?: EventScrapUpsertWithWhereUniqueWithoutUserInput | EventScrapUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: EventScrapCreateManyUserInputEnvelope
+    set?: EventScrapWhereUniqueInput | EventScrapWhereUniqueInput[]
+    disconnect?: EventScrapWhereUniqueInput | EventScrapWhereUniqueInput[]
+    delete?: EventScrapWhereUniqueInput | EventScrapWhereUniqueInput[]
+    connect?: EventScrapWhereUniqueInput | EventScrapWhereUniqueInput[]
+    update?: EventScrapUpdateWithWhereUniqueWithoutUserInput | EventScrapUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: EventScrapUpdateManyWithWhereWithoutUserInput | EventScrapUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: EventScrapScalarWhereInput | EventScrapScalarWhereInput[]
   }
 
   export type UserTermUncheckedUpdateManyWithoutUserNestedInput = {
@@ -17069,6 +18497,7 @@ export namespace Prisma {
     articleCommentLike?: ArticleCommentLikeCreateNestedManyWithoutUserInput
     articleLike?: ArticleLikeCreateNestedManyWithoutUserInput
     event?: EventCreateNestedManyWithoutUserInput
+    eventScrap?: EventScrapCreateNestedManyWithoutUserInput
     userTerm?: UserTermCreateNestedManyWithoutUserInput
   }
 
@@ -17089,6 +18518,7 @@ export namespace Prisma {
     articleCommentLike?: ArticleCommentLikeUncheckedCreateNestedManyWithoutUserInput
     articleLike?: ArticleLikeUncheckedCreateNestedManyWithoutUserInput
     event?: EventUncheckedCreateNestedManyWithoutUserInput
+    eventScrap?: EventScrapUncheckedCreateNestedManyWithoutUserInput
     userTerm?: UserTermUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -17224,6 +18654,7 @@ export namespace Prisma {
     articleCommentLike?: ArticleCommentLikeUpdateManyWithoutUserNestedInput
     articleLike?: ArticleLikeUpdateManyWithoutUserNestedInput
     event?: EventUpdateManyWithoutUserNestedInput
+    eventScrap?: EventScrapUpdateManyWithoutUserNestedInput
     userTerm?: UserTermUpdateManyWithoutUserNestedInput
   }
 
@@ -17244,6 +18675,7 @@ export namespace Prisma {
     articleCommentLike?: ArticleCommentLikeUncheckedUpdateManyWithoutUserNestedInput
     articleLike?: ArticleLikeUncheckedUpdateManyWithoutUserNestedInput
     event?: EventUncheckedUpdateManyWithoutUserNestedInput
+    eventScrap?: EventScrapUncheckedUpdateManyWithoutUserNestedInput
     userTerm?: UserTermUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -17372,6 +18804,7 @@ export namespace Prisma {
     articleCommentLike?: ArticleCommentLikeCreateNestedManyWithoutUserInput
     articleLike?: ArticleLikeCreateNestedManyWithoutUserInput
     event?: EventCreateNestedManyWithoutUserInput
+    eventScrap?: EventScrapCreateNestedManyWithoutUserInput
     userTerm?: UserTermCreateNestedManyWithoutUserInput
   }
 
@@ -17392,6 +18825,7 @@ export namespace Prisma {
     articleCommentLike?: ArticleCommentLikeUncheckedCreateNestedManyWithoutUserInput
     articleLike?: ArticleLikeUncheckedCreateNestedManyWithoutUserInput
     event?: EventUncheckedCreateNestedManyWithoutUserInput
+    eventScrap?: EventScrapUncheckedCreateNestedManyWithoutUserInput
     userTerm?: UserTermUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -17544,6 +18978,7 @@ export namespace Prisma {
     articleCommentLike?: ArticleCommentLikeUpdateManyWithoutUserNestedInput
     articleLike?: ArticleLikeUpdateManyWithoutUserNestedInput
     event?: EventUpdateManyWithoutUserNestedInput
+    eventScrap?: EventScrapUpdateManyWithoutUserNestedInput
     userTerm?: UserTermUpdateManyWithoutUserNestedInput
   }
 
@@ -17564,6 +18999,7 @@ export namespace Prisma {
     articleCommentLike?: ArticleCommentLikeUncheckedUpdateManyWithoutUserNestedInput
     articleLike?: ArticleLikeUncheckedUpdateManyWithoutUserNestedInput
     event?: EventUncheckedUpdateManyWithoutUserNestedInput
+    eventScrap?: EventScrapUncheckedUpdateManyWithoutUserNestedInput
     userTerm?: UserTermUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -17727,6 +19163,7 @@ export namespace Prisma {
     articleComment?: ArticleCommentCreateNestedManyWithoutUserInput
     articleLike?: ArticleLikeCreateNestedManyWithoutUserInput
     event?: EventCreateNestedManyWithoutUserInput
+    eventScrap?: EventScrapCreateNestedManyWithoutUserInput
     userTerm?: UserTermCreateNestedManyWithoutUserInput
   }
 
@@ -17747,6 +19184,7 @@ export namespace Prisma {
     articleComment?: ArticleCommentUncheckedCreateNestedManyWithoutUserInput
     articleLike?: ArticleLikeUncheckedCreateNestedManyWithoutUserInput
     event?: EventUncheckedCreateNestedManyWithoutUserInput
+    eventScrap?: EventScrapUncheckedCreateNestedManyWithoutUserInput
     userTerm?: UserTermUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -17818,6 +19256,7 @@ export namespace Prisma {
     articleComment?: ArticleCommentUpdateManyWithoutUserNestedInput
     articleLike?: ArticleLikeUpdateManyWithoutUserNestedInput
     event?: EventUpdateManyWithoutUserNestedInput
+    eventScrap?: EventScrapUpdateManyWithoutUserNestedInput
     userTerm?: UserTermUpdateManyWithoutUserNestedInput
   }
 
@@ -17838,6 +19277,7 @@ export namespace Prisma {
     articleComment?: ArticleCommentUncheckedUpdateManyWithoutUserNestedInput
     articleLike?: ArticleLikeUncheckedUpdateManyWithoutUserNestedInput
     event?: EventUncheckedUpdateManyWithoutUserNestedInput
+    eventScrap?: EventScrapUncheckedUpdateManyWithoutUserNestedInput
     userTerm?: UserTermUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -17957,6 +19397,7 @@ export namespace Prisma {
     articleComment?: ArticleCommentCreateNestedManyWithoutUserInput
     articleCommentLike?: ArticleCommentLikeCreateNestedManyWithoutUserInput
     event?: EventCreateNestedManyWithoutUserInput
+    eventScrap?: EventScrapCreateNestedManyWithoutUserInput
     userTerm?: UserTermCreateNestedManyWithoutUserInput
   }
 
@@ -17977,6 +19418,7 @@ export namespace Prisma {
     articleComment?: ArticleCommentUncheckedCreateNestedManyWithoutUserInput
     articleCommentLike?: ArticleCommentLikeUncheckedCreateNestedManyWithoutUserInput
     event?: EventUncheckedCreateNestedManyWithoutUserInput
+    eventScrap?: EventScrapUncheckedCreateNestedManyWithoutUserInput
     userTerm?: UserTermUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -18050,6 +19492,7 @@ export namespace Prisma {
     articleComment?: ArticleCommentUpdateManyWithoutUserNestedInput
     articleCommentLike?: ArticleCommentLikeUpdateManyWithoutUserNestedInput
     event?: EventUpdateManyWithoutUserNestedInput
+    eventScrap?: EventScrapUpdateManyWithoutUserNestedInput
     userTerm?: UserTermUpdateManyWithoutUserNestedInput
   }
 
@@ -18070,6 +19513,7 @@ export namespace Prisma {
     articleComment?: ArticleCommentUncheckedUpdateManyWithoutUserNestedInput
     articleCommentLike?: ArticleCommentLikeUncheckedUpdateManyWithoutUserNestedInput
     event?: EventUncheckedUpdateManyWithoutUserNestedInput
+    eventScrap?: EventScrapUncheckedUpdateManyWithoutUserNestedInput
     userTerm?: UserTermUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -18156,6 +19600,7 @@ export namespace Prisma {
     articleComment?: ArticleCommentCreateNestedManyWithoutUserInput
     articleCommentLike?: ArticleCommentLikeCreateNestedManyWithoutUserInput
     articleLike?: ArticleLikeCreateNestedManyWithoutUserInput
+    eventScrap?: EventScrapCreateNestedManyWithoutUserInput
     userTerm?: UserTermCreateNestedManyWithoutUserInput
   }
 
@@ -18176,6 +19621,7 @@ export namespace Prisma {
     articleComment?: ArticleCommentUncheckedCreateNestedManyWithoutUserInput
     articleCommentLike?: ArticleCommentLikeUncheckedCreateNestedManyWithoutUserInput
     articleLike?: ArticleLikeUncheckedCreateNestedManyWithoutUserInput
+    eventScrap?: EventScrapUncheckedCreateNestedManyWithoutUserInput
     userTerm?: UserTermUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -18208,6 +19654,28 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type EventScrapCreateWithoutEventInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutEventScrapInput
+  }
+
+  export type EventScrapUncheckedCreateWithoutEventInput = {
+    userId: bigint | number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EventScrapCreateOrConnectWithoutEventInput = {
+    where: EventScrapWhereUniqueInput
+    create: XOR<EventScrapCreateWithoutEventInput, EventScrapUncheckedCreateWithoutEventInput>
+  }
+
+  export type EventScrapCreateManyEventInputEnvelope = {
+    data: EventScrapCreateManyEventInput | EventScrapCreateManyEventInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutEventInput = {
     update: XOR<UserUpdateWithoutEventInput, UserUncheckedUpdateWithoutEventInput>
     create: XOR<UserCreateWithoutEventInput, UserUncheckedCreateWithoutEventInput>
@@ -18236,6 +19704,7 @@ export namespace Prisma {
     articleComment?: ArticleCommentUpdateManyWithoutUserNestedInput
     articleCommentLike?: ArticleCommentLikeUpdateManyWithoutUserNestedInput
     articleLike?: ArticleLikeUpdateManyWithoutUserNestedInput
+    eventScrap?: EventScrapUpdateManyWithoutUserNestedInput
     userTerm?: UserTermUpdateManyWithoutUserNestedInput
   }
 
@@ -18256,6 +19725,7 @@ export namespace Prisma {
     articleComment?: ArticleCommentUncheckedUpdateManyWithoutUserNestedInput
     articleCommentLike?: ArticleCommentLikeUncheckedUpdateManyWithoutUserNestedInput
     articleLike?: ArticleLikeUncheckedUpdateManyWithoutUserNestedInput
+    eventScrap?: EventScrapUncheckedUpdateManyWithoutUserNestedInput
     userTerm?: UserTermUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -18286,6 +19756,32 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"EventImage"> | Date | string
   }
 
+  export type EventScrapUpsertWithWhereUniqueWithoutEventInput = {
+    where: EventScrapWhereUniqueInput
+    update: XOR<EventScrapUpdateWithoutEventInput, EventScrapUncheckedUpdateWithoutEventInput>
+    create: XOR<EventScrapCreateWithoutEventInput, EventScrapUncheckedCreateWithoutEventInput>
+  }
+
+  export type EventScrapUpdateWithWhereUniqueWithoutEventInput = {
+    where: EventScrapWhereUniqueInput
+    data: XOR<EventScrapUpdateWithoutEventInput, EventScrapUncheckedUpdateWithoutEventInput>
+  }
+
+  export type EventScrapUpdateManyWithWhereWithoutEventInput = {
+    where: EventScrapScalarWhereInput
+    data: XOR<EventScrapUpdateManyMutationInput, EventScrapUncheckedUpdateManyWithoutEventInput>
+  }
+
+  export type EventScrapScalarWhereInput = {
+    AND?: EventScrapScalarWhereInput | EventScrapScalarWhereInput[]
+    OR?: EventScrapScalarWhereInput[]
+    NOT?: EventScrapScalarWhereInput | EventScrapScalarWhereInput[]
+    userId?: BigIntFilter<"EventScrap"> | bigint | number
+    eventId?: BigIntFilter<"EventScrap"> | bigint | number
+    createdAt?: DateTimeFilter<"EventScrap"> | Date | string
+    updatedAt?: DateTimeFilter<"EventScrap"> | Date | string
+  }
+
   export type EventCreateWithoutEventImageInput = {
     id?: bigint | number
     title: string
@@ -18302,6 +19798,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutEventInput
+    eventScrap?: EventScrapCreateNestedManyWithoutEventInput
   }
 
   export type EventUncheckedCreateWithoutEventImageInput = {
@@ -18320,6 +19817,7 @@ export namespace Prisma {
     category: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    eventScrap?: EventScrapUncheckedCreateNestedManyWithoutEventInput
   }
 
   export type EventCreateOrConnectWithoutEventImageInput = {
@@ -18354,6 +19852,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutEventNestedInput
+    eventScrap?: EventScrapUpdateManyWithoutEventNestedInput
   }
 
   export type EventUncheckedUpdateWithoutEventImageInput = {
@@ -18372,6 +19871,199 @@ export namespace Prisma {
     category?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    eventScrap?: EventScrapUncheckedUpdateManyWithoutEventNestedInput
+  }
+
+  export type UserCreateWithoutEventScrapInput = {
+    id?: bigint | number
+    name?: string | null
+    nickname: string
+    birthdate?: Date | string | null
+    gender?: string | null
+    phoneNumber?: string | null
+    profileImage?: string | null
+    role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    article?: ArticleCreateNestedManyWithoutUserInput
+    articleComment?: ArticleCommentCreateNestedManyWithoutUserInput
+    articleCommentLike?: ArticleCommentLikeCreateNestedManyWithoutUserInput
+    articleLike?: ArticleLikeCreateNestedManyWithoutUserInput
+    event?: EventCreateNestedManyWithoutUserInput
+    userTerm?: UserTermCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutEventScrapInput = {
+    id?: bigint | number
+    name?: string | null
+    nickname: string
+    birthdate?: Date | string | null
+    gender?: string | null
+    phoneNumber?: string | null
+    profileImage?: string | null
+    role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    article?: ArticleUncheckedCreateNestedManyWithoutUserInput
+    articleComment?: ArticleCommentUncheckedCreateNestedManyWithoutUserInput
+    articleCommentLike?: ArticleCommentLikeUncheckedCreateNestedManyWithoutUserInput
+    articleLike?: ArticleLikeUncheckedCreateNestedManyWithoutUserInput
+    event?: EventUncheckedCreateNestedManyWithoutUserInput
+    userTerm?: UserTermUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutEventScrapInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutEventScrapInput, UserUncheckedCreateWithoutEventScrapInput>
+  }
+
+  export type EventCreateWithoutEventScrapInput = {
+    id?: bigint | number
+    title: string
+    startDate: Date | string
+    endDate: Date | string
+    venueName?: string | null
+    venueRoadAddress?: string | null
+    venueJibunAddress?: string | null
+    venueDetailAddress?: string | null
+    price: number
+    link?: string | null
+    description?: string | null
+    category: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutEventInput
+    eventImage?: EventImageCreateNestedManyWithoutEventInput
+  }
+
+  export type EventUncheckedCreateWithoutEventScrapInput = {
+    id?: bigint | number
+    title: string
+    startDate: Date | string
+    endDate: Date | string
+    venueName?: string | null
+    venueRoadAddress?: string | null
+    venueJibunAddress?: string | null
+    venueDetailAddress?: string | null
+    price: number
+    link?: string | null
+    description?: string | null
+    authorId: bigint | number
+    category: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    eventImage?: EventImageUncheckedCreateNestedManyWithoutEventInput
+  }
+
+  export type EventCreateOrConnectWithoutEventScrapInput = {
+    where: EventWhereUniqueInput
+    create: XOR<EventCreateWithoutEventScrapInput, EventUncheckedCreateWithoutEventScrapInput>
+  }
+
+  export type UserUpsertWithoutEventScrapInput = {
+    update: XOR<UserUpdateWithoutEventScrapInput, UserUncheckedUpdateWithoutEventScrapInput>
+    create: XOR<UserCreateWithoutEventScrapInput, UserUncheckedCreateWithoutEventScrapInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutEventScrapInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutEventScrapInput, UserUncheckedUpdateWithoutEventScrapInput>
+  }
+
+  export type UserUpdateWithoutEventScrapInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    nickname?: StringFieldUpdateOperationsInput | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    article?: ArticleUpdateManyWithoutUserNestedInput
+    articleComment?: ArticleCommentUpdateManyWithoutUserNestedInput
+    articleCommentLike?: ArticleCommentLikeUpdateManyWithoutUserNestedInput
+    articleLike?: ArticleLikeUpdateManyWithoutUserNestedInput
+    event?: EventUpdateManyWithoutUserNestedInput
+    userTerm?: UserTermUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutEventScrapInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    nickname?: StringFieldUpdateOperationsInput | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    article?: ArticleUncheckedUpdateManyWithoutUserNestedInput
+    articleComment?: ArticleCommentUncheckedUpdateManyWithoutUserNestedInput
+    articleCommentLike?: ArticleCommentLikeUncheckedUpdateManyWithoutUserNestedInput
+    articleLike?: ArticleLikeUncheckedUpdateManyWithoutUserNestedInput
+    event?: EventUncheckedUpdateManyWithoutUserNestedInput
+    userTerm?: UserTermUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type EventUpsertWithoutEventScrapInput = {
+    update: XOR<EventUpdateWithoutEventScrapInput, EventUncheckedUpdateWithoutEventScrapInput>
+    create: XOR<EventCreateWithoutEventScrapInput, EventUncheckedCreateWithoutEventScrapInput>
+    where?: EventWhereInput
+  }
+
+  export type EventUpdateToOneWithWhereWithoutEventScrapInput = {
+    where?: EventWhereInput
+    data: XOR<EventUpdateWithoutEventScrapInput, EventUncheckedUpdateWithoutEventScrapInput>
+  }
+
+  export type EventUpdateWithoutEventScrapInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    venueName?: NullableStringFieldUpdateOperationsInput | string | null
+    venueRoadAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    venueJibunAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    venueDetailAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: IntFieldUpdateOperationsInput | number
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutEventNestedInput
+    eventImage?: EventImageUpdateManyWithoutEventNestedInput
+  }
+
+  export type EventUncheckedUpdateWithoutEventScrapInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    venueName?: NullableStringFieldUpdateOperationsInput | string | null
+    venueRoadAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    venueJibunAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    venueDetailAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: IntFieldUpdateOperationsInput | number
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    authorId?: BigIntFieldUpdateOperationsInput | bigint | number
+    category?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    eventImage?: EventImageUncheckedUpdateManyWithoutEventNestedInput
   }
 
   export type UserTermCreateWithoutTermInput = {
@@ -18555,6 +20247,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     eventImage?: EventImageCreateNestedManyWithoutEventInput
+    eventScrap?: EventScrapCreateNestedManyWithoutEventInput
   }
 
   export type EventUncheckedCreateWithoutUserInput = {
@@ -18573,6 +20266,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     eventImage?: EventImageUncheckedCreateNestedManyWithoutEventInput
+    eventScrap?: EventScrapUncheckedCreateNestedManyWithoutEventInput
   }
 
   export type EventCreateOrConnectWithoutUserInput = {
@@ -18582,6 +20276,28 @@ export namespace Prisma {
 
   export type EventCreateManyUserInputEnvelope = {
     data: EventCreateManyUserInput | EventCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type EventScrapCreateWithoutUserInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    event: EventCreateNestedOneWithoutEventScrapInput
+  }
+
+  export type EventScrapUncheckedCreateWithoutUserInput = {
+    eventId: bigint | number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EventScrapCreateOrConnectWithoutUserInput = {
+    where: EventScrapWhereUniqueInput
+    create: XOR<EventScrapCreateWithoutUserInput, EventScrapUncheckedCreateWithoutUserInput>
+  }
+
+  export type EventScrapCreateManyUserInputEnvelope = {
+    data: EventScrapCreateManyUserInput | EventScrapCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -18710,6 +20426,22 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Event"> | Date | string
   }
 
+  export type EventScrapUpsertWithWhereUniqueWithoutUserInput = {
+    where: EventScrapWhereUniqueInput
+    update: XOR<EventScrapUpdateWithoutUserInput, EventScrapUncheckedUpdateWithoutUserInput>
+    create: XOR<EventScrapCreateWithoutUserInput, EventScrapUncheckedCreateWithoutUserInput>
+  }
+
+  export type EventScrapUpdateWithWhereUniqueWithoutUserInput = {
+    where: EventScrapWhereUniqueInput
+    data: XOR<EventScrapUpdateWithoutUserInput, EventScrapUncheckedUpdateWithoutUserInput>
+  }
+
+  export type EventScrapUpdateManyWithWhereWithoutUserInput = {
+    where: EventScrapScalarWhereInput
+    data: XOR<EventScrapUpdateManyMutationInput, EventScrapUncheckedUpdateManyWithoutUserInput>
+  }
+
   export type UserTermUpsertWithWhereUniqueWithoutUserInput = {
     where: UserTermWhereUniqueInput
     update: XOR<UserTermUpdateWithoutUserInput, UserTermUncheckedUpdateWithoutUserInput>
@@ -18767,6 +20499,7 @@ export namespace Prisma {
     articleCommentLike?: ArticleCommentLikeCreateNestedManyWithoutUserInput
     articleLike?: ArticleLikeCreateNestedManyWithoutUserInput
     event?: EventCreateNestedManyWithoutUserInput
+    eventScrap?: EventScrapCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutUserTermInput = {
@@ -18787,6 +20520,7 @@ export namespace Prisma {
     articleCommentLike?: ArticleCommentLikeUncheckedCreateNestedManyWithoutUserInput
     articleLike?: ArticleLikeUncheckedCreateNestedManyWithoutUserInput
     event?: EventUncheckedCreateNestedManyWithoutUserInput
+    eventScrap?: EventScrapUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutUserTermInput = {
@@ -18852,6 +20586,7 @@ export namespace Prisma {
     articleCommentLike?: ArticleCommentLikeUpdateManyWithoutUserNestedInput
     articleLike?: ArticleLikeUpdateManyWithoutUserNestedInput
     event?: EventUpdateManyWithoutUserNestedInput
+    eventScrap?: EventScrapUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUserTermInput = {
@@ -18872,6 +20607,7 @@ export namespace Prisma {
     articleCommentLike?: ArticleCommentLikeUncheckedUpdateManyWithoutUserNestedInput
     articleLike?: ArticleLikeUncheckedUpdateManyWithoutUserNestedInput
     event?: EventUncheckedUpdateManyWithoutUserNestedInput
+    eventScrap?: EventScrapUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ArticleImageCreateManyArticleInput = {
@@ -19091,6 +20827,12 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type EventScrapCreateManyEventInput = {
+    userId: bigint | number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type EventImageUpdateWithoutEventInput = {
     imageUrl?: StringFieldUpdateOperationsInput | string
     order?: IntFieldUpdateOperationsInput | number
@@ -19108,6 +20850,24 @@ export namespace Prisma {
   export type EventImageUncheckedUpdateManyWithoutEventInput = {
     imageUrl?: StringFieldUpdateOperationsInput | string
     order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EventScrapUpdateWithoutEventInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutEventScrapNestedInput
+  }
+
+  export type EventScrapUncheckedUpdateWithoutEventInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EventScrapUncheckedUpdateManyWithoutEventInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19185,6 +20945,12 @@ export namespace Prisma {
     link?: string | null
     description?: string | null
     category: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EventScrapCreateManyUserInput = {
+    eventId: bigint | number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -19318,6 +21084,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     eventImage?: EventImageUpdateManyWithoutEventNestedInput
+    eventScrap?: EventScrapUpdateManyWithoutEventNestedInput
   }
 
   export type EventUncheckedUpdateWithoutUserInput = {
@@ -19336,6 +21103,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     eventImage?: EventImageUncheckedUpdateManyWithoutEventNestedInput
+    eventScrap?: EventScrapUncheckedUpdateManyWithoutEventNestedInput
   }
 
   export type EventUncheckedUpdateManyWithoutUserInput = {
@@ -19351,6 +21119,24 @@ export namespace Prisma {
     link?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EventScrapUpdateWithoutUserInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    event?: EventUpdateOneRequiredWithoutEventScrapNestedInput
+  }
+
+  export type EventScrapUncheckedUpdateWithoutUserInput = {
+    eventId?: BigIntFieldUpdateOperationsInput | bigint | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EventScrapUncheckedUpdateManyWithoutUserInput = {
+    eventId?: BigIntFieldUpdateOperationsInput | bigint | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

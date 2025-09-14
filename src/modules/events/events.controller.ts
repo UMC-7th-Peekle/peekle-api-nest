@@ -17,6 +17,7 @@ import { GetEventsQueryDto } from '@modules/events/dto/get-events.dto';
 import { UpdateEventDto } from '@modules/events/dto/update-event.dto';
 import { EventsCommandService } from '@modules/events/services/events.command.service';
 import { EventsQueryService } from '@modules/events/services/events.query.service';
+import { EventsScrapService } from '@modules/events/services/events.scrap.service';
 
 import { ResponseMessage } from '@/common/decorators/response-message-decorator';
 import { Public } from '@/modules/auth/decorators/public.decorator';
@@ -26,7 +27,8 @@ import { Public } from '@/modules/auth/decorators/public.decorator';
 export class EventsController {
   constructor(
     private readonly eventsQuery: EventsQueryService,
-    private readonly eventsCommand: EventsCommandService,
+    private readonly eventsCommand: EventsCommandService, EventsScrapService
+
   ) {}
 
   @Public()
@@ -83,6 +85,27 @@ export class EventsController {
   async remove(@Param() { id }: EventIdParamDto, @Req() req: any) {
     const userId: bigint = 1n; // TODO: req.user.id로 변경 필요
     const result = await this.eventsCommand.deleteEvent(id, userId);
+
+  @Post(':id/scrap')
+  @ApiOperation({ summary: '이벤트 찜하기 API' })
+  @ApiOkResponse({ description: '이벤트 찜 성공' })
+  @ResponseMessage('이벤트를 찜했습니다.')
+  async scrap(@Param('id') id: string, @Req() req: any) {
+    const userId: bigint = 1n; // TODO: req.user.id로 변경 필요
+    const result = await this.eventScrap.scrapEvent(userId, BigInt(id));
+    return result;
+  }
+
+  // TODO: JWT 토큰 관련 문제 해결 시 테스트 후 수정 필요
+  @ApiCookieAuth('peekleAccessToken')
+  @Delete(':id/scrap')
+  @ApiOperation({ summary: '이벤트 찜 취소 API' })
+  @ApiOkResponse({ description: '이벤트 찜 취소 성공' })
+  @ResponseMessage('이벤트 찜을 취소했습니다.')
+  async unscrap(@Param('id') id: string, @Req() req: any) {
+    const userId: bigint = 1n; // TODO: req.user.id로 변경 필요
+    const result = await this.eventScrap.unscrapEvent(userId, BigInt(id));
+
     return result;
   }
 }

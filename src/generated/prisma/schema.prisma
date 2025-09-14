@@ -122,6 +122,7 @@ model Event {
   updatedAt          DateTime     @default(now()) @map("updated_at") @db.Timestamp(6)
   user               User         @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "event_user_id_fk")
   eventImage         EventImage[]
+  eventScrap         EventScrap[]
 
   @@index([authorId], map: "event_user_id_fk")
   @@map("event")
@@ -137,6 +138,21 @@ model EventImage {
 
   @@id([eventId, order])
   @@map("event_image")
+}
+
+model EventScrap {
+  userId    BigInt   @map("user_id")
+  eventId   BigInt   @map("event_id")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "event_scrap_user_id_fk")
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "event_scrap_event_id_fk")
+
+  @@id([userId, eventId])
+  @@index([eventId], map: "event_scrap_event_id_fk")
+  @@index([userId], map: "event_scrap_user_id_fk")
+  @@map("event_scrap")
 }
 
 model Term {
@@ -169,6 +185,7 @@ model User {
   articleCommentLike ArticleCommentLike[]
   articleLike        ArticleLike[]
   event              Event[]
+  eventScrap         EventScrap[]
   userTerm           UserTerm[]
 
   @@map("user")

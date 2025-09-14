@@ -50,14 +50,14 @@ export class CommunityV1Controller {
   ) {}
 
   // 커뮤니티 홈 관련
-  @Get('')
+  @Get(':communityId')
   @ApiOperation({ summary: '커뮤니티 홈 조회' })
   @ApiCookieAuth()
   @ApiOkResponse({ description: '커뮤니티 홈 데이터 반환', type: GetCommunityDto })
   @ResponseMessage('커뮤니티 홈이 조회되었습니다.')
   @Public() // TODO: 임시로 Public 처리, 추후 인증 도입 시 제거 필요
-  async getCommunityHome(@Param('communityId') communityId: bigint) {
-    return await this.communityService.getCommunityHome(communityId);
+  async getCommunityHome(@Param('communityId') communityId: string) {
+    return await this.communityService.getCommunityHome(BigInt(communityId));
   }
 
   // 게시글 목록 조회
@@ -110,36 +110,57 @@ export class CommunityV1Controller {
     return this.communityService.updateArticle();
   }
 
+  // 게시글 삭제
   @Delete('article/:articleId')
-  deleteArticle() {
-    return this.communityService.deleteArticle();
-  }
-
-  @Post('article/like')
-  @ApiOperation({ summary: '게시글 좋아요' })
-  @ApiCreatedResponse({ description: '게시글 좋아요 성공', type: Boolean })
-  async createArticleLike(@Body() dto: CreateArticleLikeDto, @Req() req) {
+  @ApiOperation({ summary: '게시글 삭제' })
+  @ApiCookieAuth()
+  @ApiOkResponse({ description: '게시글 삭제 성공', type: Boolean })
+  @ResponseMessage('게시글이 삭제되었습니다.')
+  async deleteArticle(@Param('articleId') articleId: bigint, @Req() req) {
     const userId = req.user.userId;
-    return await this.communityService.createArticleLike(dto, userId);
+    return await this.communityService.deleteArticle(articleId, userId);
   }
 
-  @Delete('article/like')
-  deleteArticleLike() {
-    return this.communityService.deleteArticleLike();
+  @Post('article/:articleId/like')
+  @ApiOperation({ summary: '게시글 좋아요' })
+  @ApiCookieAuth()
+  @ApiCreatedResponse({ description: '게시글 좋아요 성공', type: Boolean })
+  async createArticleLike(@Param('articleId') articleId: string, @Req() req) {
+    const userId = req.user.userId;
+    return await this.communityService.createArticleLike(BigInt(articleId), userId);
+  }
+
+  // 게시글 좋아요 취소
+  @Delete('article/:articleId/like')
+  @ApiOperation({ summary: '게시글 좋아요 취소' })
+  @ApiCookieAuth()
+  @ApiOkResponse({ description: '게시글 좋아요 취소 성공', type: Boolean })
+  @ResponseMessage('게시글 좋아요가 취소되었습니다.')
+  async deleteArticleLike(@Param('articleId') articleId: string, @Req() req) {
+    const userId = req.user.userId;
+    return this.communityService.deleteArticleLike(BigInt(articleId), userId);
   }
 
   // 댓글 관련
-  @Post('article/comment/like')
+  // 댓글 좋아요 추가
+  @Post('article/comment/:commentId/like')
   @ApiOperation({ summary: '댓글 좋아요 등록' })
+  @ApiCookieAuth()
   @ApiCreatedResponse({ description: '댓글 좋아요 등록 성공', type: Boolean })
-  async createCommentLike(@Body() dto: CreateCommentLikeDto, @Req() req) {
+  async createCommentLike(@Param('commentId') commentId: string, @Req() req) {
     const userId = req.user.userId;
-    return await this.communityService.createCommentLike(dto, userId);
+    return await this.communityService.createCommentLike(BigInt(commentId), userId);
   }
 
-  @Delete('article/comment/like')
-  deleteCommentLike() {
-    return this.communityService.deleteCommentLike();
+  // 댓글 좋아요 취소
+  @Delete('article/comment/:commentId/like')
+  @ApiOperation({ summary: '댓글 좋아요 취소' })
+  @ApiCookieAuth()
+  @ApiOkResponse({ description: '댓글 좋아요 취소 성공', type: Boolean })
+  @ResponseMessage('댓글 좋아요가 취소되었습니다.')
+  async deleteCommentLike(@Param('commentId') commentId: string, @Req() req) {
+    const userId = req.user.userId;
+    return this.communityService.deleteCommentLike(BigInt(commentId), userId);
   }
 
   // 댓글 목록 조회
@@ -173,9 +194,15 @@ export class CommunityV1Controller {
     return this.communityService.updateComment();
   }
 
-  @Delete('article/comment')
-  deleteComment() {
-    return this.communityService.deleteComment();
+  // 게시글 댓글 삭제
+  @Delete('article/comment/:commentId')
+  @ApiOperation({ summary: '게시글 댓글 삭제' })
+  @ApiCookieAuth()
+  @ApiOkResponse({ description: '댓글 삭제 성공' })
+  @ResponseMessage('댓글이 삭제되었습니다.')
+  async deleteComment(@Param('commentId') commentId: string, @Req() req) {
+    const userId = req.user.userId;
+    return this.communityService.deleteComment(BigInt(commentId), userId);
   }
 
   @Post('article/comment/reply')

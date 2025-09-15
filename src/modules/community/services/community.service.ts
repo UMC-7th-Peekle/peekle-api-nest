@@ -121,6 +121,7 @@ export class CommunityService {
     };
   }
 
+  // 게시글 작성
   async createArticle(dto: CreateArticleDto, files: Express.Multer.File[], userId: bigint) {
     // 게시글 생성
     const createdArticle = await this.prisma.article.create({
@@ -327,7 +328,20 @@ export class CommunityService {
 
   // 댓글 작성
   async createComment(dto: CreateCommentDto, userId: string) {
-    const comment = await this.prisma.articleComment.create({
+    // parentCommentId가 있을 경우 존재 여부 확인
+    let parentCommentId: bigint | null = null;
+    if (dto.parentCommentId) {
+      parentCommentId = BigInt(dto.parentCommentId);
+      const parentComment = await this.prisma.articleComment.findUnique({
+        where: { id: parentCommentId },
+      });
+      if (!parentComment) {
+        throw new NotFoundException('존재하지 않는 부모 댓글입니다.');
+      }
+    }
+
+    // 댓글 생성
+    const createdComment = await this.prisma.articleComment.create({
       data: {
         articleId: BigInt(dto.articleId),
         content: dto.content,
@@ -338,18 +352,11 @@ export class CommunityService {
     });
 
     return {
-      status: true,
-      message: '댓글이 작성되었습니다.',
-      data: {
-        id: comment.id.toString(),
-        articleId: comment.articleId.toString(),
-        content: comment.content,
-        authorId: comment.authorId.toString(),
-        isAnonymous: comment.isAnonymous,
-        parentCommentId: comment.parentCommentId ? comment.parentCommentId.toString() : null,
-        createdAt: comment.createdAt.toISOString(),
-        updatedAt: comment.updatedAt.toISOString(),
-      },
+      articleId: createdComment.articleId.toString(),
+      content: createdComment.content,
+      isAnonymous: createdComment.isAnonymous,
+      parentCommentId:
+        createdComment.parentCommentId !== null ? Number(createdComment.parentCommentId) : null,
     };
   }
 

@@ -1,7 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
 
 import { Prisma } from '@peekle/prisma/client';
 
+import { FrontendUrlConfig } from '@modules/auth/config/frontend-url.config';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { RegisterJwtPayload } from '@modules/auth/types/jwt.types';
 import { PrismaService } from '@modules/prisma/prisma.service';
@@ -17,6 +19,8 @@ export class OAuthUserService {
   constructor(
     private readonly authService: AuthService,
     private readonly prismaService: PrismaService,
+    @Inject(FrontendUrlConfig.KEY)
+    private readonly frontendUrlConfig: ConfigType<typeof FrontendUrlConfig>,
   ) {}
 
   async oauthLoginOrRegister(
@@ -29,6 +33,8 @@ export class OAuthUserService {
         oauthId: oauthId,
       },
     });
+
+    console.log('OAuthUserService ~ user:', user);
 
     if (user) {
       const tokens = await this.authService.generateTokens(user.id);
@@ -79,5 +85,19 @@ export class OAuthUserService {
     });
 
     return { id: newUser.id.toString() };
+  }
+
+  getFrontendOAuthCallbackUrl() {
+    let baseUrl: string;
+    if (process.env.NODE_ENV === 'production') {
+      baseUrl = this.frontendUrlConfig.prodUrl;
+    } else if (process.env.NODE_ENV === 'development') {
+      baseUrl = this.frontendUrlConfig.devUrl;
+    } else {
+      baseUrl = this.frontendUrlConfig.localUrl;
+    }
+
+    return baseUrl + '/auth/oauth/callback';
+    //  return 'http://localhost:3000/auth/oauth/callback';
   }
 }

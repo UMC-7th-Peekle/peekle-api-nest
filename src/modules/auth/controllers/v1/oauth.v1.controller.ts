@@ -1,4 +1,13 @@
-import { Controller, Get, Query, Redirect, Request, Res, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  InternalServerErrorException,
+  Query,
+  Redirect,
+  Request,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { Response } from 'express';
@@ -66,7 +75,7 @@ export class OAuthV1Controller {
   @Get('kakao/login')
   @BypassResponseInterceptor()
   kakaoLogin() {
-    //  http://localhost:7777/auth/kakao/login
+    //  http://localhost:7777/v1/auth/kakao/login
     return this.kakaoUserService.getKakaoRedirectUrl();
   }
 
@@ -76,8 +85,10 @@ export class OAuthV1Controller {
     description: '프론트엔드로 토큰을 포함한 URL로 리다이렉트',
   })
   @Public()
+  // @Redirect()
+  // @BypassResponseInterceptor()
   @Get('kakao/callback')
-  async kakaoCallback(@Query('code') code: string, @Res({ passthrough: true }) res: Response) {
+  async kakaoCallback(@Query('code') code: string, @Res() res: Response) {
     this.kakaoUserService.checkAuthorizationCode(code);
     const kakaoAccessToken = await this.kakaoUserService.getKakaoAccessToken(code);
     const kakaoUserInfo = await this.kakaoUserService.getKakaoUserInfo(kakaoAccessToken);
@@ -87,8 +98,19 @@ export class OAuthV1Controller {
     if (result.type === 'login') {
       res.cookie(CookieName.ACCESS_TOKEN, result.tokens.accessToken, accessTokenCookieOptions);
       res.cookie(CookieName.REFRESH_TOKEN, result.tokens.refreshToken, refreshTokenCookieOptions);
+    } else if (result.type === 'register') {
+      res.cookie('TEST', 'register token', accessTokenCookieOptions);
     }
 
-    return result;
+    const url = this.oauthUserService.getFrontendOAuthCallbackUrl();
+    console.log('Redirect URL:', url, result);
+
+    if (result.type === 'login') {
+      res.redirect(`${url}?type=login&oauthProvider=${result.oauthProvider}`);
+    } else if (result.type === 'register') {
+      res.redirect(
+        `${url}?type=register&oauthProvider=${result.oauthProvider}&registerToken=${result.tokens.registerToken}`,
+      );
+    } else throw new InternalServerErrorException('Something Got Wrong.');
   }
 }

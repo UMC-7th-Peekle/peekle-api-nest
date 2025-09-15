@@ -7,14 +7,18 @@ const ONE_HOUR = 60 * 60 * 1000;
 
 export const accessTokenCookieOptions: CookieOptions = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
+  // secure: process.env.NODE_ENV === 'production',
+  secure: true,
   sameSite: 'lax',
+  domain: 'peekle.kr',
   maxAge: ONE_MINUTE * 15, // 15 minutes
 };
 
 export const refreshTokenCookieOptions: CookieOptions = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
+  // secure: process.env.NODE_ENV === 'production',
+  // secure: true,
   sameSite: 'lax',
+  domain: 'peekle.kr',
   maxAge: ONE_HOUR, // 14 days
 };

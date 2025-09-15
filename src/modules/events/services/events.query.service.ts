@@ -112,6 +112,8 @@ export class EventsQueryService {
         endDate: true,
         price: true,
         category: true,
+        latitude: true,
+        longitude: true,
       },
     });
 
@@ -146,6 +148,8 @@ export class EventsQueryService {
         currency: 'KRW',
       },
       category: e.category,
+      latitude: e.latitude,
+      longitude: e.longitude,
       thumbnailUrl: firstThumbByEvent.get(e.id) ?? null,
     }));
 

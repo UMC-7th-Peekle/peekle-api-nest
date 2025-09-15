@@ -125,12 +125,11 @@ export class EventsCommandService {
     //     - 기존 이미지 전부 삭제 후, 새 배열대로 다시 저장
     //     - order 컬럼은 배열의 순서(index)를 기준으로 설정
     if (dto.images !== undefined) {
-      if (dto.images.length === 0) {
-        // 빈 배열 → 기존 이미지만 삭제
-        await this.prisma.eventImage.deleteMany({ where: { eventId: id } });
-      } else {
-        // 새 배열 전달 → 기존 이미지 삭제 후 다시 생성
-        await this.prisma.eventImage.deleteMany({ where: { eventId: id } });
+      // 기존 이미지 모두 삭제
+      await this.prisma.eventImage.deleteMany({ where: { eventId: id } });
+
+      // 새 배열 전달 시에만 다시 생성
+      if (dto.images.length > 0) {
         await this.prisma.eventImage.createMany({
           data: dto.images.map((url, imageIndex) => ({
             eventId: id,

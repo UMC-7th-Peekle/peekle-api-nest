@@ -61,10 +61,10 @@ export class EventsCommandService {
     // 이미지 저장 (있을 경우)
     if (dto.images?.length) {
       await this.prisma.eventImage.createMany({
-        data: dto.images.map((url, i) => ({
+        data: dto.images.map((url, imageIndex) => ({
           eventId: event.id,
           imageUrl: url,
-          order: i,
+          order: imageIndex,
         })),
       });
     }
@@ -129,10 +129,10 @@ export class EventsCommandService {
       await this.prisma.eventImage.deleteMany({ where: { eventId: id } });
       if (dto.images.length > 0) {
         await this.prisma.eventImage.createMany({
-          data: dto.images.map((url, i) => ({
+          data: dto.images.map((url, imageIndex) => ({
             eventId: id,
             imageUrl: url,
-            order: i,
+            order: imageIndex,
           })),
         });
       }

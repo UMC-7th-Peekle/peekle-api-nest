@@ -417,8 +417,36 @@ export class CommunityService {
     };
   }
 
-  updateComment() {
-    return { message: '게시글 댓글 수정 (PATCH /community/article/comment)' };
+  // 댓글 수정
+  async updateComment(commentId: bigint, dto: { content: string }, userId: bigint) {
+    // 댓글 존재 및 작성자 확인
+    const comment = await this.prisma.articleComment.findUnique({
+      where: { id: commentId },
+    });
+
+    if (!comment) {
+      throw new NotFoundException('존재하지 않는 댓글입니다.');
+    }
+
+    if (comment.authorId !== userId) {
+      throw new ForbiddenException('본인 댓글만 수정할 수 있습니다.');
+    }
+
+    // 댓글 수정
+    const updatedComment = await this.prisma.articleComment.update({
+      where: { id: commentId },
+      data: {
+        content: dto.content,
+      },
+    });
+
+    return {
+      articleId: updatedComment.articleId.toString(),
+      content: updatedComment.content,
+      isAnonymous: updatedComment.isAnonymous,
+      parentCommentId:
+        updatedComment.parentCommentId !== null ? Number(updatedComment.parentCommentId) : null,
+    };
   }
 
   async deleteComment(commentId: bigint, userId: bigint) {

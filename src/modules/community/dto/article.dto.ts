@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { IsBoolean, IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 
 import { IsBigInt } from '@common/decorators/is-bigint.decorator';
 import { TransformToBigint } from '@common/decorators/transform.decorator';
@@ -10,6 +10,7 @@ export class CreateArticleDto {
   @IsBigInt()
   @TransformToBigint()
   communityId!: bigint;
+  ㄴ;
 
   @ApiProperty({ example: '게시글 제목', description: '게시글 제목', maxLength: 50 })
   @IsString()
@@ -78,4 +79,39 @@ export class GetArticleDto {
     example: [{ imageUrl: '/article_images/filename.jpg', order: 1 }],
   })
   images?: ArticleImagesDto[];
+}
+
+export class UpdateArticleDto {
+  @ApiProperty({ example: '1', description: '커뮤니티 ID', type: String, required: false })
+  @IsBigInt()
+  @TransformToBigint()
+  @IsOptional()
+  communityId?: bigint;
+
+  @ApiProperty({
+    example: '게시글 제목',
+    description: '게시글 제목',
+    maxLength: 50,
+    required: false,
+  })
+  @IsString()
+  @MaxLength(50)
+  @IsOptional()
+  title?: string;
+
+  @ApiProperty({
+    example: '게시글 내용',
+    description: '게시글 내용',
+    maxLength: 5000,
+    required: false,
+  })
+  @IsString()
+  @MaxLength(5000)
+  @IsOptional()
+  content?: string;
+
+  @ApiProperty({ example: false, description: '익명 여부', type: Boolean, required: false })
+  @IsBoolean()
+  @IsOptional()
+  isAnonymous?: boolean;
 }

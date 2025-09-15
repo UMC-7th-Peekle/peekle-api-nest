@@ -31,8 +31,16 @@ import { ParseJsonPipe } from '@common/pipes/parse-json.pipe';
 import { inspectObject } from '@common/utils/inspect-object.utils';
 
 import { Public } from '@modules/auth/decorators/public.decorator';
-import { CreateArticleDto, GetArticleDto } from '@modules/community/dto/article.dto';
-import { CreateCommentDto, GetCommentDto } from '@modules/community/dto/comment.dto';
+import {
+  CreateArticleDto,
+  GetArticleDto,
+  UpdateArticleDto,
+} from '@modules/community/dto/article.dto';
+import {
+  CreateCommentDto,
+  GetCommentDto,
+  UpdateCommentDto,
+} from '@modules/community/dto/comment.dto';
 import { GetCommunityDto } from '@modules/community/dto/community.dto';
 import { CreateArticleLikeDto } from '@modules/community/dto/create-article-like.dto';
 import { CreateCommentLikeDto } from '@modules/community/dto/create-comment-like.dto';
@@ -126,7 +134,7 @@ export class CommunityV1Controller {
   async updateArticle(
     @Param('articleId') articleId: string,
     @UploadedFiles() files: Express.Multer.File[], // form-data에서 article_images는 이미지 파일들
-    @FormDataJson('data', ParseJsonPipe) data: CreateArticleDto, // form-data에서 data는 내용 부분
+    @FormDataJson('data', ParseJsonPipe) data: UpdateArticleDto, // form-data에서 data는 내용 부분
     @Req() req,
   ) {
     const userId = req.user.userId;
@@ -225,9 +233,19 @@ export class CommunityV1Controller {
     return await this.communityService.createComment(dto, userId);
   }
 
-  @Patch('article/comment')
-  updateComment() {
-    return this.communityService.updateComment();
+  // 댓글 수정
+  @Patch('article/comment/:commentId')
+  @ApiOperation({ summary: '게시글 댓글 수정' })
+  @ApiCookieAuth()
+  @ApiOkResponse({ description: '댓글 수정 성공', type: CreateCommentDto })
+  @ResponseMessage('댓글이 수정되었습니다.')
+  async updateComment(
+    @Param('commentId') commentId: string,
+    @Body() dto: UpdateCommentDto,
+    @Req() req,
+  ) {
+    const userId = req.user.userId;
+    return await this.communityService.updateComment(BigInt(commentId), dto, userId);
   }
 
   // 게시글 댓글 삭제

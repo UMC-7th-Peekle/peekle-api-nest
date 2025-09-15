@@ -68,3 +68,10 @@ export class GetCommentDto {
   @IsNotEmpty()
   updatedAt!: string;
 }
+
+export class UpdateCommentDto {
+  @ApiProperty({ example: '댓글 내용', description: '댓글 본문', maxLength: 2000 })
+  @IsString()
+  @IsNotEmpty()
+  content!: string;
+}

@@ -128,6 +128,13 @@ export class PrismaClient<
    */
   $disconnect(): $Utils.JsPromise<void>;
 
+  /**
+   * Add a middleware
+   * @deprecated since 4.16.0. For new code, prefer client extensions instead.
+   * @see https://pris.ly/d/extensions
+   */
+  $use(cb: Prisma.Middleware): void
+
 /**
    * Executes a prepared raw query and returns the number of affected rows.
    * @example
@@ -384,8 +391,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.15.0
-   * Query Engine version: 85179d7826409ee107a6ba334b5e305ae3fba9fb
+   * Prisma Client JS version: 6.13.0
+   * Query Engine version: 361e86d0ea4987e9f53a565309b3eed797a6bcbd
    */
   export type PrismaVersion = {
     client: string
@@ -1821,6 +1828,25 @@ export namespace Prisma {
     | 'runCommandRaw'
     | 'findRaw'
     | 'groupBy'
+
+  /**
+   * These options are being passed into the middleware as "params"
+   */
+  export type MiddlewareParams = {
+    model?: ModelName
+    action: PrismaAction
+    args: any
+    dataPath: string[]
+    runInTransaction: boolean
+  }
+
+  /**
+   * The `T` type makes sure, that the `return proceed` is not forgotten in the middleware implementation
+   */
+  export type Middleware<T = any> = (
+    params: MiddlewareParams,
+    next: (params: MiddlewareParams) => $Utils.JsPromise<T>,
+  ) => $Utils.JsPromise<T>
 
   // tested in getLogLevel.test.ts
   export function getLogLevel(log: Array<LogLevel | LogDefinition>): LogLevel | undefined;
@@ -8187,12 +8213,16 @@ export namespace Prisma {
     id: number | null
     price: number | null
     authorId: number | null
+    latitude: number | null
+    longitude: number | null
   }
 
   export type EventSumAggregateOutputType = {
     id: bigint | null
     price: number | null
     authorId: bigint | null
+    latitude: number | null
+    longitude: number | null
   }
 
   export type EventMinAggregateOutputType = {
@@ -8209,6 +8239,8 @@ export namespace Prisma {
     description: string | null
     authorId: bigint | null
     category: string | null
+    latitude: number | null
+    longitude: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -8227,6 +8259,8 @@ export namespace Prisma {
     description: string | null
     authorId: bigint | null
     category: string | null
+    latitude: number | null
+    longitude: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -8245,6 +8279,8 @@ export namespace Prisma {
     description: number
     authorId: number
     category: number
+    latitude: number
+    longitude: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -8255,12 +8291,16 @@ export namespace Prisma {
     id?: true
     price?: true
     authorId?: true
+    latitude?: true
+    longitude?: true
   }
 
   export type EventSumAggregateInputType = {
     id?: true
     price?: true
     authorId?: true
+    latitude?: true
+    longitude?: true
   }
 
   export type EventMinAggregateInputType = {
@@ -8277,6 +8317,8 @@ export namespace Prisma {
     description?: true
     authorId?: true
     category?: true
+    latitude?: true
+    longitude?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -8295,6 +8337,8 @@ export namespace Prisma {
     description?: true
     authorId?: true
     category?: true
+    latitude?: true
+    longitude?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -8313,6 +8357,8 @@ export namespace Prisma {
     description?: true
     authorId?: true
     category?: true
+    latitude?: true
+    longitude?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -8418,6 +8464,8 @@ export namespace Prisma {
     description: string | null
     authorId: bigint
     category: string
+    latitude: number | null
+    longitude: number | null
     createdAt: Date
     updatedAt: Date
     _count: EventCountAggregateOutputType | null
@@ -8455,6 +8503,8 @@ export namespace Prisma {
     description?: boolean
     authorId?: boolean
     category?: boolean
+    latitude?: boolean
+    longitude?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -8479,11 +8529,13 @@ export namespace Prisma {
     description?: boolean
     authorId?: boolean
     category?: boolean
+    latitude?: boolean
+    longitude?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type EventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "startDate" | "endDate" | "venueName" | "venueRoadAddress" | "venueJibunAddress" | "venueDetailAddress" | "price" | "link" | "description" | "authorId" | "category" | "createdAt" | "updatedAt", ExtArgs["result"]["event"]>
+  export type EventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "startDate" | "endDate" | "venueName" | "venueRoadAddress" | "venueJibunAddress" | "venueDetailAddress" | "price" | "link" | "description" | "authorId" | "category" | "latitude" | "longitude" | "createdAt" | "updatedAt", ExtArgs["result"]["event"]>
   export type EventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     eventImage?: boolean | Event$eventImageArgs<ExtArgs>
@@ -8512,6 +8564,8 @@ export namespace Prisma {
       description: string | null
       authorId: bigint
       category: string
+      latitude: number | null
+      longitude: number | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["event"]>
@@ -8899,6 +8953,8 @@ export namespace Prisma {
     readonly description: FieldRef<"Event", 'String'>
     readonly authorId: FieldRef<"Event", 'BigInt'>
     readonly category: FieldRef<"Event", 'String'>
+    readonly latitude: FieldRef<"Event", 'Float'>
+    readonly longitude: FieldRef<"Event", 'Float'>
     readonly createdAt: FieldRef<"Event", 'DateTime'>
     readonly updatedAt: FieldRef<"Event", 'DateTime'>
   }
@@ -15503,6 +15559,8 @@ export namespace Prisma {
     description: 'description',
     authorId: 'authorId',
     category: 'category',
+    latitude: 'latitude',
+    longitude: 'longitude',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -16147,6 +16205,8 @@ export namespace Prisma {
     description?: StringNullableFilter<"Event"> | string | null
     authorId?: BigIntFilter<"Event"> | bigint | number
     category?: StringFilter<"Event"> | string
+    latitude?: FloatNullableFilter<"Event"> | number | null
+    longitude?: FloatNullableFilter<"Event"> | number | null
     createdAt?: DateTimeFilter<"Event"> | Date | string
     updatedAt?: DateTimeFilter<"Event"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -16168,6 +16228,8 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     authorId?: SortOrder
     category?: SortOrder
+    latitude?: SortOrderInput | SortOrder
+    longitude?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -16193,6 +16255,8 @@ export namespace Prisma {
     description?: StringNullableFilter<"Event"> | string | null
     authorId?: BigIntFilter<"Event"> | bigint | number
     category?: StringFilter<"Event"> | string
+    latitude?: FloatNullableFilter<"Event"> | number | null
+    longitude?: FloatNullableFilter<"Event"> | number | null
     createdAt?: DateTimeFilter<"Event"> | Date | string
     updatedAt?: DateTimeFilter<"Event"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -16214,6 +16278,8 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     authorId?: SortOrder
     category?: SortOrder
+    latitude?: SortOrderInput | SortOrder
+    longitude?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: EventCountOrderByAggregateInput
@@ -16240,6 +16306,8 @@ export namespace Prisma {
     description?: StringNullableWithAggregatesFilter<"Event"> | string | null
     authorId?: BigIntWithAggregatesFilter<"Event"> | bigint | number
     category?: StringWithAggregatesFilter<"Event"> | string
+    latitude?: FloatNullableWithAggregatesFilter<"Event"> | number | null
+    longitude?: FloatNullableWithAggregatesFilter<"Event"> | number | null
     createdAt?: DateTimeWithAggregatesFilter<"Event"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Event"> | Date | string
   }
@@ -17053,6 +17121,8 @@ export namespace Prisma {
     link?: string | null
     description?: string | null
     category: string
+    latitude?: number | null
+    longitude?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutEventInput
@@ -17074,6 +17144,8 @@ export namespace Prisma {
     description?: string | null
     authorId: bigint | number
     category: string
+    latitude?: number | null
+    longitude?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     eventImage?: EventImageUncheckedCreateNestedManyWithoutEventInput
@@ -17093,6 +17165,8 @@ export namespace Prisma {
     link?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
+    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutEventNestedInput
@@ -17114,6 +17188,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     authorId?: BigIntFieldUpdateOperationsInput | bigint | number
     category?: StringFieldUpdateOperationsInput | string
+    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     eventImage?: EventImageUncheckedUpdateManyWithoutEventNestedInput
@@ -17134,6 +17210,8 @@ export namespace Prisma {
     description?: string | null
     authorId: bigint | number
     category: string
+    latitude?: number | null
+    longitude?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -17151,6 +17229,8 @@ export namespace Prisma {
     link?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
+    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -17169,6 +17249,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     authorId?: BigIntFieldUpdateOperationsInput | bigint | number
     category?: StringFieldUpdateOperationsInput | string
+    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -18116,6 +18198,17 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type EventImageListRelationFilter = {
     every?: EventImageWhereInput
     some?: EventImageWhereInput
@@ -18156,6 +18249,8 @@ export namespace Prisma {
     description?: SortOrder
     authorId?: SortOrder
     category?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -18164,6 +18259,8 @@ export namespace Prisma {
     id?: SortOrder
     price?: SortOrder
     authorId?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
   }
 
   export type EventMaxOrderByAggregateInput = {
@@ -18180,6 +18277,8 @@ export namespace Prisma {
     description?: SortOrder
     authorId?: SortOrder
     category?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -18198,6 +18297,8 @@ export namespace Prisma {
     description?: SortOrder
     authorId?: SortOrder
     category?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -18206,6 +18307,8 @@ export namespace Prisma {
     id?: SortOrder
     price?: SortOrder
     authorId?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
   }
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -18224,6 +18327,22 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type EventScalarRelationFilter = {
@@ -19048,6 +19167,14 @@ export namespace Prisma {
     set?: string | null
   }
 
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type UserUpdateOneRequiredWithoutEventNestedInput = {
     create?: XOR<UserCreateWithoutEventInput, UserUncheckedCreateWithoutEventInput>
     connectOrCreate?: UserCreateOrConnectWithoutEventInput
@@ -19746,6 +19873,22 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -21104,6 +21247,8 @@ export namespace Prisma {
     link?: string | null
     description?: string | null
     category: string
+    latitude?: number | null
+    longitude?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutEventInput
@@ -21124,6 +21269,8 @@ export namespace Prisma {
     description?: string | null
     authorId: bigint | number
     category: string
+    latitude?: number | null
+    longitude?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     eventScrap?: EventScrapUncheckedCreateNestedManyWithoutEventInput
@@ -21158,6 +21305,8 @@ export namespace Prisma {
     link?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
+    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutEventNestedInput
@@ -21178,6 +21327,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     authorId?: BigIntFieldUpdateOperationsInput | bigint | number
     category?: StringFieldUpdateOperationsInput | string
+    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     eventScrap?: EventScrapUncheckedUpdateManyWithoutEventNestedInput
@@ -21243,6 +21394,8 @@ export namespace Prisma {
     link?: string | null
     description?: string | null
     category: string
+    latitude?: number | null
+    longitude?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutEventInput
@@ -21263,6 +21416,8 @@ export namespace Prisma {
     description?: string | null
     authorId: bigint | number
     category: string
+    latitude?: number | null
+    longitude?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     eventImage?: EventImageUncheckedCreateNestedManyWithoutEventInput
@@ -21350,6 +21505,8 @@ export namespace Prisma {
     link?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
+    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutEventNestedInput
@@ -21370,6 +21527,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     authorId?: BigIntFieldUpdateOperationsInput | bigint | number
     category?: StringFieldUpdateOperationsInput | string
+    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     eventImage?: EventImageUncheckedUpdateManyWithoutEventNestedInput
@@ -21553,6 +21712,8 @@ export namespace Prisma {
     link?: string | null
     description?: string | null
     category: string
+    latitude?: number | null
+    longitude?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     eventImage?: EventImageCreateNestedManyWithoutEventInput
@@ -21572,6 +21733,8 @@ export namespace Prisma {
     link?: string | null
     description?: string | null
     category: string
+    latitude?: number | null
+    longitude?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     eventImage?: EventImageUncheckedCreateNestedManyWithoutEventInput
@@ -21731,6 +21894,8 @@ export namespace Prisma {
     description?: StringNullableFilter<"Event"> | string | null
     authorId?: BigIntFilter<"Event"> | bigint | number
     category?: StringFilter<"Event"> | string
+    latitude?: FloatNullableFilter<"Event"> | number | null
+    longitude?: FloatNullableFilter<"Event"> | number | null
     createdAt?: DateTimeFilter<"Event"> | Date | string
     updatedAt?: DateTimeFilter<"Event"> | Date | string
   }
@@ -22254,6 +22419,8 @@ export namespace Prisma {
     link?: string | null
     description?: string | null
     category: string
+    latitude?: number | null
+    longitude?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -22390,6 +22557,8 @@ export namespace Prisma {
     link?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
+    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     eventImage?: EventImageUpdateManyWithoutEventNestedInput
@@ -22409,6 +22578,8 @@ export namespace Prisma {
     link?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
+    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     eventImage?: EventImageUncheckedUpdateManyWithoutEventNestedInput
@@ -22428,6 +22599,8 @@ export namespace Prisma {
     link?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
+    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

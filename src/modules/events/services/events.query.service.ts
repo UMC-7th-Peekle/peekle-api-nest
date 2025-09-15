@@ -158,10 +158,14 @@ export class EventsQueryService {
         }
 
         // 기간 필터
-        if (query.startDate) {
+        if (query.startDate && query.endDate) {
+          conditions.push(
+            Prisma.sql`e.start_date <= ${new Date(query.endDate)}`,
+            Prisma.sql`e.end_date >= ${new Date(query.startDate)}`,
+          );
+        } else if (query.startDate) {
           conditions.push(Prisma.sql`e.end_date >= ${new Date(query.startDate)}`);
-        }
-        if (query.endDate) {
+        } else if (query.endDate) {
           conditions.push(Prisma.sql`e.start_date <= ${new Date(query.endDate)}`);
         }
 

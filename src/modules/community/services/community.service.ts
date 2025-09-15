@@ -10,9 +10,9 @@ import {
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import is from 'zod/v4/locales/is.cjs';
 
+import { CreateArticleLikeDto } from '@modules/community/dto/article-like.dto';
 import { CreateArticleDto, GetArticleDto } from '@modules/community/dto/article.dto';
 import { CreateCommentDto, GetCommentDto } from '@modules/community/dto/comment.dto';
-import { CreateArticleLikeDto } from '@modules/community/dto/create-article-like.dto';
 import { CreateCommentLikeDto } from '@modules/community/dto/create-comment-like.dto';
 import { PrismaService } from '@modules/prisma/prisma.service';
 
@@ -258,7 +258,16 @@ export class CommunityService {
     return { status: true, message: '게시글 삭제 성공' };
   }
 
-  async createArticleLike(articleId: bigint, userId: bigint) {
+  // 게시글 좋아요 추가
+  async createArticleLike(dto: CreateArticleLikeDto, articleId: bigint, userId: bigint) {
+    // 게시글 존재 여부 확인
+    const article = await this.prisma.article.findUnique({
+      where: { id: articleId },
+    });
+    if (!article) {
+      throw new NotFoundException('존재하지 않는 게시글입니다.');
+    }
+
     // 중복 좋아요 확인
     const existingLike = await this.prisma.articleLike.findUnique({
       where: {

@@ -31,6 +31,7 @@ import { ParseJsonPipe } from '@common/pipes/parse-json.pipe';
 import { inspectObject } from '@common/utils/inspect-object.utils';
 
 import { Public } from '@modules/auth/decorators/public.decorator';
+import { CreateArticleLikeDto } from '@modules/community/dto/article-like.dto';
 import {
   CreateArticleDto,
   GetArticleDto,
@@ -42,7 +43,6 @@ import {
   UpdateCommentDto,
 } from '@modules/community/dto/comment.dto';
 import { GetCommunityDto } from '@modules/community/dto/community.dto';
-import { CreateArticleLikeDto } from '@modules/community/dto/create-article-like.dto';
 import { CreateCommentLikeDto } from '@modules/community/dto/create-comment-like.dto';
 import { CommunityService } from '@modules/community/services/community.service';
 
@@ -152,20 +152,26 @@ export class CommunityV1Controller {
     return await this.communityService.deleteArticle(articleId, userId);
   }
 
+  // 게시글 좋아요 추가
   @Post('article/:articleId/like')
-  @ApiOperation({ summary: '게시글 좋아요' })
+  @ApiOperation({ summary: '게시글 좋아요 추가' })
   @ApiCookieAuth()
-  @ApiCreatedResponse({ description: '게시글 좋아요 성공', type: Boolean })
-  async createArticleLike(@Param('articleId') articleId: string, @Req() req) {
+  @ApiCreatedResponse({ description: '게시글 좋아요 성공', type: CreateArticleLikeDto })
+  async createArticleLike(
+    dto: CreateArticleLikeDto,
+    @Param('articleId') articleId: string,
+    @Req() req,
+  ) {
     const userId = req.user.userId;
-    return await this.communityService.createArticleLike(BigInt(articleId), userId);
+
+    return await this.communityService.createArticleLike(dto, BigInt(articleId), userId);
   }
 
   // 게시글 좋아요 취소
   @Delete('article/:articleId/like')
   @ApiOperation({ summary: '게시글 좋아요 취소' })
   @ApiCookieAuth()
-  @ApiOkResponse({ description: '게시글 좋아요 취소 성공', type: Boolean })
+  @ApiOkResponse({ description: '게시글 좋아요 취소 성공' })
   @ResponseMessage('게시글 좋아요가 취소되었습니다.')
   async deleteArticleLike(@Param('articleId') articleId: string, @Req() req) {
     const userId = req.user.userId;
@@ -175,7 +181,7 @@ export class CommunityV1Controller {
   // 댓글 관련
   // 댓글 좋아요 추가
   @Post('article/comment/:commentId/like')
-  @ApiOperation({ summary: '댓글 좋아요 등록' })
+  @ApiOperation({ summary: '댓글 좋아요 추가' })
   @ApiCookieAuth()
   @ApiCreatedResponse({ description: '댓글 좋아요 등록 성공', type: Boolean })
   async createCommentLike(@Param('commentId') commentId: string, @Req() req) {

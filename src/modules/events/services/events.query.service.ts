@@ -47,7 +47,7 @@ export class EventsQueryService {
 
     // 가격 필터
     if (typeof query.isFree === 'boolean') {
-      if (query.isFree) andConds.push({ price: 0 });
+      if (query.isFree === true) andConds.push({ price: 0 });
       else andConds.push({ price: { not: 0 } });
     }
 
@@ -127,16 +127,24 @@ export class EventsQueryService {
 
         // cursor 기준 distance 조회
         if (query.cursor) {
+          let cursorId: bigint;
+          try {
+            cursorId = BigInt(query.cursor);
+          } catch {
+            throw new BadRequestException('cursor는 BigInt 타입이어야 합니다.');
+          }
+
           const cursorRow = await this.prisma.$queryRaw<Array<{ distance: number }>>`
-      SELECT ST_Distance_Sphere(
-               POINT(${lng}, ${lat}),
-               POINT(e.longitude, e.latitude)
-             ) AS distance
-      FROM event e
-      WHERE e.id = ${query.cursor}
-        AND e.latitude IS NOT NULL
-        AND e.longitude IS NOT NULL
-    `;
+    SELECT ST_Distance_Sphere(
+             POINT(${lng}, ${lat}),
+             POINT(e.longitude, e.latitude)
+           ) AS distance
+    FROM event e
+    WHERE e.id = ${cursorId}
+      AND e.latitude IS NOT NULL
+      AND e.longitude IS NOT NULL
+  `;
+
           if (!cursorRow.length) {
             throw new BadRequestException('유효하지 않은 cursor입니다.');
           }
@@ -242,24 +250,36 @@ export class EventsQueryService {
     }
 
     // 응답 매핑
-    const events = sliced.map((e: any) => ({
-      id: e.id.toString(),
-      title: e.title,
-      period: {
-        start: e.startDate.toISOString().slice(0, 10),
-        end: e.endDate ? e.endDate.toISOString().slice(0, 10) : null,
-      },
-      price: {
-        amount: e.price,
-        type: e.price === 0 ? 'FREE' : 'PAID',
-        currency: 'KRW',
-      },
-      category: e.category,
-      latitude: e.latitude,
-      longitude: e.longitude,
-      thumbnailUrl: firstThumbByEvent.get(e.id) ?? null,
-      distance: e.distance ?? null, // 거리순일 때만 값이 들어옴
-    }));
+    const events = sliced.map(
+      (e: {
+        id: bigint;
+        title: string;
+        startDate: Date;
+        endDate: Date | null;
+        price: number;
+        category: string;
+        latitude: number | null;
+        longitude: number | null;
+        distance?: number; // distance 정렬 시에만 나옴
+      }) => ({
+        id: e.id.toString(),
+        title: e.title,
+        period: {
+          start: e.startDate.toISOString().slice(0, 10),
+          end: e.endDate ? e.endDate.toISOString().slice(0, 10) : null,
+        },
+        price: {
+          amount: e.price,
+          type: e.price === 0 ? 'FREE' : 'PAID',
+          currency: 'KRW',
+        },
+        category: e.category,
+        latitude: e.latitude,
+        longitude: e.longitude,
+        thumbnailUrl: firstThumbByEvent.get(e.id) ?? null,
+        distance: e.distance ?? null, // 거리순일 때만 값이 들어옴
+      }),
+    );
 
     // 다음 커서 (거리순일 때는 distance + id 반환)
     const last = sliced.at(-1);

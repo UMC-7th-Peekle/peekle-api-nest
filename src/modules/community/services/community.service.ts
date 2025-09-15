@@ -152,8 +152,65 @@ export class CommunityService {
     return { createdArticleId: createdArticle.id.toString() };
   }
 
-  updateArticle() {
-    return { message: '게시글 수정 (PATCH /community/article/:articleId)' };
+  // 게시글 수정
+  async updateArticle(
+    articleId: bigint,
+    dto: Partial<CreateArticleDto>,
+    userId: bigint,
+    files?: Express.Multer.File[],
+  ) {
+    // 게시글 존재 여부 확인
+    const article = await this.prisma.article.findUnique({
+      where: { id: articleId },
+      include: { articleImage: true },
+    });
+
+    if (!article) {
+      throw new NotFoundException('해당 게시글을 찾을 수 없습니다.');
+    }
+
+    // 게시글 작성자와 요청한 사용자가 일치하는지 확인
+    if (article.authorId !== userId) {
+      throw new ForbiddenException('게시글 작성자만 수정할 수 있습니다.');
+    }
+
+    // 게시글 수정
+    const updatedArticle = await this.prisma.article.update({
+      where: { id: articleId },
+      data: {
+        title: dto.title ?? article.title,
+        content: dto.content ?? article.content,
+        isAnonymous: dto.isAnonymous ?? article.isAnonymous,
+      },
+    });
+
+    // 이미지 파일이 있으면 기존 이미지 삭제 후 새로 저장
+    if (files && files.length > 0) {
+      // 기존 이미지 삭제
+      await this.prisma.articleImage.deleteMany({
+        where: { articleId },
+      });
+
+      // 새 이미지 저장
+      await Promise.all(
+        files.map((file, index) => {
+          const imageUrl = `/article_images/${file.filename}`;
+          return this.prisma.articleImage.create({
+            data: {
+              articleId: updatedArticle.id,
+              imageUrl,
+              order: index + 1,
+            },
+          });
+        }),
+      );
+    }
+
+    return {
+      status: true,
+      message: '게시글 수정 성공',
+      updatedArticleId: updatedArticle.id.toString(),
+    };
   }
 
   // 게시글 삭제

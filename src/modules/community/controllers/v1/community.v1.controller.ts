@@ -115,9 +115,22 @@ export class CommunityV1Controller {
     return await this.communityService.createArticle(data, files, userId);
   }
 
+  // 게시글 수정
   @Patch('article/:articleId')
-  updateArticle() {
-    return this.communityService.updateArticle();
+  @ApiMultiFileAndJson('article_images', CreateArticleDto)
+  @ApiOperation({ summary: '게시글 수정' })
+  @ApiCookieAuth()
+  @ApiOkResponse({ description: '게시글 수정 성공', type: Boolean })
+  @UseInterceptors(FilesInterceptor('article_images'))
+  @ResponseMessage('게시글이 수정되었습니다.')
+  async updateArticle(
+    @Param('articleId') articleId: string,
+    @UploadedFiles() files: Express.Multer.File[], // form-data에서 article_images는 이미지 파일들
+    @FormDataJson('data', ParseJsonPipe) data: CreateArticleDto, // form-data에서 data는 내용 부분
+    @Req() req,
+  ) {
+    const userId = req.user.userId;
+    return await this.communityService.updateArticle(BigInt(articleId), data, userId, files);
   }
 
   // 게시글 삭제

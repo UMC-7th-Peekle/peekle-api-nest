@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { PrismaService } from '@modules/prisma/prisma.service';
 
@@ -11,6 +11,12 @@ export class EventsScrapService {
     const event = await this.prisma.event.findUnique({ where: { id: eventId } });
     if (!event) throw new NotFoundException('Event not found');
 
+    // 이미 찜했는지 확인
+    const existing = await this.prisma.eventScrap.findUnique({
+      where: { userId_eventId: { userId, eventId } },
+    });
+    if (existing) throw new ConflictException('이미 찜한 이벤트입니다.');
+
     await this.prisma.eventScrap.create({
       data: { userId, eventId },
     });
@@ -22,6 +28,12 @@ export class EventsScrapService {
     // 이벤트 존재 여부 확인
     const event = await this.prisma.event.findUnique({ where: { id: eventId } });
     if (!event) throw new NotFoundException('Event not found');
+
+    // 찜 기록이 없으면 에러
+    const existing = await this.prisma.eventScrap.findUnique({
+      where: { userId_eventId: { userId, eventId } },
+    });
+    if (!existing) throw new NotFoundException('찜하지 않은 이벤트입니다.');
 
     await this.prisma.eventScrap.delete({
       where: { userId_eventId: { userId, eventId } },

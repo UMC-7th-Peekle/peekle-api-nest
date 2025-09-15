@@ -6,10 +6,10 @@ import { IsBigInt } from '@common/decorators/is-bigint.decorator';
 import { TransformToBigint } from '@common/decorators/transform.decorator';
 
 export class CreateCommentDto {
-  @ApiProperty({ example: 100, description: '댓글이 달릴 게시글 ID', type: Number })
+  @ApiProperty({ example: 100, description: '댓글이 달릴 게시글 ID', type: String })
   @IsBigInt()
   @TransformToBigint()
-  articleId!: bigint;
+  articleId!: string;
 
   @ApiProperty({ example: '댓글 내용', description: '댓글 본문', maxLength: 2000 })
   @IsString()
@@ -30,19 +30,30 @@ export class CreateCommentDto {
   @IsBigInt()
   @TransformToBigint()
   @IsOptional()
-  parentCommentId?: bigint;
+  parentCommentId?: string;
 }
 
 export class GetCommentDto {
   @ApiProperty({ example: 1, description: '댓글 ID', type: String })
   @IsBigInt()
   @TransformToBigint()
-  id!: bigint;
+  id!: string;
 
   @ApiProperty({ example: 100, description: '게시글 ID', type: String })
   @IsBigInt()
   @TransformToBigint()
-  articleId!: bigint;
+  articleId!: string;
+
+  @ApiProperty({
+    example: 20,
+    description: '부모 댓글 ID (대댓글인 경우)',
+    type: String,
+    nullable: true,
+  })
+  @IsBigInt()
+  @TransformToBigint()
+  @IsOptional()
+  parentCommentId?: string | null;
 
   @ApiProperty({ example: '댓글 내용', description: '댓글 본문', maxLength: 2000 })
   @IsString()
@@ -52,7 +63,7 @@ export class GetCommentDto {
   @ApiProperty({ example: 5001, description: '작성자 ID', type: String })
   @IsBigInt()
   @TransformToBigint()
-  authorId!: bigint;
+  authorId!: string;
 
   @ApiProperty({ example: false, description: '익명 여부', type: Boolean })
   @IsBoolean()
@@ -67,4 +78,15 @@ export class GetCommentDto {
   @IsString()
   @IsNotEmpty()
   updatedAt!: string;
+}
+
+export class UpdateCommentDto {
+  @ApiProperty({ example: '댓글 내용', description: '댓글 본문', maxLength: 2000 })
+  @IsString()
+  @IsNotEmpty()
+  content!: string;
+
+  @ApiProperty({ example: false, description: '익명 여부', type: Boolean })
+  @IsBoolean()
+  isAnonymous!: boolean;
 }

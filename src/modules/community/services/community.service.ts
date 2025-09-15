@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import is from 'zod/v4/locales/is.cjs';
 
 import { CreateArticleDto, GetArticleDto } from '@modules/community/dto/article.dto';
 import { CreateCommentDto, GetCommentDto } from '@modules/community/dto/comment.dto';
@@ -174,10 +175,23 @@ export class CommunityService {
       throw new ForbiddenException('게시글 작성자만 수정할 수 있습니다.');
     }
 
+    // communityId가 수정 요청에 포함된 경우 존재 여부 확인
+    let newCommunityId = article.communityId;
+    if (dto.communityId && dto.communityId !== article.communityId) {
+      const community = await this.prisma.community.findUnique({
+        where: { id: dto.communityId },
+      });
+      if (!community) {
+        throw new NotFoundException('존재하지 않는 커뮤니티입니다.');
+      }
+      newCommunityId = dto.communityId;
+    }
+
     // 게시글 수정
     const updatedArticle = await this.prisma.article.update({
       where: { id: articleId },
       data: {
+        communityId: newCommunityId,
         title: dto.title ?? article.title,
         content: dto.content ?? article.content,
         isAnonymous: dto.isAnonymous ?? article.isAnonymous,
@@ -186,12 +200,10 @@ export class CommunityService {
 
     // 이미지 파일이 있으면 기존 이미지 삭제 후 새로 저장
     if (files && files.length > 0) {
-      // 기존 이미지 삭제
       await this.prisma.articleImage.deleteMany({
         where: { articleId },
       });
 
-      // 새 이미지 저장
       await Promise.all(
         files.map((file, index) => {
           const imageUrl = `/article_images/${file.filename}`;
@@ -207,9 +219,10 @@ export class CommunityService {
     }
 
     return {
-      status: true,
-      message: '게시글 수정 성공',
-      updatedArticleId: updatedArticle.id.toString(),
+      communityId: updatedArticle.communityId.toString(),
+      title: updatedArticle.title,
+      content: updatedArticle.content,
+      isAnonymous: updatedArticle.isAnonymous,
     };
   }
 

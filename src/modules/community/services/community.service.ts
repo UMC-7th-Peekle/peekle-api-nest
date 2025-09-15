@@ -52,6 +52,14 @@ export class CommunityService {
     { communityId, page, limit }: { communityId: bigint; page?: number; limit?: number },
     // userId: string,
   ) {
+    // 커뮤니티 존재 여부 확인
+    const community = await this.prisma.community.findUnique({
+      where: { id: communityId },
+    });
+    if (!community) {
+      throw new NotFoundException('존재하지 않는 커뮤니티입니다.');
+    }
+
     const skip = ((page ?? 1) - 1) * (limit ?? 10);
 
     const [articles, totalCount] = await this.prisma.$transaction([

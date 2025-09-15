@@ -1,15 +1,19 @@
-import { ConflictException, Inject, Injectable, Logger } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  Inject,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 
-import { LOG_LEVELS } from '@common/constants/log-levels.constants';
-
+import { CreateArticleDto, GetArticleDto } from '@modules/community/dto/article.dto';
+import { CreateCommentDto, GetCommentDto } from '@modules/community/dto/comment.dto';
+import { CreateArticleLikeDto } from '@modules/community/dto/create-article-like.dto';
+import { CreateCommentLikeDto } from '@modules/community/dto/create-comment-like.dto';
 import { PrismaService } from '@modules/prisma/prisma.service';
-
-import { CreateArticleLikeDto } from '../dto/create-article-like.dto';
-import { CreateArticleDto } from '../dto/create-article.dto';
-import { CreateCommentLikeDto } from '../dto/create-comment-like.dto';
-import { CreateCommentDto } from '../dto/create-comment.dto';
 
 @Injectable()
 export class CommunityService {
@@ -17,16 +21,104 @@ export class CommunityService {
     private readonly prisma: PrismaService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {}
-  getCommunityHome() {
-    return { message: '커뮤니티 홈 조회 (GET /community)' };
+
+  // 커뮤니티 홈 조회
+  async getCommunityHome(communityId: bigint) {
+    const community = await this.prisma.community.findUnique({
+      where: { id: communityId },
+      select: {
+        id: true,
+        name: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    if (!community) {
+      throw new NotFoundException('해당 커뮤니티를 찾을 수 없습니다.');
+    }
+
+    return {
+      id: community.id.toString(),
+      name: community.name,
+      createdAt: community.createdAt.toISOString(),
+      updatedAt: community.updatedAt.toISOString(),
+    };
   }
 
-  getArticle() {
-    return { message: '게시글 조회 (GET /community/article)' };
+  // 게시글 목록 조회
+  async getArticle(query: { page?: number; limit?: number }, userId: bigint) {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
+    const skip = (page - 1) * limit;
+
+    const [articles, totalCount] = await this.prisma.$transaction([
+      this.prisma.article.findMany({
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          articleImage: {
+            select: { imageUrl: true, order: true },
+            orderBy: { order: 'asc' },
+          },
+        },
+      }),
+      this.prisma.article.count(),
+    ]);
+
+    const articleList = articles.map((article) => ({
+      id: article.id,
+      title: article.title,
+      content: article.content,
+      isAnonymous: article.isAnonymous,
+      authorId: article.authorId,
+      createdAt: article.createdAt.toISOString(),
+      updatedAt: article.updatedAt.toISOString(),
+      images: article.articleImage.map((img) => ({
+        imageUrl: img.imageUrl,
+        order: img.order,
+      })),
+    }));
+
+    return articleList;
   }
 
-  getArticleDetail() {
-    return { message: '게시글 상세 조회 (GET /community/article/:articleId)' };
+  // 게시글 상세 조회
+  /* 가입 하지 않은 유저도 조회 가능 */
+  async getArticleDetail(articleId: bigint): Promise<GetArticleDto> {
+    const article = await this.prisma.article.findUnique({
+      where: { id: articleId },
+      include: {
+        articleImage: {
+          // 게시글 이미지 포함
+          select: {
+            imageUrl: true,
+            order: true,
+          },
+          orderBy: { order: 'asc' },
+        },
+      },
+    });
+
+    if (!article) {
+      throw new NotFoundException('해당 게시글을 찾을 수 없습니다.');
+    }
+
+    return {
+      id: article.id,
+      title: article.title,
+      content: article.content,
+      isAnonymous: article.isAnonymous,
+      authorId: article.authorId,
+      createdAt: article.createdAt.toISOString(),
+      updatedAt: article.updatedAt.toISOString(),
+      images: article.articleImage?.map((img) => ({
+        // 이미지미이 매핑
+        imageUrl: img.imageUrl,
+        order: img.order,
+      })),
+    };
   }
 
   async createArticle(dto: CreateArticleDto, files: Express.Multer.File[], userId: bigint) {
@@ -63,17 +155,33 @@ export class CommunityService {
     return { message: '게시글 수정 (PATCH /community/article/:articleId)' };
   }
 
-  deleteArticle() {
-    return { message: '게시글 삭제 (DELETE /community/article/:articleId)' };
+  // 게시글 삭제
+  async deleteArticle(articleId: bigint, userId: bigint) {
+    // 게시글 존재 여부 확인
+    const article = await this.prisma.article.findUnique({
+      where: { id: articleId },
+    });
+    if (!article) {
+      throw new NotFoundException('해당 게시글을 찾을 수 없습니다.');
+    }
+    // 게시글 작성자와 요청한 사용자가 일치하는지 확인
+    if (article.authorId !== userId) {
+      throw new ConflictException('게시글 작성자만 삭제할 수 있습니다.');
+    }
+    // 게시글 삭제
+    await this.prisma.article.delete({
+      where: { id: articleId },
+    });
+    return { status: true, message: '게시글 삭제 성공' };
   }
 
-  async createArticleLike(dto: CreateArticleLikeDto, userId: bigint) {
-    // 복합키(articleId, userId) 기반 좋아요 존재 여부 확인
+  async createArticleLike(articleId: bigint, userId: bigint) {
+    // 중복 좋아요 확인
     const existingLike = await this.prisma.articleLike.findUnique({
       where: {
         articleId_userId: {
-          articleId: dto.articleId,
-          userId: userId,
+          articleId,
+          userId,
         },
       },
     });
@@ -82,27 +190,60 @@ export class CommunityService {
       throw new ConflictException('이미 좋아요를 누른 게시글입니다.');
     }
 
+    // 좋아요 생성
     const like = await this.prisma.articleLike.create({
       data: {
-        articleId: BigInt(dto.articleId),
-        userId: userId,
+        articleId,
+        userId,
       },
     });
 
-    return { status: true, message: '좋아요 성공', data: like };
+    // BigInt 필드를 문자열로 변환하여 반환
+    return {
+      status: true,
+      message: '좋아요 성공',
+      data: {
+        articleId: like.articleId.toString(),
+        userId: like.userId.toString(),
+        createdAt: like.createdAt.toISOString(),
+        updatedAt: like.updatedAt.toISOString(),
+      },
+    };
   }
 
-  deleteArticleLike() {
-    return { message: '게시글 좋아요 취소 (DELETE /community/article/like)' };
+  // 게시글 좋아요 취소
+  async deleteArticleLike(articleId: bigint, userId: bigint) {
+    // 좋아요 존재 여부 확인
+    const existingLike = await this.prisma.articleLike.findUnique({
+      where: {
+        articleId_userId: {
+          articleId,
+          userId,
+        },
+      },
+    });
+
+    if (!existingLike) {
+      throw new NotFoundException('좋아요를 누르지 않은 게시글입니다.');
+    }
+
+    // 좋아요 삭제
+    await this.prisma.articleLike.delete({
+      where: {
+        articleId_userId: { articleId, userId },
+      },
+    });
+
+    return { status: true, message: '좋아요 취소 성공' };
   }
 
-  async createCommentLike(dto: CreateCommentLikeDto, userId: bigint) {
+  async createCommentLike(commentId: bigint, userId: bigint) {
     // 중복 좋아요 확인 (복합 키)
     const existingLike = await this.prisma.articleCommentLike.findUnique({
       where: {
         commentId_userId: {
-          commentId: dto.commentId,
-          userId: userId,
+          commentId,
+          userId,
         },
       },
     });
@@ -111,22 +252,69 @@ export class CommunityService {
       throw new ConflictException('이미 좋아요를 누른 댓글입니다.');
     }
 
-    const like = await this.prisma.articleLike.create({
+    const like = await this.prisma.articleCommentLike.create({
       data: {
-        articleId: dto.commentId,
-        userId: userId,
+        commentId,
+        userId,
       },
     });
 
-    return { status: true, message: '댓글 좋아요 성공', data: like };
+    return {
+      status: true,
+      message: '댓글 좋아요 성공',
+      data: {
+        commentId: like.commentId.toString(),
+        userId: like.userId.toString(),
+        createdAt: like.createdAt.toISOString(),
+        updatedAt: like.updatedAt.toISOString(),
+      },
+    };
   }
 
-  deleteCommentLike() {
-    return { message: '게시글 댓글 좋아요 취소 (DELETE /community/article/comment/like)' };
+  async deleteCommentLike(commentId: bigint, userId: bigint) {
+    // 좋아요 존재 여부 확인
+    const existingLike = await this.prisma.articleCommentLike.findUnique({
+      where: {
+        commentId_userId: {
+          commentId,
+          userId,
+        },
+      },
+    });
+
+    if (!existingLike) {
+      throw new NotFoundException('좋아요를 누르지 않은 댓글입니다.');
+    }
+
+    await this.prisma.articleCommentLike.delete({
+      where: {
+        commentId_userId: { commentId, userId },
+      },
+    });
+
+    return { status: true, message: '댓글 좋아요 취소 성공' };
   }
 
-  getComment() {
-    return { message: '게시글 댓글 조회 (GET /community/article/comment)' };
+  async getComment(articleId: bigint): Promise<GetCommentDto[]> {
+    // 댓글 목록 조회
+    const comments = await this.prisma.articleComment.findMany({
+      where: { articleId: articleId },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (!comments || comments.length === 0) {
+      throw new NotFoundException('해당 게시글에 댓글이 없습니다.');
+    }
+
+    return comments.map((comment) => ({
+      id: comment.id,
+      articleId: comment.articleId,
+      content: comment.content,
+      authorId: comment.authorId,
+      isAnonymous: comment.isAnonymous,
+      createdAt: comment.createdAt.toISOString(),
+      updatedAt: comment.updatedAt.toISOString(),
+    }));
   }
 
   async createComment(dto: CreateCommentDto, userId: bigint) {
@@ -148,8 +336,26 @@ export class CommunityService {
     return { message: '게시글 댓글 수정 (PATCH /community/article/comment)' };
   }
 
-  deleteComment() {
-    return { message: '게시글 댓글 삭제 (DELETE /community/article/comment)' };
+  async deleteComment(commentId: bigint, userId: bigint) {
+    // 댓글 존재 및 작성자 확인
+    const comment = await this.prisma.articleComment.findUnique({
+      where: { id: commentId },
+    });
+
+    if (!comment) {
+      throw new NotFoundException('존재하지 않는 댓글입니다.');
+    }
+
+    if (comment.authorId !== userId) {
+      throw new ForbiddenException('본인 댓글만 삭제할 수 있습니다.');
+    }
+
+    // 댓글 삭제
+    await this.prisma.articleComment.delete({
+      where: { id: commentId },
+    });
+
+    return { status: true, message: '댓글 삭제 성공' };
   }
 
   async createReply(dto: CreateCommentDto, userId: bigint) {

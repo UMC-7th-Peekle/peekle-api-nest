@@ -7,7 +7,15 @@
 generator client {
   provider      = "prisma-client-js"
   output        = "../src/generated/prisma"
-  binaryTargets = ["native", "darwin", "darwin-arm64", "linux-arm64-openssl-3.0.x", "windows", "debian-openssl-1.1.x"]
+  /// `binaryTargets`는 Prisma 클라이언트가 다양한 운영 체제 및 아키텍처에서 동작할 수 있도록
+  /// 여러 플랫폼용 바이너리를 생성하도록 지정합니다.
+  /// 
+  /// - "native": 현재 개발 환경의 플랫폼에 맞는 바이너리 생성
+  /// - "linux-musl-openssl-3.0.x": musl libc 기반 Linux (예: Alpine Linux)에서 OpenSSL 3.0.x를 사용하는 환경
+  /// - "linux-musl-arm64-openssl-3.0.x": ARM64 아키텍처의 musl libc 기반 Linux에서 OpenSSL 3.0.x를 사용하는 환경
+  /// - "debian-openssl-1.1.x": Debian 기반 Linux에서 OpenSSL 1.1.x를 사용하는 환경
+  /// - "linux-arm64-openssl-3.0.x": ARM64 아키텍처의 glibc 기반 Linux에서 OpenSSL 3.0.x를 사용하는 환경
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x", "linux-musl-arm64-openssl-3.0.x", "debian-openssl-1.1.x", "linux-arm64-openssl-3.0.x"]
 }
 
 datasource db {
@@ -122,6 +130,7 @@ model Event {
   updatedAt          DateTime     @default(now()) @map("updated_at") @db.Timestamp(6)
   user               User         @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "event_user_id_fk")
   eventImage         EventImage[]
+  eventScrap         EventScrap[]
 
   @@index([authorId], map: "event_user_id_fk")
   @@map("event")
@@ -139,6 +148,21 @@ model EventImage {
   @@map("event_image")
 }
 
+model EventScrap {
+  userId    BigInt   @map("user_id")
+  eventId   BigInt   @map("event_id")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "event_scrap_user_id_fk")
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "event_scrap_event_id_fk")
+
+  @@id([userId, eventId])
+  @@index([eventId], map: "event_scrap_event_id_fk")
+  @@index([userId], map: "event_scrap_user_id_fk")
+  @@map("event_scrap")
+}
+
 model Term {
   id         BigInt     @id @default(autoincrement())
   title      String     @db.VarChar(30)
@@ -149,6 +173,20 @@ model Term {
   userTerm   UserTerm[]
 
   @@map("term")
+}
+
+model Upload {
+  id        BigInt   @id @default(autoincrement())
+  domain    String   @db.VarChar(50) // 업로드된 파일이 속한 도메인 (예: 'events', 'community')
+  kind      String   @db.VarChar(20) // 파일 종류: 'image' | 'video'
+  key       String   @unique @db.VarChar(500) // S3 object key
+  url       String   @db.VarChar(1024) // CDN 공개 URL
+  mimeType  String   @map("mime_type") @db.VarChar(100) // ex. image/jpeg
+  size      Int? // 파일 크기 (byte 단위)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+
+  @@map("upload")
 }
 
 model User {
@@ -169,6 +207,7 @@ model User {
   articleCommentLike ArticleCommentLike[]
   articleLike        ArticleLike[]
   event              Event[]
+  eventScrap         EventScrap[]
   userTerm           UserTerm[]
 
   @@map("user")

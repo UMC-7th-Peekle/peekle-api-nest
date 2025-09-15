@@ -1,26 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import {
-  IsDateString,
-  IsInt,
-  IsNumberString,
-  IsOptional,
-  IsString,
-  MaxLength,
-} from 'class-validator';
+import { IsDateString, IsInt, IsOptional, IsString, MaxLength } from 'class-validator';
 
-// TODO: @IsBigInt() 올라오면 적용. 아래 @IsBigInt(), @TransformToBigint() 주석도 해제
-//import { TransformToBigint } from '@/common/decorators/transform.decorator';
-// import { IsBigInt } from '@/common/decorators/is-bigint.decorator';
+// Done: @IsBigInt() 올라오면 적용. 아래 @IsBigInt(), @TransformToBigint() 주석도 해제
+import { IsBigInt } from '@common/decorators/is-bigint.decorator';
+import { TransformToBigint } from '@common/decorators/transform.decorator';
 
 export class GetEventDetailParamsDto {
   @ApiProperty({
     description: '이벤트 ID',
     example: '1',
   })
-  // @IsBigInt()
-  // @TransformToBigint()
-  @IsNumberString() //  @IsBigInt() 준비되면 제거
+  @IsBigInt()
+  @TransformToBigint()
   id!: bigint;
 }
 

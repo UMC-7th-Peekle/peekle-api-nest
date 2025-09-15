@@ -1,0 +1,40 @@
+# --- 1. Builder Stage ---
+# NestJS 앱을 빌드하는 단계
+FROM node:24-alpine AS builder
+
+# pnpm 설치
+RUN npm install -g pnpm
+
+WORKDIR /app
+
+# package.json과 pnpm-lock.yaml을 먼저 복사합니다.
+COPY package.json pnpm-lock.yaml ./
+
+# 의존성 설치 (dev dependencies 포함)
+# --frozen-lockfile은 lockfile을 기반으로 정확히 설치합니다.
+RUN pnpm install --frozen-lockfile
+
+# 전체 소스 코드 복사
+COPY . .
+
+# NestJS 프로젝트 빌드 (pnpm build 실행)
+RUN pnpm build
+
+# --- 2. Production Stage ---
+# 실제 운영 환경에서 실행될 가벼운 이미지 생성
+FROM node:24-alpine
+
+RUN npm install -g pnpm
+
+WORKDIR /app
+
+# Builder 스테이지에서 프로덕션 의존성만 설치합니다.
+# 이렇게 하면 devDependencies가 제외되어 이미지가 가벼워집니다.
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --prod --frozen-lockfile
+
+# Builder 스테이지에서 빌드된 결과물(dist)만 복사합니다.
+COPY --from=builder /app/dist ./dist
+
+# 애플리케이션 실행 (Node가 dist/main.js를 실행)
+CMD ["node", "dist/main.js"]

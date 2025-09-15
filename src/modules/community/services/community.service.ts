@@ -12,8 +12,8 @@ import is from 'zod/v4/locales/is.cjs';
 
 import { CreateArticleLikeDto } from '@modules/community/dto/article-like.dto';
 import { CreateArticleDto, GetArticleDto } from '@modules/community/dto/article.dto';
+import { CreateCommentLikeDto } from '@modules/community/dto/comment-like.dto';
 import { CreateCommentDto, GetCommentDto } from '@modules/community/dto/comment.dto';
-import { CreateCommentLikeDto } from '@modules/community/dto/create-comment-like.dto';
 import { PrismaService } from '@modules/prisma/prisma.service';
 
 @Injectable()
@@ -329,7 +329,16 @@ export class CommunityService {
     return { status: true, message: '좋아요 취소 성공' };
   }
 
+  // 댓글 좋아요 추가
   async createCommentLike(commentId: bigint, userId: bigint) {
+    // 댓글 존재 여부 확인
+    const comment = await this.prisma.articleComment.findUnique({
+      where: { id: commentId },
+    });
+    if (!comment) {
+      throw new NotFoundException('존재하지 않는 댓글입니다.');
+    }
+
     // 중복 좋아요 확인 (복합 키)
     const existingLike = await this.prisma.articleCommentLike.findUnique({
       where: {
@@ -392,6 +401,14 @@ export class CommunityService {
     { articleId, page, limit }: { articleId: bigint; page?: number; limit?: number },
     // userId: string,
   ) {
+    // 게시글 존재 여부를 확인
+    const article = await this.prisma.article.findUnique({
+      where: { id: articleId },
+    });
+    if (!article) {
+      throw new NotFoundException('존재하지 않는 게시글입니다.');
+    }
+
     const skip = ((page ?? 1) - 1) * (limit ?? 10);
 
     const [comments, totalCount] = await this.prisma.$transaction([
@@ -407,9 +424,10 @@ export class CommunityService {
     const commentList = comments.map((comment) => ({
       id: comment.id.toString(),
       articleId: comment.articleId.toString(),
+      parentCommentId: comment.parentCommentId ? comment.parentCommentId.toString() : null,
       content: comment.content,
-      isAnonymous: comment.isAnonymous,
       authorId: comment.authorId.toString(),
+      isAnonymous: comment.isAnonymous,
       createdAt: comment.createdAt.toISOString(),
       updatedAt: comment.updatedAt.toISOString(),
     }));

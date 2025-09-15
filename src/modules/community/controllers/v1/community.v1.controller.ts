@@ -37,13 +37,13 @@ import {
   GetArticleDto,
   UpdateArticleDto,
 } from '@modules/community/dto/article.dto';
+import { CreateCommentLikeDto } from '@modules/community/dto/comment-like.dto';
 import {
   CreateCommentDto,
   GetCommentDto,
   UpdateCommentDto,
 } from '@modules/community/dto/comment.dto';
 import { GetCommunityDto } from '@modules/community/dto/community.dto';
-import { CreateCommentLikeDto } from '@modules/community/dto/create-comment-like.dto';
 import { CommunityService } from '@modules/community/services/community.service';
 
 @Controller({
@@ -183,7 +183,7 @@ export class CommunityV1Controller {
   @Post('article/comment/:commentId/like')
   @ApiOperation({ summary: '댓글 좋아요 추가' })
   @ApiCookieAuth()
-  @ApiCreatedResponse({ description: '댓글 좋아요 등록 성공', type: Boolean })
+  @ApiCreatedResponse({ description: '댓글 좋아요 등록 성공', type: CreateCommentLikeDto })
   async createCommentLike(@Param('commentId') commentId: string, @Req() req) {
     const userId = req.user.userId;
     return await this.communityService.createCommentLike(BigInt(commentId), userId);
@@ -193,7 +193,7 @@ export class CommunityV1Controller {
   @Delete('article/comment/:commentId/like')
   @ApiOperation({ summary: '댓글 좋아요 취소' })
   @ApiCookieAuth()
-  @ApiOkResponse({ description: '댓글 좋아요 취소 성공', type: Boolean })
+  @ApiOkResponse({ description: '댓글 좋아요 취소 성공' })
   @ResponseMessage('댓글 좋아요가 취소되었습니다.')
   async deleteCommentLike(@Param('commentId') commentId: string, @Req() req) {
     const userId = req.user.userId;

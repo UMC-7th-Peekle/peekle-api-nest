@@ -44,6 +44,17 @@ export class GetCommentDto {
   @TransformToBigint()
   articleId!: string;
 
+  @ApiProperty({
+    example: 20,
+    description: '부모 댓글 ID (대댓글인 경우)',
+    type: String,
+    nullable: true,
+  })
+  @IsBigInt()
+  @TransformToBigint()
+  @IsOptional()
+  parentCommentId?: string | null;
+
   @ApiProperty({ example: '댓글 내용', description: '댓글 본문', maxLength: 2000 })
   @IsString()
   @IsNotEmpty()

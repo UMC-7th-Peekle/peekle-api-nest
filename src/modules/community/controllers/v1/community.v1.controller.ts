@@ -230,6 +230,7 @@ export class CommunityV1Controller {
     });
   }
 
+  // 게시글 댓글 작성
   @Post('article/comment')
   @ApiOperation({ summary: '게시글 댓글 작성' })
   @ApiCookieAuth()
@@ -265,12 +266,18 @@ export class CommunityV1Controller {
     return this.communityService.deleteComment(BigInt(commentId), userId);
   }
 
-  @Post('article/comment/reply')
-  @ApiOperation({ summary: '게시글 대댓글 작성' })
-  @ApiCookieAuth()
-  @ApiCreatedResponse({ description: '대댓글 작성 성공', type: CreateCommentDto })
-  async createReply(@Body() dto: CreateCommentDto, @Req() req) {
-    const userId = req.user.userId;
-    return await this.communityService.createReply(dto, userId);
-  }
+  // @Post('article/comment/reply')
+  // @ApiOperation({ summary: '게시글 대댓글 작성' })
+  // @ApiCookieAuth()
+  // @ApiCreatedResponse({ description: '대댓글 작성 성공', type: CreateCommentDto })
+  // async createReply(@Body() dto: CreateCommentDto, @Req() req) {
+  //   const userId = req.user.userId;
+  //   return await this.communityService.createReply(dto, userId);
+  // }
+
+  /* 
+    대댓글 API 필요 없는 것 같아요
+    대댓글은 그냥 댓글 작성할 때 parentCommentId 넣어서 작성하면 될 듯
+    일단 혹시 몰라 주석 처리 해놓음
+  */
 }

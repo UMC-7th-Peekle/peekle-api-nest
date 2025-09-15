@@ -437,6 +437,14 @@ export class CommunityService {
 
   // 댓글 작성
   async createComment(dto: CreateCommentDto, userId: string) {
+    // articleId가 존재하는지 확인
+    const article = await this.prisma.article.findUnique({
+      where: { id: BigInt(dto.articleId) },
+    });
+    if (!article) {
+      throw new NotFoundException('존재하지 않는 게시글입니다.');
+    }
+
     // parentCommentId가 있을 경우 존재 여부 확인
     let parentCommentId: bigint | null = null;
     if (dto.parentCommentId) {
@@ -470,7 +478,11 @@ export class CommunityService {
   }
 
   // 댓글 수정
-  async updateComment(commentId: bigint, dto: { content: string }, userId: bigint) {
+  async updateComment(
+    commentId: bigint,
+    dto: { content: string; isAnonymous?: boolean },
+    userId: bigint,
+  ) {
     // 댓글 존재 및 작성자 확인
     const comment = await this.prisma.articleComment.findUnique({
       where: { id: commentId },
@@ -489,6 +501,7 @@ export class CommunityService {
       where: { id: commentId },
       data: {
         content: dto.content,
+        isAnonymous: dto.isAnonymous ?? comment.isAnonymous,
       },
     });
 
@@ -523,41 +536,42 @@ export class CommunityService {
     return { status: true, message: '댓글 삭제 성공' };
   }
 
-  async createReply(dto: CreateCommentDto, userId: bigint) {
-    const parentCommentId = dto.parentCommentId ? BigInt(dto.parentCommentId) : null;
+  // 대댓글 작성
+  // async createReply(dto: CreateCommentDto, userId: bigint) {
+  //   const parentCommentId = dto.parentCommentId ? BigInt(dto.parentCommentId) : null;
 
-    if (parentCommentId) {
-      const exists = await this.prisma.articleComment.findUnique({
-        where: { id: parentCommentId },
-      });
-      if (!exists) {
-        throw new NotFoundException('존재하지 않는 부모 댓글입니다.');
-      }
-    }
+  //   if (parentCommentId) {
+  //     const exists = await this.prisma.articleComment.findUnique({
+  //       where: { id: parentCommentId },
+  //     });
+  //     if (!exists) {
+  //       throw new NotFoundException('존재하지 않는 부모 댓글입니다.');
+  //     }
+  //   }
 
-    const reply = await this.prisma.articleComment.create({
-      data: {
-        articleId: BigInt(dto.articleId),
-        content: dto.content,
-        authorId: userId,
-        isAnonymous: dto.isAnonymous,
-        parentCommentId,
-      },
-    });
+  //   const reply = await this.prisma.articleComment.create({
+  //     data: {
+  //       articleId: BigInt(dto.articleId),
+  //       content: dto.content,
+  //       authorId: userId,
+  //       isAnonymous: dto.isAnonymous,
+  //       parentCommentId,
+  //     },
+  //   });
 
-    return {
-      status: true,
-      message: '대댓글이 작성되었습니다.',
-      data: {
-        id: reply.id.toString(),
-        articleId: reply.articleId.toString(),
-        content: reply.content,
-        authorId: reply.authorId.toString(),
-        isAnonymous: reply.isAnonymous,
-        parentCommentId: reply.parentCommentId ? reply.parentCommentId.toString() : null,
-        createdAt: reply.createdAt.toISOString(),
-        updatedAt: reply.updatedAt.toISOString(),
-      },
-    };
-  }
+  //   return {
+  //     status: true,
+  //     message: '대댓글이 작성되었습니다.',
+  //     data: {
+  //       id: reply.id.toString(),
+  //       articleId: reply.articleId.toString(),
+  //       content: reply.content,
+  //       authorId: reply.authorId.toString(),
+  //       isAnonymous: reply.isAnonymous,
+  //       parentCommentId: reply.parentCommentId ? reply.parentCommentId.toString() : null,
+  //       createdAt: reply.createdAt.toISOString(),
+  //       updatedAt: reply.updatedAt.toISOString(),
+  //     },
+  //   };
+  // }
 }

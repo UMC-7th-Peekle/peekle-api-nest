@@ -85,4 +85,8 @@ export class UpdateCommentDto {
   @IsString()
   @IsNotEmpty()
   content!: string;
+
+  @ApiProperty({ example: false, description: '익명 여부', type: Boolean })
+  @IsBoolean()
+  isAnonymous!: boolean;
 }

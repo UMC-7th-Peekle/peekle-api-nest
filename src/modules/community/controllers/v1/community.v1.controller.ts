@@ -145,7 +145,7 @@ export class CommunityV1Controller {
   @Delete('article/:articleId')
   @ApiOperation({ summary: '게시글 삭제' })
   @ApiCookieAuth()
-  @ApiOkResponse({ description: '게시글 삭제 성공', type: Boolean })
+  @ApiOkResponse({ description: '게시글 삭제 성공' })
   @ResponseMessage('게시글이 삭제되었습니다.')
   async deleteArticle(@Param('articleId') articleId: bigint, @Req() req) {
     const userId = req.user.userId;

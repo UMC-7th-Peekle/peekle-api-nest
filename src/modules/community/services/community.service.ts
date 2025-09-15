@@ -124,6 +124,14 @@ export class CommunityService {
 
   // 게시글 작성
   async createArticle(dto: CreateArticleDto, files: Express.Multer.File[], userId: bigint) {
+    // 커뮤니티 존재 여부 확인
+    const community = await this.prisma.community.findUnique({
+      where: { id: dto.communityId },
+    });
+    if (!community) {
+      throw new NotFoundException('존재하지 않는 커뮤니티입니다.');
+    }
+
     // 게시글 생성
     const createdArticle = await this.prisma.article.create({
       data: {
@@ -131,12 +139,11 @@ export class CommunityService {
         title: dto.title,
         content: dto.content,
         isAnonymous: dto.isAnonymous,
-        authorId: userId, // JWT에서 추출한 사용자 ID 사용
+        authorId: userId,
       },
     });
 
     // 이미지 파일이 있으면 각각 DB에 저장
-    // 병렬 실행을 위해 Promise.all을 사용하도록 수정함
     await Promise.all(
       files.map((file, index) => {
         const imageUrl = `/article_images/${file.filename}`;
@@ -150,7 +157,12 @@ export class CommunityService {
       }),
     );
 
-    return { createdArticleId: createdArticle.id.toString() };
+    return {
+      communityId: createdArticle.communityId.toString(),
+      title: createdArticle.title,
+      content: createdArticle.content,
+      isAnonymous: createdArticle.isAnonymous,
+    };
   }
 
   // 게시글 수정

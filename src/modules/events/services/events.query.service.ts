@@ -13,11 +13,11 @@ export class EventsQueryService {
   async getEventsList(query: GetEventsQueryDto) {
     const sortOrder: 'asc' | 'desc' = query.order === Order.ASC ? 'asc' : 'desc';
 
-    // where 절: where 조건을 유연하게 조립하기 위해 조건들을 배열에 모아놓고 나중에 { AND: [...] } 형태로 합침
+    // where 절: Prisma용 필터 조건
     const andConds: Prisma.EventWhereInput[] = [];
 
-    // 커서(id 기반)
-    if (query.cursor) {
+    // 커서(id 기반) → DATE, PRICE 전용
+    if (query.cursor && query.sort !== EventSortField.DISTANCE) {
       let cursorId: bigint;
       try {
         cursorId = BigInt(query.cursor);
@@ -27,7 +27,7 @@ export class EventsQueryService {
       andConds.push({ id: sortOrder === 'asc' ? { gt: cursorId } : { lt: cursorId } });
     }
 
-    // 기간 필터: 선택 구간과 겹치는 이벤트만 (start <= endSelected AND end >= startSelected)
+    // 기간 필터
     if (query.startDate && query.endDate) {
       const start = new Date(query.startDate);
       const end = new Date(query.endDate);
@@ -47,21 +47,17 @@ export class EventsQueryService {
 
     // 가격 필터
     if (typeof query.isFree === 'boolean') {
-      if (query.isFree === true) {
-        andConds.push({ price: 0 });
-      } else if (query.isFree === false) {
-        andConds.push({ price: { not: 0 } });
-      }
+      if (query.isFree) andConds.push({ price: 0 });
+      else andConds.push({ price: { not: 0 } });
     }
 
-    // 카테고리 필터(다중)
+    // 카테고리 필터
     if (query.categories?.length) {
       andConds.push({ category: { in: query.categories } });
     }
 
-    // 위치 필터(부분 일치, 대소문자 무시)
+    // 위치 필터(부분 일치)
     if (query.locations?.length) {
-      // 모든 키워드들을 venue* 네 필드에 평탄화해서 OR로 묶음
       const locOr: Prisma.EventWhereInput[] = [];
       for (const keyword of query.locations) {
         locOr.push(
@@ -76,51 +72,158 @@ export class EventsQueryService {
 
     const where: Prisma.EventWhereInput = andConds.length ? { AND: andConds } : {};
 
-    // orderBy 절
-    let orderBy: Prisma.EventOrderByWithRelationInput[] = [];
+    let rows: Array<any> = [];
 
     switch (query.sort) {
-      case EventSortField.DATE:
-        // 가까운 날짜순 (startDate 기준)
-        orderBy = [{ startDate: sortOrder }, { id: sortOrder }];
+      case EventSortField.DATE: {
+        rows = await this.prisma.event.findMany({
+          where,
+          orderBy: [{ startDate: sortOrder }, { id: sortOrder }],
+          take: query.limit + 1,
+          select: {
+            id: true,
+            title: true,
+            startDate: true,
+            endDate: true,
+            price: true,
+            category: true,
+            latitude: true,
+            longitude: true,
+          },
+        });
         break;
+      }
 
-      case EventSortField.PRICE:
-        // 낮은 금액순 (price 기준)
-        orderBy = [{ price: sortOrder }, { id: sortOrder }];
+      case EventSortField.PRICE: {
+        rows = await this.prisma.event.findMany({
+          where,
+          orderBy: [{ price: sortOrder }, { id: sortOrder }],
+          take: query.limit + 1,
+          select: {
+            id: true,
+            title: true,
+            startDate: true,
+            endDate: true,
+            price: true,
+            category: true,
+            latitude: true,
+            longitude: true,
+          },
+        });
         break;
+      }
 
-      case EventSortField.DISTANCE:
-        // Prisma는 기본적으로 distance 정렬을 지원하지 않아서 MySQL/DB 함수 (ST_Distance_Sphere 등)를 raw query로 써야 함.
-        throw new BadRequestException('거리순 정렬은 현재 지원되지 않습니다.');
+      case EventSortField.DISTANCE: {
+        if (query.latitude == null || query.longitude == null) {
+          throw new BadRequestException(
+            '거리순 정렬에는 위치 정보(latitude, longitude)가 필요합니다.',
+          );
+        }
 
-      default:
-        // 안전 기본값: 날짜순
-        orderBy = [{ startDate: sortOrder }, { id: sortOrder }];
+        const lat = query.latitude;
+        const lng = query.longitude;
+
+        let cursorDistance: number | null = null;
+
+        // cursor 기준 distance 조회
+        if (query.cursor) {
+          const cursorRow = await this.prisma.$queryRaw<Array<{ distance: number }>>`
+      SELECT ST_Distance_Sphere(
+               POINT(${lng}, ${lat}),
+               POINT(e.longitude, e.latitude)
+             ) AS distance
+      FROM event e
+      WHERE e.id = ${query.cursor}
+        AND e.latitude IS NOT NULL
+        AND e.longitude IS NOT NULL
+    `;
+          if (!cursorRow.length) {
+            throw new BadRequestException('유효하지 않은 cursor입니다.');
+          }
+          cursorDistance = cursorRow[0].distance;
+        }
+
+        const comparator = sortOrder === 'asc' ? Prisma.sql`>` : Prisma.sql`<`;
+
+        // --- 조건 누적 ---
+        const conditions: Prisma.Sql[] = [
+          Prisma.sql`e.latitude IS NOT NULL`,
+          Prisma.sql`e.longitude IS NOT NULL`,
+        ];
+
+        if (cursorDistance !== null) {
+          conditions.push(
+            Prisma.sql`ST_Distance_Sphere(POINT(${lng}, ${lat}), POINT(e.longitude, e.latitude)) ${comparator} ${cursorDistance}`,
+          );
+        }
+
+        // 기간 필터
+        if (query.startDate) {
+          conditions.push(Prisma.sql`e.end_date >= ${new Date(query.startDate)}`);
+        }
+        if (query.endDate) {
+          conditions.push(Prisma.sql`e.start_date <= ${new Date(query.endDate)}`);
+        }
+
+        // 가격 필터
+        if (typeof query.isFree === 'boolean') {
+          if (query.isFree) conditions.push(Prisma.sql`e.price = 0`);
+          else conditions.push(Prisma.sql`e.price <> 0`);
+        }
+
+        // 카테고리 필터
+        if (query.categories?.length) {
+          conditions.push(Prisma.sql`e.category IN (${Prisma.join(query.categories)})`);
+        }
+
+        // 위치 키워드 필터
+        if (query.locations?.length) {
+          const likeConds = query.locations.map(
+            (kw) =>
+              Prisma.sql`(e.venue_name LIKE ${'%' + kw + '%'} OR e.venue_road_address LIKE ${'%' + kw + '%'} OR e.venue_jibun_address LIKE ${'%' + kw + '%'} OR e.venue_detail_address LIKE ${'%' + kw + '%'})`,
+          );
+          conditions.push(Prisma.sql`(${Prisma.join(likeConds, ' OR ')})`);
+        }
+
+        // --- 최종 쿼리 ---
+        rows = await this.prisma.$queryRaw<
+          Array<{
+            id: bigint;
+            title: string;
+            startDate: Date;
+            endDate: Date | null;
+            price: number;
+            category: string;
+            latitude: number | null;
+            longitude: number | null;
+            distance: number;
+          }>
+        >`
+    SELECT e.id,
+           e.title,
+           e.start_date AS startDate,
+           e.end_date   AS endDate,
+           e.price,
+           e.category,
+           e.latitude,
+           e.longitude,
+           ST_Distance_Sphere(
+             POINT(${lng}, ${lat}),
+             POINT(e.longitude, e.latitude)
+           ) AS distance
+    FROM event e
+    WHERE ${Prisma.join(conditions, ' AND ')}
+    ORDER BY distance ${Prisma.raw(sortOrder)}, e.id ${Prisma.raw(sortOrder)}
+    LIMIT ${query.limit + 1}
+  `;
         break;
+      }
     }
-
-    // 조회: limit+1로 다음 페이지 존재 여부 판단
-    const rows = await this.prisma.event.findMany({
-      where,
-      orderBy,
-      take: query.limit + 1,
-      select: {
-        id: true,
-        title: true,
-        startDate: true,
-        endDate: true,
-        price: true,
-        category: true,
-        latitude: true,
-        longitude: true,
-      },
-    });
 
     const hasNextPage = rows.length > query.limit;
     const sliced = hasNextPage ? rows.slice(0, query.limit) : rows;
 
-    // 썸네일(첫 장) 일괄 조회
+    // 썸네일 조회
     const ids = sliced.map((r) => r.id);
     const firstThumbByEvent = new Map<bigint, string>();
     if (ids.length) {
@@ -135,7 +238,7 @@ export class EventsQueryService {
     }
 
     // 응답 매핑
-    const events = sliced.map((e) => ({
+    const events = sliced.map((e: any) => ({
       id: e.id.toString(),
       title: e.title,
       period: {
@@ -151,13 +254,15 @@ export class EventsQueryService {
       latitude: e.latitude,
       longitude: e.longitude,
       thumbnailUrl: firstThumbByEvent.get(e.id) ?? null,
+      distance: e.distance ?? null, // 거리순일 때만 값이 들어옴
     }));
 
-    // 다음 커서: 현재 페이지의 마지막 아이템 id
+    // 다음 커서 (거리순일 때는 distance + id 반환)
     const last = sliced.at(-1);
     const nextCursor = last ? last.id.toString() : null;
+    const nextCursorDistance = last?.distance ?? null;
 
-    return { events, nextCursor, hasNextPage };
+    return { events, nextCursor, nextCursorDistance, hasNextPage };
   }
 
   async getEventDetail(id: bigint): Promise<GetEventDetailResponseDto> {

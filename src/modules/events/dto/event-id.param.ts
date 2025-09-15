@@ -1,4 +1,3 @@
-// src/modules/events/dto/event-id.param.ts
 import { ApiProperty } from '@nestjs/swagger';
 
 import { IsBigInt } from '@common/decorators/is-bigint.decorator';

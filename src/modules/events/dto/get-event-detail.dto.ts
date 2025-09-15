@@ -112,4 +112,10 @@ export class GetEventDetailResponseDto {
     ],
   })
   images!: EventImageItemDto[];
+
+  @ApiProperty({ description: '위도', example: 37.5649, nullable: true })
+  latitude?: number | null;
+
+  @ApiProperty({ description: '경도', example: 126.9754, nullable: true })
+  longitude?: number | null;
 }

@@ -1,6 +1,14 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-import { IsDateString, IsInt, IsOptional, IsString, MaxLength, Min } from 'class-validator';
+import {
+  IsDateString,
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsString,
+  MaxLength,
+  Min,
+} from 'class-validator';
 
 export class CreateEventDto {
   @ApiProperty({
@@ -118,4 +126,22 @@ export class CreateEventDto {
   @IsString({ each: true })
   @MaxLength(1024, { each: true })
   images?: string[];
+
+  @ApiPropertyOptional({
+    description: '위도',
+    example: 37.5665,
+    nullable: true,
+  })
+  @IsOptional()
+  @IsNumber()
+  latitude?: number | null;
+
+  @ApiPropertyOptional({
+    description: '경도',
+    example: 126.9754,
+    nullable: true,
+  })
+  @IsOptional()
+  @IsNumber()
+  longitude?: number | null;
 }

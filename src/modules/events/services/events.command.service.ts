@@ -55,6 +55,8 @@ export class EventsCommandService {
         description: dto.description ?? null,
         authorId,
         category: dto.category,
+        latitude: dto.latitude ?? null,
+        longitude: dto.longitude ?? null,
       },
     });
 
@@ -108,6 +110,8 @@ export class EventsCommandService {
         link: dto.link ?? null,
         description: dto.description ?? null,
         category: dto.category,
+        latitude: dto.latitude !== undefined ? dto.latitude : found.latitude,
+        longitude: dto.longitude !== undefined ? dto.longitude : found.longitude,
       },
       select: { id: true },
     });

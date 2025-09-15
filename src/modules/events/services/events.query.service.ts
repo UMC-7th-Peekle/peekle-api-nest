@@ -298,6 +298,8 @@ export class EventsQueryService {
       description: event.description,
       authorId: event.authorId.toString(),
       category: event.category,
+      latitude: event.latitude,
+      longitude: event.longitude,
       createdAt: event.createdAt,
       updatedAt: event.updatedAt,
       images: event.eventImage.map((img) => ({

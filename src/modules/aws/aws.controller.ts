@@ -21,9 +21,19 @@ export class AwsController {
     schema: {
       example: {
         uploadUrl: 'https://s3.ap-northeast-2.amazonaws.com/your-bucket/...',
-        key: 'uploads/events/images/2025/08/28/uuid.jpg',
-        publicUrl: 'https://cdn.example.com/uploads/events/images/2025/08/28/uuid.jpg',
+        key: 'uploads/events/image/2025/09/13/uuid.jpg',
+        publicUrl: 'https://cdn.example.com/uploads/events/image/2025/09/13/uuid.jpg',
         expiresIn: 600,
+        upload: {
+          id: 1,
+          domain: 'events',
+          kind: 'image',
+          key: 'uploads/events/image/2025/09/13/uuid.jpg',
+          url: 'https://cdn.example.com/uploads/events/image/2025/09/13/uuid.jpg',
+          mimeType: 'image/jpeg',
+          size: 12345,
+          createdAt: '2025-09-13T12:13:04.000Z',
+        },
       },
     },
   })

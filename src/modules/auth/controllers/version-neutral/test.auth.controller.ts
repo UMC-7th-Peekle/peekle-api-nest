@@ -1,6 +1,8 @@
 import { Controller, Get, Query, Req, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiCookieAuth, ApiOperation, ApiQuery } from '@nestjs/swagger';
 
+import { Request } from 'express';
+
 import { ResponseMessage } from '@common/decorators/response-message-decorator';
 
 import { Public } from '@modules/auth/decorators/public.decorator';
@@ -8,7 +10,7 @@ import { AuthService } from '@modules/auth/services/auth.service';
 
 @Controller({
   version: VERSION_NEUTRAL,
-  path: 'auth',
+  path: 'auth/test',
 })
 export class AuthTestController {
   constructor(private readonly authService: AuthService) {}
@@ -41,8 +43,15 @@ export class AuthTestController {
     example: '1',
   })
   @Public()
-  @Get('test-token')
+  @Get('token')
   async getTestToken(@Query('userId') userId: string) {
     return this.authService.generateTokens(BigInt(userId));
+  }
+
+  @Get('cookie')
+  @ApiCookieAuth()
+  @Public()
+  checkCookie(@Req() req: Request) {
+    return req.cookies;
   }
 }

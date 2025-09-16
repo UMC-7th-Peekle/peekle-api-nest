@@ -108,6 +108,7 @@ export class EventsController {
     return result;
   }
 
+  @ApiCookieAuth()
   @Post(':id/scrap')
   @ApiOperation({ summary: '이벤트 찜하기 API' })
   @ApiOkResponse({ description: '이벤트 찜 성공' })

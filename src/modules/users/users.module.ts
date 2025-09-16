@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 
+import { FrontendUrlConfig } from '@modules/auth/config/frontend-url.config';
 import { JwtConfig } from '@modules/auth/config/jwt.config';
 import { RefreshJwtConfig } from '@modules/auth/config/refresh-jwt.config';
 import { RegisterJwtConfig } from '@modules/auth/config/register-jwt.config';
@@ -13,8 +14,9 @@ import { UsersController } from '@modules/users/users.controller';
 @Module({
   imports: [
     JwtModule.registerAsync(JwtConfig.asProvider()),
-    ConfigModule.forFeature(RefreshJwtConfig),
-    ConfigModule.forFeature(RegisterJwtConfig),
+    // ConfigModule.forFeature(RefreshJwtConfig),
+    // ConfigModule.forFeature(RegisterJwtConfig),
+    // ConfigModule.forFeature(FrontendUrlConfig),
   ],
   controllers: [UsersController],
   providers: [UsersService, OAuthUserService, AuthService],

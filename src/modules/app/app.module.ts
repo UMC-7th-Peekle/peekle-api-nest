@@ -12,6 +12,7 @@ import { LoggerMiddleware } from '@common/middleware/logger.middleware';
 import { RequestContextMiddleware } from '@common/middleware/request-context.middleware';
 
 import { AuthModule } from '@modules/auth/auth.module';
+import { FrontendUrlConfig } from '@modules/auth/config/frontend-url.config';
 import { GoogleOAuthConfig } from '@modules/auth/config/google-oauth-config';
 import { JwtConfig } from '@modules/auth/config/jwt.config';
 import { KakaoOAuthConfig } from '@modules/auth/config/kakao-oauth-config';
@@ -45,6 +46,7 @@ const validate = (config: Record<string, unknown>) => {
         JwtConfig,
         RefreshJwtConfig,
         RegisterJwtConfig,
+        FrontendUrlConfig,
       ],
       validate,
     }),

@@ -2,13 +2,14 @@ import { VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+import { corsOptions } from '@common/configs/cors-options.config';
 import { CookieName } from '@common/constants/cookie.constants';
 
 import { AppModule } from '@modules/app/app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    cors: true,
+    cors: corsOptions,
     // logger: WinstonModule.createLogger(winstonLoggerOptions),
   });
 

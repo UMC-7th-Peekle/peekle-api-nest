@@ -1,6 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
-
 import { Transform, Type } from 'class-transformer';
 import {
   ArrayNotEmpty,
@@ -9,6 +8,7 @@ import {
   IsDateString,
   IsEnum,
   IsInt,
+  IsNumber,
   IsOptional,
   Max,
   Min,
@@ -100,4 +100,16 @@ export class GetEventsQueryDto {
   // 단일 값이 들어와도 배열로 변환 (예: "교육" → ["교육"])
   @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   categories?: string[];
+
+  @ApiPropertyOptional({ description: '현재 위치 위도', example: 37.5665 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  latitude?: number;
+
+  @ApiPropertyOptional({ description: '현재 위치 경도', example: 126.9754 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  longitude?: number;
 }

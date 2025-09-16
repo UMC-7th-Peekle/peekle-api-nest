@@ -185,6 +185,8 @@ exports.Prisma.EventScalarFieldEnum = {
   description: 'description',
   authorId: 'authorId',
   category: 'category',
+  latitude: 'latitude',
+  longitude: 'longitude',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

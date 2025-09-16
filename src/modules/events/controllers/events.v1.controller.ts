@@ -14,7 +14,6 @@ import {
   GetEventDetailResponseDto,
 } from '@modules/events/dto/get-event-detail.dto';
 import { GetEventsQueryDto } from '@modules/events/dto/get-events.dto';
-
 import { GetMyScrappedEventsQueryDto } from '@modules/events/dto/get-scrapped-events.dto';
 import { UpdateEventDto } from '@modules/events/dto/update-event.dto';
 import { EventsCommandService } from '@modules/events/services/events.command.service';
@@ -26,7 +25,10 @@ import { ResponseMessage } from '@/common/decorators/response-message-decorator'
 import { Public } from '@/modules/auth/decorators/public.decorator';
 
 @ApiTags('events')
-@Controller('events')
+@Controller({
+  version: '1',
+  path: 'events',
+})
 export class EventsController {
   constructor(
     private readonly eventsQuery: EventsQueryService,
@@ -49,13 +51,13 @@ export class EventsController {
     return { events, nextCursor, hasNextPage };
   }
 
-  @ApiCookieAuth('peekleAccessToken')
+  @ApiCookieAuth()
   @Get('scraps')
   @ApiOperation({ summary: '내가 찜한 이벤트 목록 조회 API' })
   @ApiOkResponse({ description: '스크랩 목록 조회 성공' })
   @ResponseMessage('찜한 이벤트 목록을 조회했습니다.')
   async myScraps(@Query() q: GetMyScrappedEventsQueryDto, @Req() req: any) {
-    const userId: bigint = 1n; // TODO: req.user.id로 변경 필요
+    const userId: bigint = req.user?.userId;
     const { events, nextCursor, hasNextPage } = await this.eventsScrapQuery.getMyScrappedList(
       userId,
       q,
@@ -73,56 +75,57 @@ export class EventsController {
     return { event };
   }
 
-  @ApiCookieAuth('peekleAccessToken')
+  @ApiCookieAuth()
   @Post()
   @ApiOperation({ summary: '이벤트 생성 API' })
   @ApiCreatedResponse({ description: '이벤트 생성 성공', schema: { example: { id: '123' } } })
   @ResponseMessage('이벤트를 생성했습니다.')
   async create(@Body() dto: CreateEventDto, @Req() req: any) {
-    const authorId: bigint = 1n; // TODO: req.user.id로 변경 필요
+    const authorId: bigint = req.user?.userId;
     const result = await this.eventsCommand.createEvent(authorId, dto);
     return result;
   }
 
-  @ApiCookieAuth('peekleAccessToken')
+  @ApiCookieAuth()
   @Patch(':id')
   @ApiOperation({ summary: '이벤트 수정 API' })
   @ApiOkResponse({ description: '이벤트 수정 성공', schema: { example: { id: '123' } } })
   @ResponseMessage('이벤트를 수정했습니다.')
   async update(@Param() { id }: EventIdParamDto, @Body() dto: UpdateEventDto, @Req() req: any) {
-    const userId: bigint = 1n; // TODO: req.user.id로 변경 필요
+    const userId: bigint = req.user?.userId;
     const result = await this.eventsCommand.updateEvent(id, userId, dto);
     return result;
   }
 
-  @ApiCookieAuth('peekleAccessToken')
+  @ApiCookieAuth()
   @Delete(':id')
   @ApiOperation({ summary: '이벤트 삭제 API' })
   @ApiOkResponse({ description: '이벤트 삭제 성공', schema: { example: { id: '123' } } })
   @ResponseMessage('이벤트를 삭제했습니다.')
   async remove(@Param() { id }: EventIdParamDto, @Req() req: any) {
-    const userId: bigint = 1n; // TODO: req.user.id로 변경 필요
+    const userId: bigint = req.user?.userId;
     const result = await this.eventsCommand.deleteEvent(id, userId);
+    return result;
   }
 
+  @ApiCookieAuth()
   @Post(':id/scrap')
   @ApiOperation({ summary: '이벤트 찜하기 API' })
   @ApiOkResponse({ description: '이벤트 찜 성공' })
   @ResponseMessage('이벤트를 찜했습니다.')
   async scrap(@Param('id') id: string, @Req() req: any) {
-    const userId: bigint = 1n; // TODO: req.user.id로 변경 필요
+    const userId: bigint = req.user?.userId;
     const result = await this.eventScrap.scrapEvent(userId, BigInt(id));
     return result;
   }
 
-  // TODO: JWT 토큰 관련 문제 해결 시 테스트 후 수정 필요
-  @ApiCookieAuth('peekleAccessToken')
+  @ApiCookieAuth()
   @Delete(':id/scrap')
   @ApiOperation({ summary: '이벤트 찜 취소 API' })
   @ApiOkResponse({ description: '이벤트 찜 취소 성공' })
   @ResponseMessage('이벤트 찜을 취소했습니다.')
   async unscrap(@Param('id') id: string, @Req() req: any) {
-    const userId: bigint = 1n; // TODO: req.user.id로 변경 필요
+    const userId: bigint = req.user?.userId;
     const result = await this.eventScrap.unscrapEvent(userId, BigInt(id));
 
     return result;

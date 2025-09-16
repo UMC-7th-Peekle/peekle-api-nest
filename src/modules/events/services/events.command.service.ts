@@ -55,8 +55,21 @@ export class EventsCommandService {
         description: dto.description ?? null,
         authorId,
         category: dto.category,
+        latitude: dto.latitude ?? null,
+        longitude: dto.longitude ?? null,
       },
     });
+
+    // 이미지 저장 (있을 경우)
+    if (dto.images?.length) {
+      await this.prisma.eventImage.createMany({
+        data: dto.images.map((url, imageIndex) => ({
+          eventId: event.id,
+          imageUrl: url,
+          order: imageIndex,
+        })),
+      });
+    }
 
     return { id: event.id.toString() };
   }
@@ -97,9 +110,39 @@ export class EventsCommandService {
         link: dto.link ?? null,
         description: dto.description ?? null,
         category: dto.category,
+        latitude: dto.latitude !== undefined ? dto.latitude : found.latitude,
+        longitude: dto.longitude !== undefined ? dto.longitude : found.longitude,
       },
       select: { id: true },
     });
+
+    // 이미지 갱신 (있을 경우)
+    // (1) dto.images === undefined (전송하지 않음)
+    //     - 기존 이미지 유지
+    //     - event_image 테이블에는 변경 없음
+    //
+    // (2) dto.images === [] (빈 배열)
+    //     - 기존 이미지 전부 삭제
+    //     - 결과적으로 이미지가 없는 상태로 갱신됨
+    //
+    // (3) dto.images === ['...'] (URL 배열 전달)
+    //     - 기존 이미지 전부 삭제 후, 새 배열대로 다시 저장
+    //     - order 컬럼은 배열의 순서(index)를 기준으로 설정
+    if (dto.images !== undefined) {
+      // 기존 이미지 모두 삭제
+      await this.prisma.eventImage.deleteMany({ where: { eventId: id } });
+
+      // 새 배열 전달 시에만 다시 생성
+      if (dto.images.length > 0) {
+        await this.prisma.eventImage.createMany({
+          data: dto.images.map((url, imageIndex) => ({
+            eventId: id,
+            imageUrl: url,
+            order: imageIndex,
+          })),
+        });
+      }
+    }
 
     return { id: updated.id.toString() };
   }

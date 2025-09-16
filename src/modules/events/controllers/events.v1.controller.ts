@@ -14,7 +14,6 @@ import {
   GetEventDetailResponseDto,
 } from '@modules/events/dto/get-event-detail.dto';
 import { GetEventsQueryDto } from '@modules/events/dto/get-events.dto';
-
 import { GetMyScrappedEventsQueryDto } from '@modules/events/dto/get-scrapped-events.dto';
 import { UpdateEventDto } from '@modules/events/dto/update-event.dto';
 import { EventsCommandService } from '@modules/events/services/events.command.service';
@@ -26,7 +25,10 @@ import { ResponseMessage } from '@/common/decorators/response-message-decorator'
 import { Public } from '@/modules/auth/decorators/public.decorator';
 
 @ApiTags('events')
-@Controller('events')
+@Controller({
+  version: '1',
+  path: 'events',
+})
 export class EventsController {
   constructor(
     private readonly eventsQuery: EventsQueryService,

@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - develop
+  pull_request:
+    branches:
+      - develop
   workflow_dispatch:
 
 jobs:
@@ -40,6 +43,7 @@ jobs:
           push: true # 빌드 후 푸시 실행
           tags: peekle/peekle-develop:latest
           platforms: linux/amd64,linux/arm64
+
   docker-pull-and-run:
     name: Pull Latest Docker Image and Run on Mac Mini
     needs: build-docker-image-and-push
@@ -53,6 +57,20 @@ jobs:
           key: ${{ secrets.MAC_MINI_SSH_PRIVATE_KEY }}
           port: ${{ secrets.MAC_MINI_SSH_PORT }}
           script: |
+            echo "[1] docker가 설치되어 있는지 확인합니다."
+            if which docker > /dev/null 2>&1; then
+              echo "✅ docker가 정상적으로 인식됩니다: $(which docker)"
+            else
+              echo "❌ docker를 PATH에서 찾을 수 없습니다. PATH를 등록합니다."
+              export PATH="$PATH:/usr/local/bin"
+              if which docker > /dev/null 2>&1; then
+                echo "✅ PATH 등록 후 docker 인식됨: $(which docker)"
+              else
+                echo "❌ 여전히 docker를 찾을 수 없습니다. docker가 설치되어 있는지 또는 설치 경로를 확인하세요."
+                exit 1
+              fi
+            fi
+
             echo "=============================="
             echo "📦 최신 Docker 이미지 Pull 시작"
             echo "=============================="

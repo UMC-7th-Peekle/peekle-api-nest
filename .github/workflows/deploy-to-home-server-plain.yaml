@@ -1,0 +1,88 @@
+name: Deploy to Home Server (Plain)
+
+on:
+  # push:
+  #   branches:
+  #     - develop
+  workflow_dispatch:
+
+jobs:
+  deploy-to-home-server:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # - name: pnpm 설치
+      #   uses: pnpm/action-setup@v4
+      #   with:
+      #     version: 10
+      #     run_install: true
+
+      # - name: Install Node.js # pnpm 설치를 하더라도 node는 추가로 설치 필요
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: 22
+      #     cache: 'pnpm'
+
+      # - name: Build the project
+      #   run: |
+      #     echo "🏗️  Nest Project를 Build 합니다."
+      #     pnpm run build
+
+      - name: 홈 서버에 checkout 된 코드 복사
+        uses: appleboy/scp-action@v0.1.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: '.'
+          target: '${{ secrets.APP_DIRECTORY }}'
+          rm: true
+
+      - name: SSH 접속 및 스크립트 실행
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            #!/bin/bash
+            bash -c '
+            echo "✅ SSH Connected ..."
+            echo "👤 Current User: $(whoami)"
+            echo "🖥️ Host Name: $(hostname)"
+            echo "⏰ Current Time: $(date)"
+            echo "📁 Current Directory: $(pwd)"
+
+            if [ -d "${{ secrets.APP_DIRECTORY }}" ]; then
+              echo "📂 ${{ secrets.APP_DIRECTORY }} Directory exists, proceeding with deployment..."
+            else
+              echo "❌ ${{ secrets.APP_DIRECTORY }} Directory does not exist. Exiting deployment."
+              exit 1
+            fi
+
+            cd ${{ secrets.APP_DIRECTORY }}
+
+            echo "📂 Changed to application directory: $(pwd)"
+
+            echo "Creating .env files"
+            echo "${{ secrets.DOTENV_DEFAULT }}" | awk 'NF' > .env
+            echo "${{ secrets.DOTENV_DEVELOPMENT }}" | awk 'NF' > .env.development
+
+            echo "📂 Listing files in the application directory:"
+            ls -la
+
+            echo "🔧 Running the shell script ... ${{ secrets.SHELL_SCRIPT_PATH }}"
+            chmod +x ${{ secrets.SHELL_SCRIPT_PATH }}
+            bash ${{ secrets.SHELL_SCRIPT_PATH }}
+
+            if [ $? -eq 0 ]; then
+              echo "✅ Script executed successfully!"
+            else
+              echo "❌ Script execution failed. Please check the logs."
+              exit 1
+            fi
+            '

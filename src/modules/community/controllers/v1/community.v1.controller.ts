@@ -14,6 +14,7 @@ import {
 import { UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import {
+  ApiBearerAuth,
   ApiCookieAuth,
   ApiCreatedResponse,
   ApiOkResponse,
@@ -60,7 +61,7 @@ export class CommunityV1Controller {
   // 커뮤니티 홈 관련
   @Get(':communityId')
   @ApiOperation({ summary: '커뮤니티 홈 조회' })
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiOkResponse({ description: '커뮤니티 홈 데이터 반환', type: GetCommunityDto })
   @ResponseMessage('커뮤니티 홈이 조회되었습니다.')
   @Public() // TODO: 임시로 Public 처리, 추후 인증 도입 시 제거 필요
@@ -71,7 +72,7 @@ export class CommunityV1Controller {
   // 게시글 목록 조회
   @Get(':communityId/article')
   @ApiOperation({ summary: '게시글 목록 조회' })
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiOkResponse({ description: '게시글 목록 반환', type: [GetArticleDto] })
   @ApiQuery({ name: 'page', required: false, type: Number, description: '페이지 번호' })
   @ApiQuery({ name: 'limit', required: false, type: Number, description: '페이지 당 개수' })
@@ -95,7 +96,7 @@ export class CommunityV1Controller {
   // 게시글 상세 조회
   @Get('article/:articleId')
   @ApiOperation({ summary: '게시글 상세 조회' })
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiOkResponse({ description: '게시글 상세 데이터 반환', type: GetArticleDto })
   @ResponseMessage('게시글이 조회되었습니다.')
   // @Public() // TODO: 임시로 Public 처리, 추후 인증 도입 시 제거 필요
@@ -107,7 +108,7 @@ export class CommunityV1Controller {
   @Post('article')
   @ApiMultiFileAndJson('article_images', CreateArticleDto)
   @ApiOperation({ summary: '게시글 작성' })
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiCreatedResponse({ description: '게시글 생성 성공', type: CreateArticleDto })
   @UseInterceptors(FilesInterceptor('article_images'))
   @ResponseMessage('게시글이 생성되었습니다.')
@@ -127,7 +128,7 @@ export class CommunityV1Controller {
   @Patch('article/:articleId')
   @ApiMultiFileAndJson('article_images', CreateArticleDto)
   @ApiOperation({ summary: '게시글 수정' })
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiOkResponse({ description: '게시글 수정 성공', type: CreateArticleDto })
   @UseInterceptors(FilesInterceptor('article_images'))
   @ResponseMessage('게시글이 수정되었습니다.')
@@ -144,7 +145,7 @@ export class CommunityV1Controller {
   // 게시글 삭제
   @Delete('article/:articleId')
   @ApiOperation({ summary: '게시글 삭제' })
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiOkResponse({ description: '게시글 삭제 성공' })
   @ResponseMessage('게시글이 삭제되었습니다.')
   async deleteArticle(@Param('articleId') articleId: bigint, @Req() req) {
@@ -155,7 +156,7 @@ export class CommunityV1Controller {
   // 게시글 좋아요 추가
   @Post('article/:articleId/like')
   @ApiOperation({ summary: '게시글 좋아요 추가' })
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiCreatedResponse({ description: '게시글 좋아요 성공', type: CreateArticleLikeDto })
   async createArticleLike(
     dto: CreateArticleLikeDto,
@@ -170,7 +171,7 @@ export class CommunityV1Controller {
   // 게시글 좋아요 취소
   @Delete('article/:articleId/like')
   @ApiOperation({ summary: '게시글 좋아요 취소' })
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiOkResponse({ description: '게시글 좋아요 취소 성공' })
   @ResponseMessage('게시글 좋아요가 취소되었습니다.')
   async deleteArticleLike(@Param('articleId') articleId: string, @Req() req) {
@@ -181,8 +182,7 @@ export class CommunityV1Controller {
   // 댓글 관련
   // 댓글 좋아요 추가
   @Post('article/comment/:commentId/like')
-  @ApiOperation({ summary: '댓글 좋아요 추가' })
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiCreatedResponse({ description: '댓글 좋아요 등록 성공', type: CreateCommentLikeDto })
   async createCommentLike(@Param('commentId') commentId: string, @Req() req) {
     const userId = req.user.userId;
@@ -192,7 +192,7 @@ export class CommunityV1Controller {
   // 댓글 좋아요 취소
   @Delete('article/comment/:commentId/like')
   @ApiOperation({ summary: '댓글 좋아요 취소' })
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiOkResponse({ description: '댓글 좋아요 취소 성공' })
   @ResponseMessage('댓글 좋아요가 취소되었습니다.')
   async deleteCommentLike(@Param('commentId') commentId: string, @Req() req) {
@@ -203,7 +203,7 @@ export class CommunityV1Controller {
   // 댓글 목록 조회
   @Get('article/:articleId/comment')
   @ApiOperation({ summary: '게시글 댓글 목록 조회' })
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiOkResponse({ description: '해당 게시글의 댓글 목록 반환', type: [GetCommentDto] })
   @ApiQuery({
     name: 'articleId',
@@ -233,7 +233,7 @@ export class CommunityV1Controller {
   // 게시글 댓글 작성
   @Post('article/comment')
   @ApiOperation({ summary: '게시글 댓글 작성' })
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiCreatedResponse({ description: '댓글 작성 성공', type: CreateCommentDto })
   async createComment(@Body() dto: CreateCommentDto, @Req() req) {
     const userId = req.user.userId;
@@ -243,7 +243,7 @@ export class CommunityV1Controller {
   // 댓글 수정
   @Patch('article/comment/:commentId')
   @ApiOperation({ summary: '게시글 댓글 수정' })
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiOkResponse({ description: '댓글 수정 성공', type: CreateCommentDto })
   @ResponseMessage('댓글이 수정되었습니다.')
   async updateComment(
@@ -258,7 +258,7 @@ export class CommunityV1Controller {
   // 게시글 댓글 삭제
   @Delete('article/comment/:commentId')
   @ApiOperation({ summary: '게시글 댓글 삭제' })
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiOkResponse({ description: '댓글 삭제 성공' })
   @ResponseMessage('댓글이 삭제되었습니다.')
   async deleteComment(@Param('commentId') commentId: string, @Req() req) {
@@ -268,7 +268,7 @@ export class CommunityV1Controller {
 
   // @Post('article/comment/reply')
   // @ApiOperation({ summary: '게시글 대댓글 작성' })
-  // @ApiCookieAuth()
+  // @ApiBearerAuth()
   // @ApiCreatedResponse({ description: '대댓글 작성 성공', type: CreateCommentDto })
   // async createReply(@Body() dto: CreateCommentDto, @Req() req) {
   //   const userId = req.user.userId;

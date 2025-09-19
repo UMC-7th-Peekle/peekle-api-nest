@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiCookieAuth,
   ApiCreatedResponse,
   ApiOkResponse,
@@ -51,7 +52,7 @@ export class EventsController {
     return { events, nextCursor, hasNextPage };
   }
 
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @Get('scraps')
   @ApiOperation({ summary: '내가 찜한 이벤트 목록 조회 API' })
   @ApiOkResponse({ description: '스크랩 목록 조회 성공' })
@@ -75,7 +76,7 @@ export class EventsController {
     return { event };
   }
 
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @Post()
   @ApiOperation({ summary: '이벤트 생성 API' })
   @ApiCreatedResponse({ description: '이벤트 생성 성공', schema: { example: { id: '123' } } })
@@ -86,7 +87,7 @@ export class EventsController {
     return result;
   }
 
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @Patch(':id')
   @ApiOperation({ summary: '이벤트 수정 API' })
   @ApiOkResponse({ description: '이벤트 수정 성공', schema: { example: { id: '123' } } })
@@ -97,7 +98,7 @@ export class EventsController {
     return result;
   }
 
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @Delete(':id')
   @ApiOperation({ summary: '이벤트 삭제 API' })
   @ApiOkResponse({ description: '이벤트 삭제 성공', schema: { example: { id: '123' } } })
@@ -108,7 +109,7 @@ export class EventsController {
     return result;
   }
 
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @Post(':id/scrap')
   @ApiOperation({ summary: '이벤트 찜하기 API' })
   @ApiOkResponse({ description: '이벤트 찜 성공' })
@@ -119,7 +120,7 @@ export class EventsController {
     return result;
   }
 
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @Delete(':id/scrap')
   @ApiOperation({ summary: '이벤트 찜 취소 API' })
   @ApiOkResponse({ description: '이벤트 찜 취소 성공' })

@@ -1,5 +1,5 @@
 import { Controller, Get, Query, Req, VERSION_NEUTRAL } from '@nestjs/common';
-import { ApiCookieAuth, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCookieAuth, ApiOperation, ApiQuery } from '@nestjs/swagger';
 
 import { Request } from 'express';
 
@@ -19,7 +19,7 @@ export class AuthTestController {
     summary: '토큰 검증 API',
     description: 'GET 요청을 보냈을 때 JwtGuard를 통과했는지 확인합니다.',
   })
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @Get('protected')
   @ResponseMessage('JWT Guard를 Pass 했습니다.')
   async tokenCheck(@Req() req) {
@@ -49,7 +49,7 @@ export class AuthTestController {
   }
 
   @Get('cookie')
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @Public()
   checkCookie(@Req() req: Request) {
     return req.cookies;

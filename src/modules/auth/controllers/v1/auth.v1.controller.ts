@@ -1,5 +1,5 @@
 import { Controller, Delete, Post, UseGuards } from '@nestjs/common';
-import { ApiCookieAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCookieAuth } from '@nestjs/swagger';
 
 import { ResponseMessage } from '@common/decorators/response-message-decorator';
 
@@ -13,7 +13,7 @@ export class AuthV1Controller {
   constructor() {}
 
   @UseGuards(RegisterJwtGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @Post('token/reissue')
   @ResponseMessage('AccessToken이 재발급되었습니다.')
   reissueToken() {

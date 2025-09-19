@@ -1,5 +1,11 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { ApiCookieAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCookieAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { GetPresignedUrlDto } from '@modules/aws/dto/get-presigned-url.dto';
 import { AwsS3Service } from '@modules/aws/services/aws.s3.service';
@@ -37,7 +43,7 @@ export class AwsController {
       },
     },
   })
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   async getPresigned(@Body() dto: GetPresignedUrlDto) {
     // batchCount는 현재 서버 검증에 사용하지 않지만 Swagger/FE 참고용으로 DTO에 두었습니다.
     return this.awsS3.getPresignedPutUrl(dto);

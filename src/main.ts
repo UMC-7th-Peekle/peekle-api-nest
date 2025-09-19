@@ -23,7 +23,7 @@ async function bootstrap() {
     .setDescription('Team Peekle Backend의 API 문서입니다. 야호!')
     .setVersion('0.1.0')
     .addBearerAuth()
-    .addCookieAuth(CookieName.ACCESS_TOKEN)
+    // .addCookieAuth(CookieName.ACCESS_TOKEN)
     .addServer('http://localhost:7777', 'Local server')
     .addServer('https://api.peekle.kr', 'Development server')
     .setLicense('MIT', 'https://opensource.org/license/mit/')

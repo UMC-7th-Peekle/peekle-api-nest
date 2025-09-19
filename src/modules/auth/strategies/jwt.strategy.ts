@@ -25,15 +25,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     private authService: AuthService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromExtractors([
-        (req: Request) => {
-          // cookie-parser에 의해 생성된 req.cookies 객체에서 토큰을 추출합니다.
-          const accessToken = req.cookies?.[CookieName.ACCESS_TOKEN];
-          if (!accessToken) throw new NoJwtTokenException();
-
-          return accessToken;
-        },
-      ]),
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: jwtConfiguration.secret,
       ignoreExpiration: false,
     });

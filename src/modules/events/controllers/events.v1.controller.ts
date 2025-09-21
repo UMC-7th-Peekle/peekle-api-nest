@@ -134,14 +134,15 @@ export class EventsController {
     return result;
   }
 
-  @Public()
-  // TODO: @ApiBearerAuth()으로 수정 필요
+  @ApiBearerAuth()
   @Post('seed')
   @ApiOperation({ summary: '서울시 Open API 이벤트 시딩 API' })
   @ApiOkResponse({ description: '서울시 Open API 이벤트 시딩 성공' })
   @ResponseMessage('서울시 Open API 이벤트를 DB에 저장했습니다.')
-  async seedOfflineCourses() {
-    await this.eventsSeederService.seedOfflineCourses();
+  async seedEvents(@Req() req: any) {
+    const userId: bigint = req.user?.userId;
+    await this.eventsSeederService.seedSeoulRun4050(userId);
+    await this.eventsSeederService.seedSeoul50Plus(userId);
     return { message: 'Seeding 성공' };
   }
 }

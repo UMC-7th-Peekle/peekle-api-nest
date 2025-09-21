@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { ForbiddenException, Injectable, Logger } from '@nestjs/common';
 
 import axios from 'axios';
 
@@ -168,7 +168,17 @@ export class EventsSeederService {
     return '기타';
   }
 
-  async seedOfflineCourses() {
+  async seedSeoulRun4050(userId: bigint) {
+    // 관리자 권한 확인
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { role: true },
+    });
+
+    if (user?.role !== 'ADMIN') {
+      throw new ForbiddenException('관리자만 접근할 수 있습니다.');
+    }
+
     const apiKey = process.env.SEOUL_OPEN_API_KEY;
     const baseUrl = `http://openapi.seoul.go.kr:8088/${apiKey}/json/OfflineCourse`;
     let start = 1;
@@ -199,11 +209,12 @@ export class EventsSeederService {
               price: 0,
               link: row.ATNLC_APLY_URL,
               description: row.LCTR_TRGT || null,
-              authorId: 1, // 관리자 계정
+              authorId: userId,
               // 강좌명을 기반으로 카테고리 분류
               category: this.classifyCategory(row.LCTR_NM),
               latitude: row.EDNST_LAT_CRD ? parseFloat(row.EDNST_LAT_CRD) : null,
               longitude: row.EDNST_LOT_CRD ? parseFloat(row.EDNST_LOT_CRD) : null,
+              // 일단 이미지가 없으니 기본 이미지로 대체
               eventImage: {
                 create: {
                   imageUrl: '/default-event.png',
@@ -223,5 +234,72 @@ export class EventsSeederService {
     }
 
     this.logger.log(`Inserted total ${total} OfflineCourse events`);
+  }
+
+  async seedSeoul50Plus(userId: bigint) {
+    // 관리자 권한 확인
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { role: true },
+    });
+
+    if (user?.role !== 'ADMIN') {
+      throw new ForbiddenException('관리자만 접근할 수 있습니다.');
+    }
+
+    const apiKey = process.env.SEOUL_OPEN_API_KEY;
+    const baseUrl = `http://openapi.seoul.go.kr:8088/${apiKey}/json/FiftyPotalEduInfo`;
+    let start = 1;
+    const pageSize = 100;
+    let total = 0;
+
+    while (true) {
+      const end = start + pageSize - 1;
+      const url = `${baseUrl}/${start}/${end}/`;
+      this.logger.log(`Fetching: ${url}`);
+
+      const { data } = await axios.get(url);
+      const rows = data?.FiftyPotalEduInfo?.row ?? [];
+      if (rows.length === 0) break;
+
+      for (const row of rows) {
+        try {
+          await this.prisma.event.create({
+            data: {
+              title: row.LCT_NM,
+              startDate: new Date(
+                `${row.CR_STDE.slice(0, 4)}-${row.CR_STDE.slice(4, 6)}-${row.CR_STDE.slice(6, 8)}`,
+              ),
+              endDate: new Date(
+                `${row.CR_EDDE.slice(0, 4)}-${row.CR_EDDE.slice(4, 6)}-${row.CR_EDDE.slice(6, 8)}`,
+              ),
+              venueName: '서울50+포털', // 얘는 장소 정보가 없음
+              price: row.LCT_COST && row.LCT_COST !== '0' ? parseInt(row.LCT_COST) : 0,
+              link: row.CR_URL,
+              description: `상태: ${row.LCT_STAT}, 정원: ${row.CR_PPL_STAT}, 시간: ${row.HR}`,
+              authorId: userId,
+              category: this.classifyCategory(row.LCT_NM),
+              latitude: null,
+              longitude: null,
+              // 일단 사진 정보가 없으니 기본 이미지로 대체
+              eventImage: {
+                create: {
+                  imageUrl: '/default-event.png',
+                  order: 0,
+                },
+              },
+            },
+          });
+        } catch (e) {
+          this.logger.error(`Insert failed for course ${row.LCT_NO}`, e);
+        }
+      }
+
+      total += rows.length;
+      if (rows.length < pageSize) break; // 마지막 페이지 도달
+      start += pageSize;
+    }
+
+    this.logger.log(`Inserted total ${total} FiftyPotalEduInfo events`);
   }
 }

@@ -21,6 +21,7 @@ import { EventsCommandService } from '@modules/events/services/events.command.se
 import { EventsQueryService } from '@modules/events/services/events.query.service';
 import { EventsScrapService } from '@modules/events/services/events.scrap.command.service';
 import { EventsScrapQueryService } from '@modules/events/services/events.scrap.query.service';
+import { EventsSeederService } from '@modules/events/services/events.seeder.service';
 
 import { ResponseMessage } from '@/common/decorators/response-message-decorator';
 import { Public } from '@/modules/auth/decorators/public.decorator';
@@ -36,6 +37,7 @@ export class EventsController {
     private readonly eventsCommand: EventsCommandService,
     private readonly eventScrap: EventsScrapService,
     private readonly eventsScrapQuery: EventsScrapQueryService,
+    private readonly eventsSeederService: EventsSeederService,
   ) {}
 
   @Public()
@@ -130,5 +132,16 @@ export class EventsController {
     const result = await this.eventScrap.unscrapEvent(userId, BigInt(id));
 
     return result;
+  }
+
+  @Public()
+  // TODO: @ApiBearerAuth()으로 수정 필요
+  @Post('seed')
+  @ApiOperation({ summary: '서울시 Open API 이벤트 시딩 API' })
+  @ApiOkResponse({ description: '서울시 Open API 이벤트 시딩 성공' })
+  @ResponseMessage('서울시 Open API 이벤트를 DB에 저장했습니다.')
+  async seedOfflineCourses() {
+    await this.eventsSeederService.seedOfflineCourses();
+    return { message: 'Seeding 성공' };
   }
 }

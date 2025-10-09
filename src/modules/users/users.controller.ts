@@ -4,6 +4,7 @@ import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 // 임시 유저 식별 (JWT 붙기 전까지 mock 헤더 사용)
 import { UserId } from '@common/decorators/user-id-decorator';
 
+import { Public } from '@modules/auth/decorators/public.decorator';
 import { GetMeResponseDto } from '@modules/users/dto/get-me.dto';
 import {
   CheckNicknameQueryDto,
@@ -35,6 +36,7 @@ export class UsersController {
 
   @ApiOperation({ summary: '닉네임 사용 가능 여부 확인(디바운스용)' })
   @ApiOkResponse({ type: CheckNicknameResponseDto })
+  @Public()
   @Get('nickname/check')
   checkNickname(@Query() q: CheckNicknameQueryDto): Promise<CheckNicknameResponseDto> {
     return this.usersService.checkNicknameAvailability(q.nickname);

@@ -25,9 +25,7 @@ export class TermsHistoryItemDto {
   @ApiProperty({
     description: '약관 ID',
   })
-  @IsBigInt()
-  @TransformToBigint()
-  termId!: bigint;
+  termId!: string;
 
   @ApiProperty({
     description: '약관 제목',

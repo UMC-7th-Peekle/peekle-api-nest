@@ -82,7 +82,7 @@ export class UsersService {
 
     return {
       items: terms.map((term) => ({
-        termId: term.id,
+        termId: term.id.toString(),
         title: term.title,
         isRequired: term.isRequired,
         isAccepted: term.userTerm[0]?.isAccepted ?? false,

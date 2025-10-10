@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Patch, Query } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 // 임시 유저 식별 (JWT 붙기 전까지 mock 헤더 사용)
 import { UserId } from '@common/decorators/user-id-decorator';
@@ -22,13 +22,17 @@ import {
 } from '@modules/users/dto/terms.dto';
 import { UsersService } from '@modules/users/services/users.service';
 
-@ApiTags('users')
-@Controller('users')
+@ApiTags('User (사용자 관련)')
+@Controller({
+  version: '1',
+  path: 'users',
+})
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @ApiOperation({ summary: '내 정보 조회' })
   @ApiOkResponse({ type: GetMeResponseDto })
+  @ApiBearerAuth()
   @Get('me')
   getUserInfo(@UserId() userId: bigint): Promise<GetMeResponseDto> {
     return this.usersService.getUserInfo(userId);

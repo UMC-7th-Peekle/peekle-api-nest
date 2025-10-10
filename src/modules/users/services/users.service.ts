@@ -53,7 +53,7 @@ export class UsersService {
     }
 
     return {
-      id: profileOwner.id,
+      id: profileOwner.id.toString(),
       name: profileOwner.name,
       nickname: profileOwner.nickname,
       birthdate: profileOwner?.birthdate?.toISOString().slice(0, 10),

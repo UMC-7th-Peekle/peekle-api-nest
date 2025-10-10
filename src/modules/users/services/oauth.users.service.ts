@@ -86,18 +86,4 @@ export class OAuthUserService {
 
     return { id: newUser.id.toString() };
   }
-
-  getFrontendOAuthCallbackUrl() {
-    let baseUrl: string;
-    if (process.env.NODE_ENV === 'production') {
-      baseUrl = this.frontendUrlConfig.prodUrl;
-    } else if (process.env.NODE_ENV === 'development') {
-      baseUrl = this.frontendUrlConfig.devUrl;
-    } else {
-      baseUrl = this.frontendUrlConfig.localUrl;
-    }
-
-    return baseUrl + '/auth/oauth/callback';
-    //  return 'http://localhost:3000/auth/oauth/callback';
-  }
 }

@@ -8,6 +8,8 @@ export class UpdateProfileImageRequestDto {
     description: '새 프로필 이미지 URL. null이면 삭제로 처리',
     required: false,
     nullable: true,
+    type: String,
+    example: 'https://cdn.peekle.kr/profile/example.png',
   })
   @Transform(({ value }) => (value === null ? null : value))
   @IsOptional() // undefined는 검증 제외

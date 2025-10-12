@@ -2,6 +2,8 @@ import { ForbiddenException, Injectable, Logger } from '@nestjs/common';
 
 import axios from 'axios';
 
+import { KakaoLocalUtil } from '@common/utils/kakao-local.utils';
+
 import { PrismaService } from '@modules/prisma/prisma.service';
 
 @Injectable()
@@ -196,6 +198,29 @@ export class EventsSeederService {
 
       for (const row of rows) {
         try {
+          // 기본 위치 정보
+          const latitude = row.EDNST_LAT_CRD ? parseFloat(row.EDNST_LAT_CRD) : null;
+          const longitude = row.EDNST_LOT_CRD ? parseFloat(row.EDNST_LOT_CRD) : null;
+
+          // 지역 정보 추출
+          let region1: string | null = null;
+          let region2: string | null = null;
+          let region3: string | null = null;
+
+          if (latitude && longitude) {
+            // 좌표 기반 역지오코딩
+            const regionInfo = await KakaoLocalUtil.getRegionByCoords(latitude, longitude);
+            region1 = regionInfo?.region1 ?? null;
+            region2 = regionInfo?.region2 ?? null;
+            region3 = regionInfo?.region3 ?? null;
+          } else if (row.EDNST_NM) {
+            // 장소명으로 검색 (좌표가 없을 경우)
+            const regionInfo = await KakaoLocalUtil.getAddressInfo(row.EDNST_NM);
+            region1 = regionInfo?.region1 ?? null;
+            region2 = regionInfo?.region2 ?? null;
+            region3 = regionInfo?.region3 ?? null;
+          }
+
           await this.prisma.event.create({
             data: {
               title: row.LCTR_NM,
@@ -210,11 +235,16 @@ export class EventsSeederService {
               link: row.ATNLC_APLY_URL,
               description: row.LCTR_TRGT || null,
               authorId: userId,
-              // 강좌명을 기반으로 카테고리 분류
               category: this.classifyCategory(row.LCTR_NM),
-              latitude: row.EDNST_LAT_CRD ? parseFloat(row.EDNST_LAT_CRD) : null,
-              longitude: row.EDNST_LOT_CRD ? parseFloat(row.EDNST_LOT_CRD) : null,
-              // 일단 이미지가 없으니 기본 이미지로 대체
+
+              // 위치 정보
+              latitude,
+              longitude,
+              region1,
+              region2,
+              region3,
+
+              // 기본 이미지
               eventImage: {
                 create: {
                   imageUrl: '/default-event.png',

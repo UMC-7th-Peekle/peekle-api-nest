@@ -253,12 +253,6 @@ export class EventsSeederService {
               category: this.classifyCategory(row.LCTR_NM),
               latitude: row.EDNST_LAT_CRD ? parseFloat(row.EDNST_LAT_CRD) : null,
               longitude: row.EDNST_LOT_CRD ? parseFloat(row.EDNST_LOT_CRD) : null,
-              // 일단 이미지가 없으니 기본 이미지로 대체
-              category: this.classifyCategory(row.LCTR_NM),
-
-              // 위치 정보
-              latitude,
-              longitude,
               region1,
               region2,
               region3,

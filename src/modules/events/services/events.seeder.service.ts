@@ -249,11 +249,10 @@ export class EventsSeederService {
               link: row.ATNLC_APLY_URL,
               description: row.LCTR_TRGT || null,
               authorId: userId,
+              // 강좌명을 기반으로 카테고리 분류
               category: this.classifyCategory(row.LCTR_NM),
-
-              // 위치 정보
-              latitude,
-              longitude,
+              latitude: row.EDNST_LAT_CRD ? parseFloat(row.EDNST_LAT_CRD) : null,
+              longitude: row.EDNST_LOT_CRD ? parseFloat(row.EDNST_LOT_CRD) : null,
               region1,
               region2,
               region3,

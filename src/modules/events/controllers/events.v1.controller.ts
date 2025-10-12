@@ -21,6 +21,7 @@ import { EventsCommandService } from '@modules/events/services/events.command.se
 import { EventsQueryService } from '@modules/events/services/events.query.service';
 import { EventsScrapService } from '@modules/events/services/events.scrap.command.service';
 import { EventsScrapQueryService } from '@modules/events/services/events.scrap.query.service';
+import { EventsSeederService } from '@modules/events/services/events.seeder.service';
 
 import { ResponseMessage } from '@/common/decorators/response-message-decorator';
 import { Public } from '@/modules/auth/decorators/public.decorator';
@@ -36,6 +37,7 @@ export class EventsController {
     private readonly eventsCommand: EventsCommandService,
     private readonly eventScrap: EventsScrapService,
     private readonly eventsScrapQuery: EventsScrapQueryService,
+    private readonly eventsSeederService: EventsSeederService,
   ) {}
 
   @Public()
@@ -44,10 +46,12 @@ export class EventsController {
     summary: '이벤트 목록 조회 API',
     description: '커서 기반 페이지네이션',
   })
+  @ApiBearerAuth()
   @ApiOkResponse({ description: '이벤트 목록 조회 성공' })
   @ResponseMessage('이벤트 목록을 조회했습니다.')
-  async list(@Query() q: GetEventsQueryDto) {
-    const { events, nextCursor, hasNextPage } = await this.eventsQuery.getEventsList(q);
+  async list(@Query() q: GetEventsQueryDto, @Req() req: any) {
+    const userId: bigint = req.user?.userId;
+    const { events, nextCursor, hasNextPage } = await this.eventsQuery.getEventsList(q, userId);
 
     return { events, nextCursor, hasNextPage };
   }
@@ -130,5 +134,17 @@ export class EventsController {
     const result = await this.eventScrap.unscrapEvent(userId, BigInt(id));
 
     return result;
+  }
+
+  @ApiBearerAuth()
+  @Post('seed')
+  @ApiOperation({ summary: '서울시 Open API 이벤트 시딩 API' })
+  @ApiOkResponse({ description: '서울시 Open API 이벤트 시딩 성공' })
+  @ResponseMessage('서울시 Open API 이벤트를 DB에 저장했습니다.')
+  async seedEvents(@Req() req: any) {
+    const userId: bigint = req.user?.userId;
+    await this.eventsSeederService.seedSeoulRun4050(userId);
+    await this.eventsSeederService.seedSeoul50Plus(userId);
+    return { message: 'Seeding 성공' };
   }
 }

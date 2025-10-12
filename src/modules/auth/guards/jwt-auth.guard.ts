@@ -1,6 +1,7 @@
 import { ExecutionContext, Inject, Injectable, Logger } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JsonWebTokenError, NotBeforeError, TokenExpiredError } from '@nestjs/jwt';
+import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
@@ -22,6 +23,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   constructor(
     private reflector: Reflector,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+    private readonly jwtService: JwtService,
   ) {
     super();
   }
@@ -32,7 +34,30 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       context.getClass(),
     ]);
 
-    if (isPublic) return true;
+    const request = context.switchToHttp().getRequest();
+
+    // Public 라우트지만 Authorization 헤더가 있으면, user를 채워줌(이벤트 목록 API에서 찜한 이벤트 표시용)
+    if (isPublic) {
+      const authHeader = request.headers['authorization'];
+
+      // Bearer 토큰이 포함된 경우만 처리
+      if (authHeader?.startsWith('Bearer ')) {
+        const token = authHeader.split(' ')[1];
+        try {
+          const payload = this.jwtService.verify(token); // JWT 토큰 검증 및 payload 추출
+          request.user = { userId: BigInt(payload.sub || payload.userId) }; // 토큰 payload에서 사용자 ID를 추출하여 request.user에 저장
+          console.log('[JwtAuthGuard] user set:', request.user);
+        } catch (e) {
+          const err = e as Error;
+          console.log('[JwtAuthGuard] invalid token:', err.message);
+        }
+      } else {
+        console.log('[JwtAuthGuard] no authorization header');
+      }
+
+      // Public 라우트이므로 토큰 검증 실패 여부와 관계없이 항상 true 반환 (즉, 인증 실패해도 요청은 통과함)
+      return true;
+    }
 
     return super.canActivate(context);
   }

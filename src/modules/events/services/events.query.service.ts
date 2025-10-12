@@ -10,11 +10,7 @@ import { PrismaService } from '@modules/prisma/prisma.service';
 export class EventsQueryService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getEventsList(query: GetEventsQueryDto) {
-    // 임시 하드코딩 사용자 (테스트용)
-    // TODO: 나중에 컨트롤러에서 userId 주입받도록 바꾸면 여기 제거
-    const userId: bigint | undefined = 1n;
-
+  async getEventsList(query: GetEventsQueryDto, userId?: bigint) {
     const sortOrder: 'asc' | 'desc' = query.order === Order.ASC ? 'asc' : 'desc';
 
     // where 절: Prisma용 필터 조건

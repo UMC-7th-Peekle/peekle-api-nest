@@ -2,6 +2,8 @@ import { ForbiddenException, Injectable, Logger } from '@nestjs/common';
 
 import axios from 'axios';
 
+import { KakaoLocalUtil } from '@common/utils/kakao-local.utils';
+
 import { PrismaService } from '@modules/prisma/prisma.service';
 
 @Injectable()
@@ -196,6 +198,40 @@ export class EventsSeederService {
 
       for (const row of rows) {
         try {
+          // 기본 위치 정보
+          const latitude = row.EDNST_LAT_CRD ? parseFloat(row.EDNST_LAT_CRD) : null;
+          const longitude = row.EDNST_LOT_CRD ? parseFloat(row.EDNST_LOT_CRD) : null;
+
+          // 지역 및 주소 정보 변수 초기화
+          let region1: string | null = null;
+          let region2: string | null = null;
+          let region3: string | null = null;
+          let venueRoadAddress: string | null = null;
+          let venueJibunAddress: string | null = null;
+          let venueDetailAddress: string | null = null;
+
+          if (latitude && longitude) {
+            // 좌표 기반으로 주소 + 지역 전체 변환
+            const addressInfo = await KakaoLocalUtil.getAddressByCoords(latitude, longitude);
+            if (addressInfo) {
+              region1 = addressInfo.region1 ?? null;
+              region2 = addressInfo.region2 ?? null;
+              region3 = addressInfo.region3 ?? null;
+              venueRoadAddress = addressInfo.venueRoadAddress ?? null;
+              venueJibunAddress = addressInfo.venueJibunAddress ?? null;
+              venueDetailAddress = addressInfo.venueDetailAddress ?? null;
+            }
+          } else if (row.EDNST_NM) {
+            // 장소명 기반 검색 (좌표가 없을 경우)
+            const addressInfo = await KakaoLocalUtil.getAddressInfo(row.EDNST_NM);
+            if (addressInfo) {
+              region1 = addressInfo.region1 ?? null;
+              region2 = addressInfo.region2 ?? null;
+              region3 = addressInfo.region3 ?? null;
+            }
+          }
+
+          // Prisma 데이터 삽입
           await this.prisma.event.create({
             data: {
               title: row.LCTR_NM,
@@ -206,6 +242,9 @@ export class EventsSeederService {
                 `${row.LCTR_END_YMD.slice(0, 4)}-${row.LCTR_END_YMD.slice(4, 6)}-${row.LCTR_END_YMD.slice(6, 8)}`,
               ),
               venueName: row.EDNST_NM,
+              venueRoadAddress,
+              venueJibunAddress,
+              venueDetailAddress,
               price: 0,
               link: row.ATNLC_APLY_URL,
               description: row.LCTR_TRGT || null,
@@ -215,6 +254,16 @@ export class EventsSeederService {
               latitude: row.EDNST_LAT_CRD ? parseFloat(row.EDNST_LAT_CRD) : null,
               longitude: row.EDNST_LOT_CRD ? parseFloat(row.EDNST_LOT_CRD) : null,
               // 일단 이미지가 없으니 기본 이미지로 대체
+              category: this.classifyCategory(row.LCTR_NM),
+
+              // 위치 정보
+              latitude,
+              longitude,
+              region1,
+              region2,
+              region3,
+
+              // 기본 이미지
               eventImage: {
                 create: {
                   imageUrl: '/default-event.png',

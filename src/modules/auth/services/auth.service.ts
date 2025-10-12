@@ -1,11 +1,19 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
+import { FrontendUrlConfig } from '@modules/auth/config/frontend-url.config';
 import { RefreshJwtConfig } from '@modules/auth/config/refresh-jwt.config';
 import { RegisterJwtConfig } from '@modules/auth/config/register-jwt.config';
 import { JwtPayload, RegisterJwtPayload } from '@modules/auth/types/jwt.types';
+import { OAuthUserService } from '@modules/users/services/oauth.users.service';
 import { UsersService } from '@modules/users/services/users.service';
+import { OAuthLoginOrRegisterResult } from '@modules/users/types/oauth.users.types';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +24,23 @@ export class AuthService {
     @Inject(RegisterJwtConfig.KEY)
     private registerJwtConfig: ConfigType<typeof RegisterJwtConfig>,
     private readonly userService: UsersService,
+    @Inject(FrontendUrlConfig.KEY)
+    private readonly frontendUrlConfig: ConfigType<typeof FrontendUrlConfig>,
   ) {}
+
+  getFrontendOAuthCallbackUrl() {
+    let baseUrl: string;
+    if (process.env.NODE_ENV === 'production') {
+      baseUrl = this.frontendUrlConfig.prodUrl;
+    } else if (process.env.NODE_ENV === 'development') {
+      baseUrl = this.frontendUrlConfig.devUrl;
+    } else {
+      baseUrl = this.frontendUrlConfig.localUrl;
+    }
+
+    return baseUrl + '/auth/oauth/callback';
+    //  return 'http://localhost:3000/auth/oauth/callback';
+  }
 
   async generateTokens(userId: bigint): Promise<JwtPayload> {
     const payload = {
@@ -55,5 +79,18 @@ export class AuthService {
       name: user.name,
       nickname: user.nickname,
     };
+  }
+
+  generateOAuthRedirectUrl(result: OAuthLoginOrRegisterResult, frontendUrl?: string) {
+    const redirectUrl = frontendUrl ?? this.getFrontendOAuthCallbackUrl();
+
+    let res: string;
+    if (result.type === 'login') {
+      res = `${redirectUrl}?type=login&oauthProvider=${result.oauthProvider}&accessToken=${result.tokens.accessToken}&refreshToken=${result.tokens.refreshToken}`;
+    } else if (result.type === 'register') {
+      res = `${redirectUrl}?type=register&oauthProvider=${result.oauthProvider}&registerToken=${result.tokens.registerToken}`;
+    } else throw new InternalServerErrorException('Something Got Wrong.');
+
+    return res;
   }
 }

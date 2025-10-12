@@ -112,4 +112,30 @@ export class GetEventsQueryDto {
   @Type(() => Number)
   @IsNumber()
   longitude?: number;
+
+  @ApiPropertyOptional({
+    description: '지역(시/도)',
+    example: '서울',
+    nullable: true,
+    type: String,
+  })
+  @IsOptional()
+  region1?: string | null;
+
+  @ApiPropertyOptional({
+    description: '지역(구/군)',
+    example: '서초구',
+    nullable: true,
+    type: String,
+  })
+  @IsOptional()
+  region2?: string | null;
+
+  @ApiPropertyOptional({
+    description: '내가 찜한 이벤트만 보기 (로그인 필요)',
+    example: true,
+  })
+  @IsOptional()
+  @Transform(({ value }) => value === 'true' || value === true)
+  onlyScrapped?: boolean;
 }

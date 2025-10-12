@@ -121,6 +121,9 @@ model Event {
   venueRoadAddress   String?      @map("venue_road_address") @db.VarChar(200)
   venueJibunAddress  String?      @map("venue_jibun_address") @db.VarChar(200)
   venueDetailAddress String?      @map("venue_detail_address") @db.VarChar(100)
+  region1            String?      @db.VarChar(50)
+  region2            String?      @db.VarChar(50)
+  region3            String?      @db.VarChar(50)
   price              Int
   link               String?      @db.VarChar(300)
   description        String?      @db.VarChar(1000)

@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 
+import { AuthModule } from '@modules/auth/auth.module';
 import { EventsController } from '@modules/events/controllers/events.v1.controller';
 import { EventsCommandService } from '@modules/events/services/events.command.service';
 import { EventsQueryService } from '@modules/events/services/events.query.service';
@@ -9,7 +10,7 @@ import { EventsSeederService } from '@modules/events/services/events.seeder.serv
 import { PrismaModule } from '@modules/prisma/prisma.module';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, AuthModule],
   controllers: [EventsController],
   providers: [
     EventsCommandService,

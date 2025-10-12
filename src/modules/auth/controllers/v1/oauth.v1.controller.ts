@@ -25,6 +25,7 @@ import {
 import { Public } from '@modules/auth/decorators/public.decorator';
 import { GoogleOAuthGuard } from '@modules/auth/guards/google-oauth.guard';
 import { RegisterJwtGuard } from '@modules/auth/guards/register-jwt.guard';
+import { AuthService } from '@modules/auth/services/auth.service';
 import { KakaoAuthService } from '@modules/auth/services/kakao-oauth.auth.service';
 import { CreateOAuthUserRequestDto } from '@modules/users/dto/user.dto';
 import { OAuthUserService } from '@modules/users/services/oauth.users.service';
@@ -35,6 +36,7 @@ import { OAuthUserService } from '@modules/users/services/oauth.users.service';
 })
 export class OAuthV1Controller {
   constructor(
+    private readonly authService: AuthService,
     private readonly oauthUserService: OAuthUserService,
     private readonly kakaoUserService: KakaoAuthService,
   ) {}
@@ -99,6 +101,8 @@ export class OAuthV1Controller {
       res.cookie(CookieName.REFRESH_TOKEN, result.tokens.refreshToken, refreshTokenCookieOptions);
     }
 
+    res.redirect(this.authService.generateOAuthRedirectUrl(result));
+
     return result;
   }
 
@@ -151,17 +155,6 @@ export class OAuthV1Controller {
     //   res.cookie('TEST', 'register token', accessTokenCookieOptions);
     // }
 
-    const url = this.oauthUserService.getFrontendOAuthCallbackUrl();
-    console.log('Redirect URL:', url, result);
-
-    if (result.type === 'login') {
-      res.redirect(
-        `${url}?type=login&oauthProvider=${result.oauthProvider}&accessToken=${result.tokens.accessToken}&refreshToken=${result.tokens.refreshToken}`,
-      );
-    } else if (result.type === 'register') {
-      res.redirect(
-        `${url}?type=register&oauthProvider=${result.oauthProvider}&registerToken=${result.tokens.registerToken}`,
-      );
-    } else throw new InternalServerErrorException('Something Got Wrong.');
+    res.redirect(this.authService.generateOAuthRedirectUrl(result));
   }
 }

@@ -89,6 +89,8 @@ export class EventsQueryService {
             category: true,
             latitude: true,
             longitude: true,
+            region1: true,
+            region2: true,
           },
         });
         break;
@@ -108,6 +110,8 @@ export class EventsQueryService {
             category: true,
             latitude: true,
             longitude: true,
+            region1: true,
+            region2: true,
           },
         });
         break;
@@ -219,6 +223,8 @@ export class EventsQueryService {
            e.category,
            e.latitude,
            e.longitude,
+           e.region1,
+           e.region2,
            ST_Distance_Sphere(
              POINT(${lng}, ${lat}),
              POINT(e.longitude, e.latitude)
@@ -260,6 +266,8 @@ export class EventsQueryService {
         category: string;
         latitude: number | null;
         longitude: number | null;
+        region1?: string | null;
+        region2?: string | null;
         distance?: number; // distance 정렬 시에만 나옴
       }) => ({
         id: e.id.toString(),
@@ -276,6 +284,7 @@ export class EventsQueryService {
         category: e.category,
         latitude: e.latitude,
         longitude: e.longitude,
+        region: [e.region1, e.region2].filter(Boolean).join('/'), // region1/region2 형식
         thumbnailUrl: firstThumbByEvent.get(e.id) ?? null,
         distance: e.distance ?? null, // 거리순일 때만 값이 들어옴
       }),

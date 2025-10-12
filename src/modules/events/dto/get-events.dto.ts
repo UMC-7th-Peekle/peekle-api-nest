@@ -112,4 +112,12 @@ export class GetEventsQueryDto {
   @Type(() => Number)
   @IsNumber()
   longitude?: number;
+
+  @ApiPropertyOptional({ description: '지역(시/도)', example: '서울', nullable: true })
+  @IsOptional()
+  region1?: string | null;
+
+  @ApiPropertyOptional({ description: '지역(구/군)', example: '서초구', nullable: true })
+  @IsOptional()
+  region2?: string | null;
 }

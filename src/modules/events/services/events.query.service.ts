@@ -11,10 +11,21 @@ export class EventsQueryService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getEventsList(query: GetEventsQueryDto) {
+    // 임시 하드코딩 사용자 (테스트용)
+    // TODO: 나중에 컨트롤러에서 userId 주입받도록 바꾸면 여기 제거
+    const userId: bigint | undefined = 1n;
+
     const sortOrder: 'asc' | 'desc' = query.order === Order.ASC ? 'asc' : 'desc';
 
     // where 절: Prisma용 필터 조건
     const andConds: Prisma.EventWhereInput[] = [];
+
+    // 내가 찜한 이벤트만 보기
+    if (query.onlyScrapped && userId) {
+      andConds.push({
+        eventScrap: { some: { userId } },
+      });
+    }
 
     // 커서(id 기반) → DATE, PRICE 전용
     if (query.cursor && query.sort !== EventSortField.DISTANCE) {
@@ -201,6 +212,12 @@ export class EventsQueryService {
           conditions.push(Prisma.sql`(${Prisma.join(likeConds, ' OR ')})`);
         }
 
+        // onlyScrapped 필터를 Raw SQL에도 반영
+        if (query.onlyScrapped && userId) {
+          conditions.push(
+            Prisma.sql`EXISTS(SELECT 1 FROM event_scrap s WHERE s.event_id = e.id AND s.user_id = ${userId})`,
+          );
+        }
         // --- 최종 쿼리 ---
         rows = await this.prisma.$queryRaw<
           Array<{
@@ -240,6 +257,17 @@ export class EventsQueryService {
 
     const hasNextPage = rows.length > query.limit;
     const sliced = hasNextPage ? rows.slice(0, query.limit) : rows;
+
+    // 로그인 사용자의 찜 여부 계산 (현재 페이지에 한해)
+    let scrappedIds = new Set<bigint>();
+    const pageIds = sliced.map((r) => r.id);
+    if (userId && pageIds.length) {
+      const scraps = await this.prisma.eventScrap.findMany({
+        where: { userId, eventId: { in: pageIds } },
+        select: { eventId: true },
+      });
+      scrappedIds = new Set(scraps.map((s) => s.eventId));
+    }
 
     // 썸네일 조회
     const ids = sliced.map((r) => r.id);
@@ -287,6 +315,7 @@ export class EventsQueryService {
         region: [e.region1, e.region2].filter(Boolean).join('/'), // region1/region2 형식
         thumbnailUrl: firstThumbByEvent.get(e.id) ?? null,
         distance: e.distance ?? null, // 거리순일 때만 값이 들어옴
+        isScrapped: userId ? scrappedIds.has(e.id) : false,
       }),
     );
 

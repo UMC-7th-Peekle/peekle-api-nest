@@ -8234,6 +8234,9 @@ export namespace Prisma {
     venueRoadAddress: string | null
     venueJibunAddress: string | null
     venueDetailAddress: string | null
+    region1: string | null
+    region2: string | null
+    region3: string | null
     price: number | null
     link: string | null
     description: string | null
@@ -8254,6 +8257,9 @@ export namespace Prisma {
     venueRoadAddress: string | null
     venueJibunAddress: string | null
     venueDetailAddress: string | null
+    region1: string | null
+    region2: string | null
+    region3: string | null
     price: number | null
     link: string | null
     description: string | null
@@ -8274,6 +8280,9 @@ export namespace Prisma {
     venueRoadAddress: number
     venueJibunAddress: number
     venueDetailAddress: number
+    region1: number
+    region2: number
+    region3: number
     price: number
     link: number
     description: number
@@ -8312,6 +8321,9 @@ export namespace Prisma {
     venueRoadAddress?: true
     venueJibunAddress?: true
     venueDetailAddress?: true
+    region1?: true
+    region2?: true
+    region3?: true
     price?: true
     link?: true
     description?: true
@@ -8332,6 +8344,9 @@ export namespace Prisma {
     venueRoadAddress?: true
     venueJibunAddress?: true
     venueDetailAddress?: true
+    region1?: true
+    region2?: true
+    region3?: true
     price?: true
     link?: true
     description?: true
@@ -8352,6 +8367,9 @@ export namespace Prisma {
     venueRoadAddress?: true
     venueJibunAddress?: true
     venueDetailAddress?: true
+    region1?: true
+    region2?: true
+    region3?: true
     price?: true
     link?: true
     description?: true
@@ -8459,6 +8477,9 @@ export namespace Prisma {
     venueRoadAddress: string | null
     venueJibunAddress: string | null
     venueDetailAddress: string | null
+    region1: string | null
+    region2: string | null
+    region3: string | null
     price: number
     link: string | null
     description: string | null
@@ -8498,6 +8519,9 @@ export namespace Prisma {
     venueRoadAddress?: boolean
     venueJibunAddress?: boolean
     venueDetailAddress?: boolean
+    region1?: boolean
+    region2?: boolean
+    region3?: boolean
     price?: boolean
     link?: boolean
     description?: boolean
@@ -8524,6 +8548,9 @@ export namespace Prisma {
     venueRoadAddress?: boolean
     venueJibunAddress?: boolean
     venueDetailAddress?: boolean
+    region1?: boolean
+    region2?: boolean
+    region3?: boolean
     price?: boolean
     link?: boolean
     description?: boolean
@@ -8535,7 +8562,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type EventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "startDate" | "endDate" | "venueName" | "venueRoadAddress" | "venueJibunAddress" | "venueDetailAddress" | "price" | "link" | "description" | "authorId" | "category" | "latitude" | "longitude" | "createdAt" | "updatedAt", ExtArgs["result"]["event"]>
+  export type EventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "startDate" | "endDate" | "venueName" | "venueRoadAddress" | "venueJibunAddress" | "venueDetailAddress" | "region1" | "region2" | "region3" | "price" | "link" | "description" | "authorId" | "category" | "latitude" | "longitude" | "createdAt" | "updatedAt", ExtArgs["result"]["event"]>
   export type EventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     eventImage?: boolean | Event$eventImageArgs<ExtArgs>
@@ -8559,6 +8586,9 @@ export namespace Prisma {
       venueRoadAddress: string | null
       venueJibunAddress: string | null
       venueDetailAddress: string | null
+      region1: string | null
+      region2: string | null
+      region3: string | null
       price: number
       link: string | null
       description: string | null
@@ -8948,6 +8978,9 @@ export namespace Prisma {
     readonly venueRoadAddress: FieldRef<"Event", 'String'>
     readonly venueJibunAddress: FieldRef<"Event", 'String'>
     readonly venueDetailAddress: FieldRef<"Event", 'String'>
+    readonly region1: FieldRef<"Event", 'String'>
+    readonly region2: FieldRef<"Event", 'String'>
+    readonly region3: FieldRef<"Event", 'String'>
     readonly price: FieldRef<"Event", 'Int'>
     readonly link: FieldRef<"Event", 'String'>
     readonly description: FieldRef<"Event", 'String'>
@@ -15554,6 +15587,9 @@ export namespace Prisma {
     venueRoadAddress: 'venueRoadAddress',
     venueJibunAddress: 'venueJibunAddress',
     venueDetailAddress: 'venueDetailAddress',
+    region1: 'region1',
+    region2: 'region2',
+    region3: 'region3',
     price: 'price',
     link: 'link',
     description: 'description',
@@ -15696,6 +15732,9 @@ export namespace Prisma {
     venueRoadAddress: 'venueRoadAddress',
     venueJibunAddress: 'venueJibunAddress',
     venueDetailAddress: 'venueDetailAddress',
+    region1: 'region1',
+    region2: 'region2',
+    region3: 'region3',
     link: 'link',
     description: 'description',
     category: 'category'
@@ -16200,6 +16239,9 @@ export namespace Prisma {
     venueRoadAddress?: StringNullableFilter<"Event"> | string | null
     venueJibunAddress?: StringNullableFilter<"Event"> | string | null
     venueDetailAddress?: StringNullableFilter<"Event"> | string | null
+    region1?: StringNullableFilter<"Event"> | string | null
+    region2?: StringNullableFilter<"Event"> | string | null
+    region3?: StringNullableFilter<"Event"> | string | null
     price?: IntFilter<"Event"> | number
     link?: StringNullableFilter<"Event"> | string | null
     description?: StringNullableFilter<"Event"> | string | null
@@ -16223,6 +16265,9 @@ export namespace Prisma {
     venueRoadAddress?: SortOrderInput | SortOrder
     venueJibunAddress?: SortOrderInput | SortOrder
     venueDetailAddress?: SortOrderInput | SortOrder
+    region1?: SortOrderInput | SortOrder
+    region2?: SortOrderInput | SortOrder
+    region3?: SortOrderInput | SortOrder
     price?: SortOrder
     link?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
@@ -16250,6 +16295,9 @@ export namespace Prisma {
     venueRoadAddress?: StringNullableFilter<"Event"> | string | null
     venueJibunAddress?: StringNullableFilter<"Event"> | string | null
     venueDetailAddress?: StringNullableFilter<"Event"> | string | null
+    region1?: StringNullableFilter<"Event"> | string | null
+    region2?: StringNullableFilter<"Event"> | string | null
+    region3?: StringNullableFilter<"Event"> | string | null
     price?: IntFilter<"Event"> | number
     link?: StringNullableFilter<"Event"> | string | null
     description?: StringNullableFilter<"Event"> | string | null
@@ -16273,6 +16321,9 @@ export namespace Prisma {
     venueRoadAddress?: SortOrderInput | SortOrder
     venueJibunAddress?: SortOrderInput | SortOrder
     venueDetailAddress?: SortOrderInput | SortOrder
+    region1?: SortOrderInput | SortOrder
+    region2?: SortOrderInput | SortOrder
+    region3?: SortOrderInput | SortOrder
     price?: SortOrder
     link?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
@@ -16301,6 +16352,9 @@ export namespace Prisma {
     venueRoadAddress?: StringNullableWithAggregatesFilter<"Event"> | string | null
     venueJibunAddress?: StringNullableWithAggregatesFilter<"Event"> | string | null
     venueDetailAddress?: StringNullableWithAggregatesFilter<"Event"> | string | null
+    region1?: StringNullableWithAggregatesFilter<"Event"> | string | null
+    region2?: StringNullableWithAggregatesFilter<"Event"> | string | null
+    region3?: StringNullableWithAggregatesFilter<"Event"> | string | null
     price?: IntWithAggregatesFilter<"Event"> | number
     link?: StringNullableWithAggregatesFilter<"Event"> | string | null
     description?: StringNullableWithAggregatesFilter<"Event"> | string | null
@@ -17117,6 +17171,9 @@ export namespace Prisma {
     venueRoadAddress?: string | null
     venueJibunAddress?: string | null
     venueDetailAddress?: string | null
+    region1?: string | null
+    region2?: string | null
+    region3?: string | null
     price: number
     link?: string | null
     description?: string | null
@@ -17139,6 +17196,9 @@ export namespace Prisma {
     venueRoadAddress?: string | null
     venueJibunAddress?: string | null
     venueDetailAddress?: string | null
+    region1?: string | null
+    region2?: string | null
+    region3?: string | null
     price: number
     link?: string | null
     description?: string | null
@@ -17161,6 +17221,9 @@ export namespace Prisma {
     venueRoadAddress?: NullableStringFieldUpdateOperationsInput | string | null
     venueJibunAddress?: NullableStringFieldUpdateOperationsInput | string | null
     venueDetailAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    region1?: NullableStringFieldUpdateOperationsInput | string | null
+    region2?: NullableStringFieldUpdateOperationsInput | string | null
+    region3?: NullableStringFieldUpdateOperationsInput | string | null
     price?: IntFieldUpdateOperationsInput | number
     link?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17183,6 +17246,9 @@ export namespace Prisma {
     venueRoadAddress?: NullableStringFieldUpdateOperationsInput | string | null
     venueJibunAddress?: NullableStringFieldUpdateOperationsInput | string | null
     venueDetailAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    region1?: NullableStringFieldUpdateOperationsInput | string | null
+    region2?: NullableStringFieldUpdateOperationsInput | string | null
+    region3?: NullableStringFieldUpdateOperationsInput | string | null
     price?: IntFieldUpdateOperationsInput | number
     link?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17205,6 +17271,9 @@ export namespace Prisma {
     venueRoadAddress?: string | null
     venueJibunAddress?: string | null
     venueDetailAddress?: string | null
+    region1?: string | null
+    region2?: string | null
+    region3?: string | null
     price: number
     link?: string | null
     description?: string | null
@@ -17225,6 +17294,9 @@ export namespace Prisma {
     venueRoadAddress?: NullableStringFieldUpdateOperationsInput | string | null
     venueJibunAddress?: NullableStringFieldUpdateOperationsInput | string | null
     venueDetailAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    region1?: NullableStringFieldUpdateOperationsInput | string | null
+    region2?: NullableStringFieldUpdateOperationsInput | string | null
+    region3?: NullableStringFieldUpdateOperationsInput | string | null
     price?: IntFieldUpdateOperationsInput | number
     link?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17244,6 +17316,9 @@ export namespace Prisma {
     venueRoadAddress?: NullableStringFieldUpdateOperationsInput | string | null
     venueJibunAddress?: NullableStringFieldUpdateOperationsInput | string | null
     venueDetailAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    region1?: NullableStringFieldUpdateOperationsInput | string | null
+    region2?: NullableStringFieldUpdateOperationsInput | string | null
+    region3?: NullableStringFieldUpdateOperationsInput | string | null
     price?: IntFieldUpdateOperationsInput | number
     link?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18244,6 +18319,9 @@ export namespace Prisma {
     venueRoadAddress?: SortOrder
     venueJibunAddress?: SortOrder
     venueDetailAddress?: SortOrder
+    region1?: SortOrder
+    region2?: SortOrder
+    region3?: SortOrder
     price?: SortOrder
     link?: SortOrder
     description?: SortOrder
@@ -18272,6 +18350,9 @@ export namespace Prisma {
     venueRoadAddress?: SortOrder
     venueJibunAddress?: SortOrder
     venueDetailAddress?: SortOrder
+    region1?: SortOrder
+    region2?: SortOrder
+    region3?: SortOrder
     price?: SortOrder
     link?: SortOrder
     description?: SortOrder
@@ -18292,6 +18373,9 @@ export namespace Prisma {
     venueRoadAddress?: SortOrder
     venueJibunAddress?: SortOrder
     venueDetailAddress?: SortOrder
+    region1?: SortOrder
+    region2?: SortOrder
+    region3?: SortOrder
     price?: SortOrder
     link?: SortOrder
     description?: SortOrder
@@ -21243,6 +21327,9 @@ export namespace Prisma {
     venueRoadAddress?: string | null
     venueJibunAddress?: string | null
     venueDetailAddress?: string | null
+    region1?: string | null
+    region2?: string | null
+    region3?: string | null
     price: number
     link?: string | null
     description?: string | null
@@ -21264,6 +21351,9 @@ export namespace Prisma {
     venueRoadAddress?: string | null
     venueJibunAddress?: string | null
     venueDetailAddress?: string | null
+    region1?: string | null
+    region2?: string | null
+    region3?: string | null
     price: number
     link?: string | null
     description?: string | null
@@ -21301,6 +21391,9 @@ export namespace Prisma {
     venueRoadAddress?: NullableStringFieldUpdateOperationsInput | string | null
     venueJibunAddress?: NullableStringFieldUpdateOperationsInput | string | null
     venueDetailAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    region1?: NullableStringFieldUpdateOperationsInput | string | null
+    region2?: NullableStringFieldUpdateOperationsInput | string | null
+    region3?: NullableStringFieldUpdateOperationsInput | string | null
     price?: IntFieldUpdateOperationsInput | number
     link?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21322,6 +21415,9 @@ export namespace Prisma {
     venueRoadAddress?: NullableStringFieldUpdateOperationsInput | string | null
     venueJibunAddress?: NullableStringFieldUpdateOperationsInput | string | null
     venueDetailAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    region1?: NullableStringFieldUpdateOperationsInput | string | null
+    region2?: NullableStringFieldUpdateOperationsInput | string | null
+    region3?: NullableStringFieldUpdateOperationsInput | string | null
     price?: IntFieldUpdateOperationsInput | number
     link?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21390,6 +21486,9 @@ export namespace Prisma {
     venueRoadAddress?: string | null
     venueJibunAddress?: string | null
     venueDetailAddress?: string | null
+    region1?: string | null
+    region2?: string | null
+    region3?: string | null
     price: number
     link?: string | null
     description?: string | null
@@ -21411,6 +21510,9 @@ export namespace Prisma {
     venueRoadAddress?: string | null
     venueJibunAddress?: string | null
     venueDetailAddress?: string | null
+    region1?: string | null
+    region2?: string | null
+    region3?: string | null
     price: number
     link?: string | null
     description?: string | null
@@ -21501,6 +21603,9 @@ export namespace Prisma {
     venueRoadAddress?: NullableStringFieldUpdateOperationsInput | string | null
     venueJibunAddress?: NullableStringFieldUpdateOperationsInput | string | null
     venueDetailAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    region1?: NullableStringFieldUpdateOperationsInput | string | null
+    region2?: NullableStringFieldUpdateOperationsInput | string | null
+    region3?: NullableStringFieldUpdateOperationsInput | string | null
     price?: IntFieldUpdateOperationsInput | number
     link?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21522,6 +21627,9 @@ export namespace Prisma {
     venueRoadAddress?: NullableStringFieldUpdateOperationsInput | string | null
     venueJibunAddress?: NullableStringFieldUpdateOperationsInput | string | null
     venueDetailAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    region1?: NullableStringFieldUpdateOperationsInput | string | null
+    region2?: NullableStringFieldUpdateOperationsInput | string | null
+    region3?: NullableStringFieldUpdateOperationsInput | string | null
     price?: IntFieldUpdateOperationsInput | number
     link?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21708,6 +21816,9 @@ export namespace Prisma {
     venueRoadAddress?: string | null
     venueJibunAddress?: string | null
     venueDetailAddress?: string | null
+    region1?: string | null
+    region2?: string | null
+    region3?: string | null
     price: number
     link?: string | null
     description?: string | null
@@ -21729,6 +21840,9 @@ export namespace Prisma {
     venueRoadAddress?: string | null
     venueJibunAddress?: string | null
     venueDetailAddress?: string | null
+    region1?: string | null
+    region2?: string | null
+    region3?: string | null
     price: number
     link?: string | null
     description?: string | null
@@ -21889,6 +22003,9 @@ export namespace Prisma {
     venueRoadAddress?: StringNullableFilter<"Event"> | string | null
     venueJibunAddress?: StringNullableFilter<"Event"> | string | null
     venueDetailAddress?: StringNullableFilter<"Event"> | string | null
+    region1?: StringNullableFilter<"Event"> | string | null
+    region2?: StringNullableFilter<"Event"> | string | null
+    region3?: StringNullableFilter<"Event"> | string | null
     price?: IntFilter<"Event"> | number
     link?: StringNullableFilter<"Event"> | string | null
     description?: StringNullableFilter<"Event"> | string | null
@@ -22415,6 +22532,9 @@ export namespace Prisma {
     venueRoadAddress?: string | null
     venueJibunAddress?: string | null
     venueDetailAddress?: string | null
+    region1?: string | null
+    region2?: string | null
+    region3?: string | null
     price: number
     link?: string | null
     description?: string | null
@@ -22553,6 +22673,9 @@ export namespace Prisma {
     venueRoadAddress?: NullableStringFieldUpdateOperationsInput | string | null
     venueJibunAddress?: NullableStringFieldUpdateOperationsInput | string | null
     venueDetailAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    region1?: NullableStringFieldUpdateOperationsInput | string | null
+    region2?: NullableStringFieldUpdateOperationsInput | string | null
+    region3?: NullableStringFieldUpdateOperationsInput | string | null
     price?: IntFieldUpdateOperationsInput | number
     link?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22574,6 +22697,9 @@ export namespace Prisma {
     venueRoadAddress?: NullableStringFieldUpdateOperationsInput | string | null
     venueJibunAddress?: NullableStringFieldUpdateOperationsInput | string | null
     venueDetailAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    region1?: NullableStringFieldUpdateOperationsInput | string | null
+    region2?: NullableStringFieldUpdateOperationsInput | string | null
+    region3?: NullableStringFieldUpdateOperationsInput | string | null
     price?: IntFieldUpdateOperationsInput | number
     link?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22595,6 +22721,9 @@ export namespace Prisma {
     venueRoadAddress?: NullableStringFieldUpdateOperationsInput | string | null
     venueJibunAddress?: NullableStringFieldUpdateOperationsInput | string | null
     venueDetailAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    region1?: NullableStringFieldUpdateOperationsInput | string | null
+    region2?: NullableStringFieldUpdateOperationsInput | string | null
+    region3?: NullableStringFieldUpdateOperationsInput | string | null
     price?: IntFieldUpdateOperationsInput | number
     link?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null

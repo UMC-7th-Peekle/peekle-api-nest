@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Patch, Query } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 // 임시 유저 식별 (JWT 붙기 전까지 mock 헤더 사용)
 import { UserId } from '@common/decorators/user-id-decorator';
@@ -28,6 +28,7 @@ export class UsersController {
 
   @ApiOperation({ summary: '내 정보 조회' })
   @ApiOkResponse({ type: GetMeResponseDto })
+  @ApiBearerAuth()
   @Get('me')
   getUserInfo(@UserId() userId: bigint): Promise<GetMeResponseDto> {
     return this.usersService.getUserInfo(userId);
@@ -35,6 +36,7 @@ export class UsersController {
 
   @ApiOperation({ summary: '닉네임 사용 가능 여부 확인(디바운스용)' })
   @ApiOkResponse({ type: CheckNicknameResponseDto })
+  @ApiBearerAuth()
   @Get('nickname/check')
   checkNickname(@Query() q: CheckNicknameQueryDto): Promise<CheckNicknameResponseDto> {
     return this.usersService.checkNicknameAvailability(q.nickname);
@@ -42,6 +44,7 @@ export class UsersController {
 
   @ApiOperation({ summary: '내 정보 - 닉네임 수정' })
   @ApiOkResponse({ type: UpdateNicknameResponseDto })
+  @ApiBearerAuth()
   @Patch('me/nickname')
   updateNickname(
     @UserId() userId: bigint,
@@ -52,6 +55,7 @@ export class UsersController {
 
   @ApiOperation({ summary: '내 정보 - 프로필 이미지 수정/삭제' })
   @ApiOkResponse({ type: UpdateProfileImageResponseDto })
+  @ApiBearerAuth()
   @Patch('me/profile-image')
   updateProfileImage(
     @UserId() userId: bigint,
@@ -62,6 +66,7 @@ export class UsersController {
 
   @ApiOperation({ summary: '사용자의 약관 동의 내역 조회' })
   @ApiOkResponse({ type: GetTermsHistoryResponseDto })
+  @ApiBearerAuth()
   @Get('terms')
   getTermsHistory(@UserId() userId: bigint): Promise<GetTermsHistoryResponseDto> {
     return this.usersService.getTermsHistory(userId);
@@ -71,6 +76,7 @@ export class UsersController {
   @ApiOkResponse({
     schema: { example: { message: '약관 동의 내역이 업데이트되었습니다.' } },
   })
+  @ApiBearerAuth()
   @Patch('terms')
   updateTermsAgreement(@UserId() userId: bigint, @Body() body: UpdateTermsAgreementRequestDto) {
     return this.usersService.updateTermsAgreement(userId, body);

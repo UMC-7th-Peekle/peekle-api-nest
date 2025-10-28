@@ -182,6 +182,7 @@ export class CommunityV1Controller {
   // 댓글 관련
   // 댓글 좋아요 추가
   @Post('article/comment/:commentId/like')
+  @ApiOperation({ summary: '댓글 좋아요 추가' })
   @ApiBearerAuth()
   @ApiCreatedResponse({ description: '댓글 좋아요 등록 성공', type: CreateCommentLikeDto })
   async createCommentLike(@Param('commentId') commentId: string, @Req() req) {

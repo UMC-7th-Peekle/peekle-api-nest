@@ -35,12 +35,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.15.0
- * Query Engine version: 85179d7826409ee107a6ba334b5e305ae3fba9fb
+ * Prisma Client JS version: 6.13.0
+ * Query Engine version: 361e86d0ea4987e9f53a565309b3eed797a6bcbd
  */
 Prisma.prismaVersion = {
-  client: "6.15.0",
-  engine: "85179d7826409ee107a6ba334b5e305ae3fba9fb"
+  client: "6.13.0",
+  engine: "361e86d0ea4987e9f53a565309b3eed797a6bcbd"
 }
 
 Prisma.PrismaClientKnownRequestError = PrismaClientKnownRequestError;
@@ -315,7 +315,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/haneul/GitHub/Projects/peekle/peekle-api-nest-review/src/generated/prisma",
+      "value": "C:\\Users\\hope0\\Desktop\\peekle-api-nest\\src\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -324,7 +324,7 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "darwin-arm64",
+        "value": "windows",
         "native": true
       },
       {
@@ -346,16 +346,16 @@ const config = {
     ],
     "previewFeatures": [],
     "documentation": "`binaryTargets`는 Prisma 클라이언트가 다양한 운영 체제 및 아키텍처에서 동작할 수 있도록\n여러 플랫폼용 바이너리를 생성하도록 지정합니다.\n\n- \"native\": 현재 개발 환경의 플랫폼에 맞는 바이너리 생성\n- \"linux-musl-openssl-3.0.x\": musl libc 기반 Linux (예: Alpine Linux)에서 OpenSSL 3.0.x를 사용하는 환경\n- \"linux-musl-arm64-openssl-3.0.x\": ARM64 아키텍처의 musl libc 기반 Linux에서 OpenSSL 3.0.x를 사용하는 환경\n- \"debian-openssl-1.1.x\": Debian 기반 Linux에서 OpenSSL 1.1.x를 사용하는 환경\n- \"linux-arm64-openssl-3.0.x\": ARM64 아키텍처의 glibc 기반 Linux에서 OpenSSL 3.0.x를 사용하는 환경",
-    "sourceFilePath": "/Users/haneul/GitHub/Projects/peekle/peekle-api-nest-review/prisma/schema.prisma",
+    "sourceFilePath": "C:\\Users\\hope0\\Desktop\\peekle-api-nest\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": "../../../.env",
+    "rootEnvPath": null,
     "schemaEnvPath": "../../../.env"
   },
   "relativePath": "../../../prisma",
-  "clientVersion": "6.15.0",
-  "engineVersion": "85179d7826409ee107a6ba334b5e305ae3fba9fb",
+  "clientVersion": "6.13.0",
+  "engineVersion": "361e86d0ea4987e9f53a565309b3eed797a6bcbd",
   "datasourceNames": [
     "db"
   ],

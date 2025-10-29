@@ -28,6 +28,9 @@ RUN npm install -g pnpm
 
 WORKDIR /app
 
+# NODE_ENV 설정
+ENV NODE_ENV=production
+
 # Builder 스테이지에서 프로덕션 의존성만 설치합니다.
 # 이렇게 하면 devDependencies가 제외되어 이미지가 가벼워집니다.
 COPY package.json pnpm-lock.yaml ./

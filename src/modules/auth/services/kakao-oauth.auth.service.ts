@@ -1,10 +1,11 @@
-import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService, ConfigType } from '@nestjs/config';
 
 import axios, { HttpStatusCode } from 'axios';
 
 import { KakaoOAuthConfig } from '@modules/auth/config/kakao-oauth-config';
 import { KakaoUserInfoResponse } from '@modules/auth/types/kakao.types';
+import { FrontEnvironment } from '@modules/auth/types/oauth.types';
 import { KakaoUserData, OAuthProvider } from '@modules/users/types/oauth.users.types';
 
 @Injectable()
@@ -16,21 +17,17 @@ export class KakaoAuthService {
   ) {}
   // http://localhost:7777/auth/login/kakao
 
-  generateKakaoRedirectUrl(clientId: string, redirectUri: string, state?: string) {
+  generateKakaoRedirectUrl(clientId: string, redirectUri: string, state?: FrontEnvironment) {
     const url = new URL('https://kauth.kakao.com/oauth/authorize');
     url.searchParams.set('client_id', clientId);
     url.searchParams.set('redirect_uri', redirectUri);
     url.searchParams.set('response_type', 'code');
-    if (state) {
-      if (!['production', 'development', 'local'].includes(state)) {
-        throw new BadRequestException('state 값이 올바르지 않습니다.');
-      }
-      url.searchParams.set('state', state);
-    }
+    if (state) url.searchParams.set('state', state);
+
     return url.toString();
   }
 
-  getKakaoRedirectUrl = (frontEnv?: string, redirectUrl?: string) => {
+  getKakaoRedirectUrl = (frontEnv?: FrontEnvironment, redirectUrl?: string) => {
     const kakaoUrl = this.generateKakaoRedirectUrl(
       this.kakaoOAuthConfig.restApiKey,
       redirectUrl ?? this.kakaoOAuthConfig.redirectUrl,

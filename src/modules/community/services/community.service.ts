@@ -10,11 +10,14 @@ import {
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import is from 'zod/v4/locales/is.cjs';
 
+import { ArticleFilterType } from '@modules/community/controllers/v1/community.v1.controller';
 import { CreateArticleLikeDto } from '@modules/community/dto/article-like.dto';
 import { CreateArticleDto, GetArticleDto } from '@modules/community/dto/article.dto';
 import { CreateCommentLikeDto } from '@modules/community/dto/comment-like.dto';
 import { CreateCommentDto, GetCommentDto } from '@modules/community/dto/comment.dto';
 import { PrismaService } from '@modules/prisma/prisma.service';
+
+import { Prisma } from '../../../generated/prisma';
 
 @Injectable()
 export class CommunityService {
@@ -49,7 +52,19 @@ export class CommunityService {
 
   // 게시글 목록 조회
   async getArticle(
-    { communityId, page, limit }: { communityId: bigint; page?: number; limit?: number },
+    {
+      communityId,
+      page,
+      limit,
+      filter,
+      userId,
+    }: {
+      communityId: bigint;
+      page?: number;
+      limit?: number;
+      filter?: ArticleFilterType;
+      userId?: string;
+    },
     // userId: string,
   ) {
     // 커뮤니티 존재 여부 확인
@@ -60,14 +75,53 @@ export class CommunityService {
       throw new NotFoundException('존재하지 않는 커뮤니티입니다.');
     }
 
-    const skip = ((page ?? 1) - 1) * (limit ?? 10);
+    const pageNum = page ?? 1;
+    const limitNum = limit ?? 10;
+    const skip = (pageNum - 1) * limitNum;
+
+    let where: Prisma.ArticleWhereInput = { communityId };
+    let orderBy: Prisma.ArticleOrderByWithRelationInput | Prisma.ArticleOrderByWithRelationInput[] =
+      { createdAt: 'desc' };
+
+    const userBigIntId = userId ? BigInt(userId) : undefined;
+
+    switch (filter) {
+      case ArticleFilterType.MY:
+        where = {
+          ...where,
+          authorId: userBigIntId,
+        };
+        break;
+
+      case ArticleFilterType.LIKE:
+        where = {
+          ...where,
+          articleLike: {
+            some: {
+              userId: userBigIntId,
+            },
+          },
+        };
+        break;
+
+      case ArticleFilterType.COMMENT:
+        where = {
+          ...where,
+          ArticleComment: {
+            some: {
+              authorId: userBigIntId,
+            },
+          },
+        };
+        break;
+    }
 
     const [articles, totalCount] = await this.prisma.$transaction([
       this.prisma.article.findMany({
-        where: { communityId },
+        where,
         skip,
-        take: limit,
-        orderBy: { createdAt: 'desc' },
+        take: limitNum,
+        orderBy,
         include: {
           articleImage: {
             select: { imageUrl: true, order: true },
@@ -75,7 +129,7 @@ export class CommunityService {
           },
         },
       }),
-      this.prisma.article.count({ where: { communityId } }),
+      this.prisma.article.count({ where }),
     ]);
 
     const articleList = articles.map((article) => ({
@@ -92,7 +146,12 @@ export class CommunityService {
       })),
     }));
 
-    return articleList;
+    return {
+      articles: articleList,
+      totalCount,
+      totalPages: Math.ceil(totalCount / limitNum),
+      currentPage: pageNum,
+    };
   }
 
   // 게시글 상세 조회

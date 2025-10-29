@@ -10,6 +10,7 @@ import {
   Post,
   Query,
   Req,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -47,6 +48,16 @@ import {
 import { GetCommunityDto } from '@modules/community/dto/community.dto';
 import { CommunityService } from '@modules/community/services/community.service';
 
+import { FilterArticleDto } from '../../dto/filter-article.dto';
+
+// 게시글 관련 필터 타입 enum 값으로..
+export enum ArticleFilterType {
+  ALL = 'ALL', // 전체 게시글
+  LIKE = 'LIKE', // 내가 찜한 글
+  MY = 'MY', // 내가 작성한 글
+  COMMENT = 'COMMENT', // 내가 댓글 적은 글
+}
+
 @Controller({
   path: 'community',
   version: '1',
@@ -73,23 +84,43 @@ export class CommunityV1Controller {
   @Get(':communityId/article')
   @ApiOperation({ summary: '게시글 목록 조회' })
   @ApiBearerAuth()
-  @ApiOkResponse({ description: '게시글 목록 반환', type: [GetArticleDto] })
+  @ApiOkResponse({ description: '게시글 목록 반환', type: FilterArticleDto })
   @ApiQuery({ name: 'page', required: false, type: Number, description: '페이지 번호' })
   @ApiQuery({ name: 'limit', required: false, type: Number, description: '페이지 당 개수' })
+  @ApiQuery({
+    name: 'filterType',
+    required: false,
+    enum: ArticleFilterType,
+    description:
+      '게시글 필터 타입 (LIKE: 내가 찜한 글, MY: 내가 작성한 글, COMMENT: 내가 댓글 적은 글)',
+  })
   @ResponseMessage('게시글 목록이 조회되었습니다.')
   @Public()
   async getArticle(
     @Param('communityId') communityId: string,
-    @Query() query: { page?: string; limit?: string },
+    @Query() query: { page?: string; limit?: string; filterType?: ArticleFilterType },
     @Req() req,
   ) {
     const page = query.page ? Number(query.page) : 1;
     const limit = query.limit ? Number(query.limit) : 10;
+    const filter = query.filterType || ArticleFilterType.ALL;
     const userId = req.user?.userId;
+
+    const requiresAuth =
+      filter === ArticleFilterType.MY || // 내가 작성한 글
+      filter === ArticleFilterType.LIKE || // 내가 찜한 글
+      filter === ArticleFilterType.COMMENT; // 댓글 적은 글
+
+    if (requiresAuth && !userId) {
+      throw new UnauthorizedException('로그인이 필요한 필터입니다.');
+    }
+
     return await this.communityService.getArticle({
       communityId: BigInt(communityId),
       page,
       limit,
+      filter,
+      userId,
     });
   }
 

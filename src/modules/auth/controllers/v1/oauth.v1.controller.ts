@@ -29,6 +29,7 @@ import { RegisterJwtGuard } from '@modules/auth/guards/register-jwt.guard';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { GoogleOAuthService } from '@modules/auth/services/google-oauth.service';
 import { KakaoAuthService } from '@modules/auth/services/kakao-oauth.auth.service';
+import { FrontEnvironment } from '@modules/auth/types/oauth.types';
 import { CreateOAuthUserRequestDto } from '@modules/users/dto/user.dto';
 import { OAuthUserService } from '@modules/users/services/oauth.users.service';
 
@@ -110,29 +111,36 @@ export class OAuthV1Controller {
     // return result;
   }
 
+  // ================== Google OAuth V2 ==================
+
   // http://localhost:7777/v2/auth/google/login?frontEnv=local
   // http://localhost:7777/v2/auth/google/login?frontEnv=development
   // http://localhost:7777/v2/auth/google/login?frontEnv=production
-  // &redirectUri=http://localhost:7777/v2/auth/google/callback
+  //
+  // https://api.peekle.kr/v2/auth/google/login?frontEnv=local
+  // https://api.peekle.kr/v2/auth/google/login?frontEnv=development
+  // https://api.peekle.kr/v2/auth/google/login?frontEnv=production
+
   @ApiQuery({
     name: 'redirectUri',
     required: false,
-    description: 'Server Redirect URI 입니다. FE측에서는 사용할 필요 없습니다.',
+    description: 'FE측 사용 금지. OAuth Redirect URI 입니다.',
   })
   @ApiQuery({
     name: 'frontEnv',
     required: true,
     description: 'Frontend 환경 구분자 (local, development, production)',
     example: 'local',
-    enum: ['local', 'development', 'production'],
+    enum: FrontEnvironment,
   })
   @Public()
   @Version('2')
   @Get('google/login')
   manualGoogleLogin(
-    @Query() query: { frontEnv: string; redirectUri?: string },
+    @Query() query: { frontEnv: FrontEnvironment; redirectUri?: string },
     @Res() res: Response,
   ) {
+    // TODO: 올바른 query값이 들어오도록 보장하는 것 해결 (DTO)
     if (!['production', 'development', 'local'].includes(query.frontEnv)) {
       throw new InternalServerErrorException('frontEnv 값이 올바르지 않습니다.');
     }
@@ -148,7 +156,7 @@ export class OAuthV1Controller {
       'code는 Google 로그인 후 redirect 된 곳에서 Query에 담긴 code를 전송해주세요.\nredirectUri은 login 시에 제공한 값과 동일한 값을 사용하여야 합니다.',
   })
   async manualGoogleCallback(
-    @Query() query: { state: 'production' | 'development' | 'local'; code: string },
+    @Query() query: { state: FrontEnvironment; code: string },
     @Res() res: Response,
   ) {
     const googleToken = await this.googleService.getGoogleTokenV2(query.code);
@@ -165,6 +173,14 @@ export class OAuthV1Controller {
 
   // ============= Kakao OAuth =============
 
+  // http://localhost:7777/v1/auth/kakao/login?frontEnv=local
+  // http://localhost:7777/v1/auth/kakao/login?frontEnv=development
+  // http://localhost:7777/v1/auth/kakao/login?frontEnv=production
+
+  // https://api.peekle.kr/v1/auth/kakao/login?frontEnv=local
+  // https://api.peekle.kr/v1/auth/kakao/login?frontEnv=development
+  // https://api.peekle.kr/v1/auth/kakao/login?frontEnv=production
+
   @ApiOperation({
     summary: 'Kakao OAuth 로그인',
     description: `## v1.1 2025-10-27
@@ -177,7 +193,7 @@ export class OAuthV1Controller {
     required: true,
     description: 'Frontend 환경 구분자 (local, development, production)',
     example: 'local',
-    enum: ['local', 'development', 'production'],
+    enum: FrontEnvironment,
   })
   @ApiResponse({
     status: 302,
@@ -186,14 +202,12 @@ export class OAuthV1Controller {
   @Redirect()
   @Get('kakao/login')
   @BypassResponseInterceptor()
-  kakaoLogin(@Query('frontEnv') frontEnv: string, @Req() req: Request) {
+  kakaoLogin(@Query('frontEnv') frontEnv: FrontEnvironment, @Req() req: Request) {
     //  http://localhost:7777/v1/auth/kakao/login?frontEnv=local
     //  http://localhost:7777/v1/auth/kakao/login?frontEnv=development
     //  http://localhost:7777/v1/auth/kakao/login?frontEnv=production
     //  https://api.peekle.kr/v1/auth/kakao/login
 
-    // const setRedirectUrlByHost = `https://${req.header('host')}/v1/auth/kakao/callback`;
-    // console.log('Kakao Login Redirect URL:', setRedirectUrlByHost);
     return this.kakaoUserService.getKakaoRedirectUrl(frontEnv);
   }
 
@@ -209,7 +223,7 @@ export class OAuthV1Controller {
   @Get('kakao/callback')
   async kakaoCallback(
     @Query('code') code: string,
-    @Query('state') state: 'production' | 'development' | 'local',
+    @Query('state') state: FrontEnvironment,
     @Req() req: Request,
     @Res() res: Response,
   ) {
@@ -219,17 +233,6 @@ export class OAuthV1Controller {
 
     const result = await this.oauthUserService.oauthLoginOrRegister(kakaoUserInfo);
 
-    if (result.type === 'login') {
-      res.cookie(CookieName.ACCESS_TOKEN, result.tokens.accessToken, accessTokenCookieOptions);
-      res.cookie(CookieName.REFRESH_TOKEN, result.tokens.refreshToken, refreshTokenCookieOptions);
-    }
-    // TODO: Cookie 설정 관련 test code
-    // else if (result.type === 'register') {
-    //   res.cookie('TEST', 'register token', accessTokenCookieOptions);
-    // }
-
-    // 요청 url
-    // const requestUrl = "https" + '://' + req.
     res.redirect(this.authService.generateOAuthRedirectUrl(result, state));
   }
 }

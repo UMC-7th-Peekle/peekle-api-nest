@@ -11,6 +11,7 @@ import { FrontendUrlConfig } from '@modules/auth/config/frontend-url.config';
 import { RefreshJwtConfig } from '@modules/auth/config/refresh-jwt.config';
 import { RegisterJwtConfig } from '@modules/auth/config/register-jwt.config';
 import { JwtPayload, RegisterJwtPayload } from '@modules/auth/types/jwt.types';
+import { FrontEnvironment } from '@modules/auth/types/oauth.types';
 import { UsersService } from '@modules/users/services/users.service';
 import { OAuthLoginOrRegisterResult } from '@modules/users/types/oauth.users.types';
 
@@ -27,15 +28,15 @@ export class AuthService {
     private readonly frontendUrlConfig: ConfigType<typeof FrontendUrlConfig>,
   ) {}
 
-  getFrontendOAuthCallbackUrl(frontEnv: 'production' | 'development' | 'local'): string {
+  getFrontendOAuthCallbackUrl(frontEnv: FrontEnvironment): string {
     let baseUrl: string;
     const WEB_REDIRECT_PATH = '/auth/oauth/callback';
 
-    if (frontEnv === 'production') {
+    if (frontEnv === FrontEnvironment.PRODUCTION) {
       baseUrl = this.frontendUrlConfig.prodUrl;
-    } else if (frontEnv === 'development') {
+    } else if (frontEnv === FrontEnvironment.DEVELOPMENT) {
       baseUrl = this.frontendUrlConfig.devUrl;
-    } else if (frontEnv === 'local') {
+    } else if (frontEnv === FrontEnvironment.LOCAL) {
       baseUrl = this.frontendUrlConfig.localUrl;
     } else throw new InternalServerErrorException('Invalid frontEnv value.');
 
@@ -84,7 +85,7 @@ export class AuthService {
 
   generateOAuthRedirectUrl(
     result: OAuthLoginOrRegisterResult,
-    frontEnv: 'production' | 'development' | 'local' = 'production',
+    frontEnv: FrontEnvironment = FrontEnvironment.PRODUCTION,
     frontendUrl?: string,
   ) {
     const redirectUrl = frontendUrl ?? this.getFrontendOAuthCallbackUrl(frontEnv);

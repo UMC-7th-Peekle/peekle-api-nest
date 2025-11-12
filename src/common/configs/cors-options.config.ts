@@ -1,7 +1,12 @@
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
 
 export const corsOptions: CorsOptions = {
-  origin: ['http://localhost:3000', 'http://localhost:7777', 'https://peekle.kr'],
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:7777',
+    'https://peekle.kr',
+    'https://peekle-frontend-next-1v5h.vercel.app',
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'], // 허용할 HTTP 메서드
   // allowedHeaders: ["Content-Type", "Authorization"], // 허용할 헤더

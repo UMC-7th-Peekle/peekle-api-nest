@@ -1,6 +1,7 @@
 import { ForbiddenException, Injectable, Logger } from '@nestjs/common';
 
 import axios from 'axios';
+import pLimit from 'p-limit';
 
 import { KakaoLocalUtil } from '@common/utils/kakao-local.utils';
 
@@ -183,9 +184,12 @@ export class EventsSeederService {
 
     const apiKey = process.env.SEOUL_OPEN_API_KEY;
     const baseUrl = `http://openapi.seoul.go.kr:8088/${apiKey}/json/OfflineCourse`;
-    let start = 1;
     const pageSize = 100;
+    let start = 1;
     let total = 0;
+
+    // 동시 처리 제한 (10개씩)
+    const limit = pLimit(10);
 
     while (true) {
       const end = start + pageSize - 1;
@@ -196,80 +200,82 @@ export class EventsSeederService {
       const rows = data?.OfflineCourse?.row ?? [];
       if (rows.length === 0) break;
 
-      for (const row of rows) {
-        try {
-          // 기본 위치 정보
-          const latitude = row.EDNST_LAT_CRD ? parseFloat(row.EDNST_LAT_CRD) : null;
-          const longitude = row.EDNST_LOT_CRD ? parseFloat(row.EDNST_LOT_CRD) : null;
+      // 모든 행을 병렬로 처리하되, 최대 10개씩 동시에 실행
+      const tasks = rows.map((row) =>
+        limit(async () => {
+          try {
+            const latitude = row.EDNST_LAT_CRD ? parseFloat(row.EDNST_LAT_CRD) : null;
+            const longitude = row.EDNST_LOT_CRD ? parseFloat(row.EDNST_LOT_CRD) : null;
 
-          // 지역 및 주소 정보 변수 초기화
-          let region1: string | null = null;
-          let region2: string | null = null;
-          let region3: string | null = null;
-          let venueRoadAddress: string | null = null;
-          let venueJibunAddress: string | null = null;
-          let venueDetailAddress: string | null = null;
+            // 지역 및 주소 정보 변수 초기화
+            let region1: string | null = null;
+            let region2: string | null = null;
+            let region3: string | null = null;
+            let venueRoadAddress: string | null = null;
+            let venueJibunAddress: string | null = null;
+            let venueDetailAddress: string | null = null;
 
-          if (latitude && longitude) {
             // 좌표 기반으로 주소 + 지역 전체 변환
-            const addressInfo = await KakaoLocalUtil.getAddressByCoords(latitude, longitude);
-            if (addressInfo) {
-              region1 = addressInfo.region1 ?? null;
-              region2 = addressInfo.region2 ?? null;
-              region3 = addressInfo.region3 ?? null;
-              venueRoadAddress = addressInfo.venueRoadAddress ?? null;
-              venueJibunAddress = addressInfo.venueJibunAddress ?? null;
-              venueDetailAddress = addressInfo.venueDetailAddress ?? null;
+            if (latitude && longitude) {
+              const addressInfo = await KakaoLocalUtil.getAddressByCoords(latitude, longitude);
+              if (addressInfo) {
+                region1 = addressInfo.region1 ?? null;
+                region2 = addressInfo.region2 ?? null;
+                region3 = addressInfo.region3 ?? null;
+                venueRoadAddress = addressInfo.venueRoadAddress ?? null;
+                venueJibunAddress = addressInfo.venueJibunAddress ?? null;
+                venueDetailAddress = addressInfo.venueDetailAddress ?? null;
+              }
+            } else if (row.EDNST_NM) {
+              // 장소명 기반 검색 (좌표가 없을 경우)
+              const addressInfo = await KakaoLocalUtil.getAddressInfo(row.EDNST_NM);
+              if (addressInfo) {
+                region1 = addressInfo.region1 ?? null;
+                region2 = addressInfo.region2 ?? null;
+                region3 = addressInfo.region3 ?? null;
+              }
             }
-          } else if (row.EDNST_NM) {
-            // 장소명 기반 검색 (좌표가 없을 경우)
-            const addressInfo = await KakaoLocalUtil.getAddressInfo(row.EDNST_NM);
-            if (addressInfo) {
-              region1 = addressInfo.region1 ?? null;
-              region2 = addressInfo.region2 ?? null;
-              region3 = addressInfo.region3 ?? null;
-            }
-          }
 
-          // Prisma 데이터 삽입
-          await this.prisma.event.create({
-            data: {
-              title: row.LCTR_NM,
-              startDate: new Date(
-                `${row.LCTR_BGNG_YMD.slice(0, 4)}-${row.LCTR_BGNG_YMD.slice(4, 6)}-${row.LCTR_BGNG_YMD.slice(6, 8)}`,
-              ),
-              endDate: new Date(
-                `${row.LCTR_END_YMD.slice(0, 4)}-${row.LCTR_END_YMD.slice(4, 6)}-${row.LCTR_END_YMD.slice(6, 8)}`,
-              ),
-              venueName: row.EDNST_NM,
-              venueRoadAddress,
-              venueJibunAddress,
-              venueDetailAddress,
-              price: 0,
-              link: row.ATNLC_APLY_URL,
-              description: row.LCTR_TRGT || null,
-              authorId: userId,
-              // 강좌명을 기반으로 카테고리 분류
-              category: this.classifyCategory(row.LCTR_NM),
-              latitude: row.EDNST_LAT_CRD ? parseFloat(row.EDNST_LAT_CRD) : null,
-              longitude: row.EDNST_LOT_CRD ? parseFloat(row.EDNST_LOT_CRD) : null,
-              region1,
-              region2,
-              region3,
-
-              // 기본 이미지
-              eventImage: {
-                create: {
-                  imageUrl: '/default-event.png',
-                  order: 0,
+            // Prisma Insert
+            await this.prisma.event.create({
+              data: {
+                title: row.LCTR_NM,
+                startDate: new Date(
+                  `${row.LCTR_BGNG_YMD.slice(0, 4)}-${row.LCTR_BGNG_YMD.slice(4, 6)}-${row.LCTR_BGNG_YMD.slice(6, 8)}`,
+                ),
+                endDate: new Date(
+                  `${row.LCTR_END_YMD.slice(0, 4)}-${row.LCTR_END_YMD.slice(4, 6)}-${row.LCTR_END_YMD.slice(6, 8)}`,
+                ),
+                venueName: row.EDNST_NM,
+                venueRoadAddress,
+                venueJibunAddress,
+                venueDetailAddress,
+                price: 0,
+                link: row.ATNLC_APLY_URL,
+                description: row.LCTR_TRGT || null,
+                authorId: userId,
+                category: this.classifyCategory(row.LCTR_NM), // 강좌명을 기반으로 카테고리 분류
+                latitude,
+                longitude,
+                region1,
+                region2,
+                region3,
+                // 기본 이미지
+                eventImage: {
+                  create: {
+                    imageUrl: '/default-event.png',
+                    order: 0,
+                  },
                 },
               },
-            },
-          });
-        } catch (e) {
-          this.logger.error(`Insert failed for course ${row.LCTR_ID}`, e);
-        }
-      }
+            });
+          } catch (e) {
+            this.logger.error(`Insert failed for course ${row.LCTR_ID}`, e);
+          }
+        }),
+      );
+
+      await Promise.all(tasks); // 모든 병렬 작업 완료 대기
 
       total += rows.length;
       if (rows.length < pageSize) break; // 마지막 페이지 도달
@@ -296,6 +302,9 @@ export class EventsSeederService {
     const pageSize = 100;
     let total = 0;
 
+    // 동시 처리 제한 (10개씩)
+    const limit = pLimit(10);
+
     while (true) {
       const end = start + pageSize - 1;
       const url = `${baseUrl}/${start}/${end}/`;
@@ -305,38 +314,42 @@ export class EventsSeederService {
       const rows = data?.FiftyPotalEduInfo?.row ?? [];
       if (rows.length === 0) break;
 
-      for (const row of rows) {
-        try {
-          await this.prisma.event.create({
-            data: {
-              title: row.LCT_NM,
-              startDate: new Date(
-                `${row.CR_STDE.slice(0, 4)}-${row.CR_STDE.slice(4, 6)}-${row.CR_STDE.slice(6, 8)}`,
-              ),
-              endDate: new Date(
-                `${row.CR_EDDE.slice(0, 4)}-${row.CR_EDDE.slice(4, 6)}-${row.CR_EDDE.slice(6, 8)}`,
-              ),
-              venueName: '서울50+포털', // 얘는 장소 정보가 없음
-              price: row.LCT_COST && row.LCT_COST !== '0' ? parseInt(row.LCT_COST) : 0,
-              link: row.CR_URL,
-              description: `상태: ${row.LCT_STAT}, 정원: ${row.CR_PPL_STAT}, 시간: ${row.HR}`,
-              authorId: userId,
-              category: this.classifyCategory(row.LCT_NM),
-              latitude: null,
-              longitude: null,
-              // 일단 사진 정보가 없으니 기본 이미지로 대체
-              eventImage: {
-                create: {
-                  imageUrl: '/default-event.png',
-                  order: 0,
+      // 모든 행을 병렬로 처리하되, 최대 10개씩 동시에 실행
+      const tasks = rows.map((row) =>
+        limit(async () => {
+          try {
+            await this.prisma.event.create({
+              data: {
+                title: row.LCT_NM,
+                startDate: new Date(
+                  `${row.CR_STDE.slice(0, 4)}-${row.CR_STDE.slice(4, 6)}-${row.CR_STDE.slice(6, 8)}`,
+                ),
+                endDate: new Date(
+                  `${row.CR_EDDE.slice(0, 4)}-${row.CR_EDDE.slice(4, 6)}-${row.CR_EDDE.slice(6, 8)}`,
+                ),
+                venueName: '서울50+포털', // 얘는 장소 정보가 없음
+                price: row.LCT_COST && row.LCT_COST !== '0' ? parseInt(row.LCT_COST) : 0,
+                link: row.CR_URL,
+                description: `상태: ${row.LCT_STAT}, 정원: ${row.CR_PPL_STAT}, 시간: ${row.HR}`,
+                authorId: userId,
+                category: this.classifyCategory(row.LCT_NM),
+                latitude: null,
+                longitude: null,
+                eventImage: {
+                  create: {
+                    imageUrl: '/default-event.png',
+                    order: 0,
+                  },
                 },
               },
-            },
-          });
-        } catch (e) {
-          this.logger.error(`Insert failed for course ${row.LCT_NO}`, e);
-        }
-      }
+            });
+          } catch (e) {
+            this.logger.error(`Insert failed for course ${row.LCT_NO}`, e);
+          }
+        }),
+      );
+
+      await Promise.all(tasks); // 병렬 실행 후 대기
 
       total += rows.length;
       if (rows.length < pageSize) break; // 마지막 페이지 도달

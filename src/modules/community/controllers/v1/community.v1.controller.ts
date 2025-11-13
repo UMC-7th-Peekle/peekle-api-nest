@@ -88,6 +88,12 @@ export class CommunityV1Controller {
   @ApiQuery({ name: 'page', required: false, type: Number, description: '페이지 번호' })
   @ApiQuery({ name: 'limit', required: false, type: Number, description: '페이지 당 개수' })
   @ApiQuery({
+    name: 'search',
+    required: false,
+    type: String,
+    description: '검색어 (제목 또는 내용)',
+  })
+  @ApiQuery({
     name: 'filterType',
     required: false,
     enum: ArticleFilterType,
@@ -98,13 +104,15 @@ export class CommunityV1Controller {
   @Public()
   async getArticle(
     @Param('communityId') communityId: string,
-    @Query() query: { page?: string; limit?: string; filterType?: ArticleFilterType },
+    @Query()
+    query: { page?: string; limit?: string; filterType?: ArticleFilterType; search?: string },
     @Req() req,
   ) {
     const page = query.page ? Number(query.page) : 1;
     const limit = query.limit ? Number(query.limit) : 10;
     const filter = query.filterType || ArticleFilterType.ALL;
-    const userId = req.user?.userId;
+    const search = query.search ? String(query.search) : undefined;
+    const userId = req.user?.userId ? String(req.user.userId) : undefined;
 
     const requiresAuth =
       filter === ArticleFilterType.MY || // 내가 작성한 글
@@ -121,6 +129,7 @@ export class CommunityV1Controller {
       limit,
       filter,
       userId,
+      search,
     });
   }
 
@@ -132,8 +141,8 @@ export class CommunityV1Controller {
   @ResponseMessage('게시글이 조회되었습니다.')
   // @Public() // TODO: 임시로 Public 처리, 추후 인증 도입 시 제거 필요
   async getArticleDetail(@Param('articleId') articleId: string, @Req() req) {
-    // const userId = req.user?.userId;   // 생각해보니 userId가 필요없네
-    return await this.communityService.getArticleDetail(BigInt(articleId));
+    const userId = req.user?.userId ? String(req.user.userId) : undefined;
+    return await this.communityService.getArticleDetail(BigInt(articleId), userId);
   }
 
   @Post('article')
@@ -254,12 +263,15 @@ export class CommunityV1Controller {
   ) {
     const page = query.page ? Number(query.page) : 1;
     const limit = query.limit ? Number(query.limit) : 10;
-    // const userId = req.user.id;    // userId가 필요없음
-    return await this.communityService.getComment({
-      articleId: BigInt(articleId),
-      page,
-      limit,
-    });
+    const userId = req.user?.userId ? String(req.user.userId) : undefined;
+    return await this.communityService.getComment(
+      {
+        articleId: BigInt(articleId),
+        page,
+        limit,
+      },
+      userId,
+    );
   }
 
   // 게시글 댓글 작성

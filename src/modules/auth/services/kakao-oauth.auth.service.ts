@@ -5,6 +5,7 @@ import axios, { HttpStatusCode } from 'axios';
 
 import { KakaoOAuthConfig } from '@modules/auth/config/kakao-oauth-config';
 import { KakaoUserInfoResponse } from '@modules/auth/types/kakao.types';
+import { FrontEnvironment } from '@modules/auth/types/oauth.types';
 import { KakaoUserData, OAuthProvider } from '@modules/users/types/oauth.users.types';
 
 @Injectable()
@@ -16,9 +17,23 @@ export class KakaoAuthService {
   ) {}
   // http://localhost:7777/auth/login/kakao
 
-  getKakaoRedirectUrl = () => {
-    const kakaoUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${this.kakaoOAuthConfig.restApiKey}&redirect_uri=${this.kakaoOAuthConfig.redirectUrl}&response_type=code`;
-    // console.log(kakaoUrl);
+  generateKakaoRedirectUrl(clientId: string, redirectUri: string, state?: FrontEnvironment) {
+    const url = new URL('https://kauth.kakao.com/oauth/authorize');
+    url.searchParams.set('client_id', clientId);
+    url.searchParams.set('redirect_uri', redirectUri);
+    url.searchParams.set('response_type', 'code');
+    if (state) url.searchParams.set('state', state);
+
+    return url.toString();
+  }
+
+  getKakaoRedirectUrl = (frontEnv?: FrontEnvironment, redirectUrl?: string) => {
+    const kakaoUrl = this.generateKakaoRedirectUrl(
+      this.kakaoOAuthConfig.restApiKey,
+      redirectUrl ?? this.kakaoOAuthConfig.redirectUrl,
+      frontEnv,
+    );
+
     return {
       url: kakaoUrl,
       statusCode: HttpStatusCode.Found,

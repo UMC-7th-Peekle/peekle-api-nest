@@ -11,7 +11,7 @@ import { FrontendUrlConfig } from '@modules/auth/config/frontend-url.config';
 import { RefreshJwtConfig } from '@modules/auth/config/refresh-jwt.config';
 import { RegisterJwtConfig } from '@modules/auth/config/register-jwt.config';
 import { JwtPayload, RegisterJwtPayload } from '@modules/auth/types/jwt.types';
-import { OAuthUserService } from '@modules/users/services/oauth.users.service';
+import { FrontEnvironment } from '@modules/auth/types/oauth.types';
 import { UsersService } from '@modules/users/services/users.service';
 import { OAuthLoginOrRegisterResult } from '@modules/users/types/oauth.users.types';
 
@@ -28,17 +28,19 @@ export class AuthService {
     private readonly frontendUrlConfig: ConfigType<typeof FrontendUrlConfig>,
   ) {}
 
-  getFrontendOAuthCallbackUrl() {
+  getFrontendOAuthCallbackUrl(frontEnv: FrontEnvironment): string {
     let baseUrl: string;
-    if (process.env.NODE_ENV === 'production') {
-      baseUrl = this.frontendUrlConfig.prodUrl;
-    } else if (process.env.NODE_ENV === 'development') {
-      baseUrl = this.frontendUrlConfig.devUrl;
-    } else {
-      baseUrl = this.frontendUrlConfig.localUrl;
-    }
+    const WEB_REDIRECT_PATH = '/auth/oauth/callback';
 
-    return baseUrl + '/auth/oauth/callback';
+    if (frontEnv === FrontEnvironment.PRODUCTION) {
+      baseUrl = this.frontendUrlConfig.prodUrl;
+    } else if (frontEnv === FrontEnvironment.DEVELOPMENT) {
+      baseUrl = this.frontendUrlConfig.devUrl;
+    } else if (frontEnv === FrontEnvironment.LOCAL) {
+      baseUrl = this.frontendUrlConfig.localUrl;
+    } else throw new InternalServerErrorException('Invalid frontEnv value.');
+
+    return baseUrl + WEB_REDIRECT_PATH;
     //  return 'http://localhost:3000/auth/oauth/callback';
   }
 
@@ -81,8 +83,12 @@ export class AuthService {
     };
   }
 
-  generateOAuthRedirectUrl(result: OAuthLoginOrRegisterResult, frontendUrl?: string) {
-    const redirectUrl = frontendUrl ?? this.getFrontendOAuthCallbackUrl();
+  generateOAuthRedirectUrl(
+    result: OAuthLoginOrRegisterResult,
+    frontEnv: FrontEnvironment = FrontEnvironment.PRODUCTION,
+    frontendUrl?: string,
+  ) {
+    const redirectUrl = frontendUrl ?? this.getFrontendOAuthCallbackUrl(frontEnv);
 
     let res: string;
     if (result.type === 'login') {

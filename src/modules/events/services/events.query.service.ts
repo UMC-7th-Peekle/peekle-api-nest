@@ -323,7 +323,7 @@ export class EventsQueryService {
     return { events, nextCursor, nextCursorDistance, hasNextPage };
   }
 
-  async getEventDetail(id: bigint): Promise<GetEventDetailResponseDto> {
+  async getEventDetail(id: bigint, userId?: bigint): Promise<GetEventDetailResponseDto> {
     const event = await this.prisma.event.findUnique({
       where: { id },
       include: {
@@ -336,6 +336,12 @@ export class EventsQueryService {
 
     if (!event) {
       throw new NotFoundException('해당 이벤트를 찾을 수 없습니다.');
+    }
+
+    let isScrapped = false;
+    if (userId) {
+      const scrap = await this.prisma.eventScrap.findFirst({ where: { eventId: id, userId } });
+      isScrapped = !!scrap; // scrap이 존재하면 true, 없으면 false로 저장
     }
 
     return {
@@ -360,6 +366,7 @@ export class EventsQueryService {
         imageUrl: process.env.CLOUDFRONT_URL + img.imageUrl, // TODO: 이미지 URL 저장 방식에 따라 수정이 필요(할 수도 있고 안 할 수도 있습니다)
         order: img.order,
       })),
+      isScrapped,
     };
   }
 }

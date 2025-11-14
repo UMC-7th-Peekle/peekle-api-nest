@@ -16,7 +16,6 @@ import { UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
-  ApiCookieAuth,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
@@ -166,10 +165,10 @@ export class CommunityV1Controller {
 
   // 게시글 수정
   @Patch('article/:articleId')
-  @ApiMultiFileAndJson('article_images', CreateArticleDto)
+  @ApiMultiFileAndJson('article_images', UpdateArticleDto)
   @ApiOperation({ summary: '게시글 수정' })
   @ApiBearerAuth()
-  @ApiOkResponse({ description: '게시글 수정 성공', type: CreateArticleDto })
+  @ApiOkResponse({ description: '게시글 수정 성공', type: UpdateArticleDto })
   @UseInterceptors(FilesInterceptor('article_images'))
   @ResponseMessage('게시글이 수정되었습니다.')
   async updateArticle(
@@ -199,7 +198,7 @@ export class CommunityV1Controller {
   @ApiBearerAuth()
   @ApiCreatedResponse({ description: '게시글 좋아요 성공', type: CreateArticleLikeDto })
   async createArticleLike(
-    dto: CreateArticleLikeDto,
+    @Body() dto: CreateArticleLikeDto,
     @Param('articleId') articleId: string,
     @Req() req,
   ) {

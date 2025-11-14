@@ -10,7 +10,6 @@ export class CreateArticleDto {
   @IsBigInt()
   @TransformToBigint()
   communityId!: bigint;
-  ㄴ;
 
   @ApiProperty({ example: '게시글 제목', description: '게시글 제목', maxLength: 50 })
   @IsString()
@@ -71,19 +70,17 @@ export class GetArticleDto {
   @ApiProperty({ example: '2025-09-07T10:31:00.000Z', description: '수정일', type: String })
   updatedAt!: string;
 
-  @ApiProperty({
-    example: true,
-    description: '로그인한 사용자의 좋아요(찜) 여부',
-    type: Boolean,
-  })
+  @ApiProperty({ example: true, description: '로그인한 사용자의 좋아요(찜) 여부', type: Boolean })
   isLiked!: boolean;
 
-  @ApiProperty({
-    example: false,
-    description: '로그인한 사용자가 작성자인지 여부',
-    type: Boolean,
-  })
+  @ApiProperty({ example: false, description: '로그인한 사용자가 작성자인지 여부', type: Boolean })
   owner!: boolean;
+
+  @ApiProperty({ example: 15, description: '게시글 총 좋아요 수', type: Number })
+  likeCount!: number;
+
+  @ApiProperty({ example: 3, description: '게시글 총 댓글 수', type: Number })
+  commentCount!: number;
 
   // 게시글 이미지 목록
   @ApiProperty({

@@ -138,4 +138,12 @@ export class GetEventsQueryDto {
   @IsOptional()
   @Transform(({ value }) => value === 'true' || value === true)
   onlyScrapped?: boolean;
+
+  @ApiPropertyOptional({
+    description: '검색어 (제목 기준 검색)', // TODO: 추후 필요 시 설명이나 장소명 기준 전체 포함 검색으로 수정
+    example: '요리',
+  })
+  @IsOptional()
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : undefined))
+  search?: string;
 }

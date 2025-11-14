@@ -63,6 +63,13 @@ export class EventsQueryService {
       andConds.push({ category: { in: query.categories } });
     }
 
+    // 검색어 필터 (제목 기준 검색)
+    if (query.search) {
+      andConds.push({
+        title: { contains: query.search },
+      });
+    }
+
     // 위치 필터(부분 일치)
     if (query.locations?.length) {
       const locOr: Prisma.EventWhereInput[] = [];
@@ -206,6 +213,11 @@ export class EventsQueryService {
               Prisma.sql`(e.venue_name LIKE ${'%' + kw + '%'} OR e.venue_road_address LIKE ${'%' + kw + '%'} OR e.venue_jibun_address LIKE ${'%' + kw + '%'} OR e.venue_detail_address LIKE ${'%' + kw + '%'})`,
           );
           conditions.push(Prisma.sql`(${Prisma.join(likeConds, ' OR ')})`);
+        }
+
+        // 제목 검색 조건 추가
+        if (query.search) {
+          conditions.push(Prisma.sql`e.title LIKE ${'%' + query.search + '%'}`);
         }
 
         // onlyScrapped 필터를 Raw SQL에도 반영

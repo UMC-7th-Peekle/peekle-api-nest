@@ -10,7 +10,9 @@ import {
   IsInt,
   IsNumber,
   IsOptional,
+  IsString,
   Max,
+  MaxLength,
   Min,
 } from 'class-validator';
 
@@ -144,6 +146,8 @@ export class GetEventsQueryDto {
     example: '요리',
   })
   @IsOptional()
+  @IsString()
+  @MaxLength(50)
   @Transform(({ value }) => (typeof value === 'string' ? value.trim() : undefined))
   search?: string;
 }

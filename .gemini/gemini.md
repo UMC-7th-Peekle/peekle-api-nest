@@ -18,11 +18,11 @@ Your primary goal is to ensure all code aligns with the project's established co
 - **File Naming**:
 - **Folder Naming**:
 - **Variable and Type Naming**:
-  - Types, Interfaces, Enums: `PascalCase` (e.g., `UserProfile`, `StatusEnum`). Add suffixes like `Props`, `Data`, `Params` for clarity.
-  - Enum Members: `CAPITAL_SNAKE_CASE`.
-  - Global Constants: `CAPITAL_SNAKE_CASE`.
-  - Functions & Variables: `camelCase`.
-  - **No abbreviations** unless they are universally understood (e.g., `props`, `docs`).
+    - Types, Interfaces, Enums: `PascalCase` (e.g., `UserProfile`, `StatusEnum`). Add suffixes like `Props`, `Data`, `Params` for clarity.
+    - Enum Members: `CAPITAL_SNAKE_CASE`.
+    - Global Constants: `CAPITAL_SNAKE_CASE`.
+    - Functions & Variables: `camelCase`.
+    - **No abbreviations** unless they are universally understood (e.g., `props`, `docs`).
 
 ## 4. Code Style and Formatting (Strict Enforcement)
 

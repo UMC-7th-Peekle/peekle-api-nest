@@ -118,4 +118,10 @@ export class GetEventDetailResponseDto {
 
   @ApiProperty({ description: '경도', example: 126.9754, nullable: true })
   longitude?: number | null;
+
+  @ApiProperty({
+    description: '현재 로그인한 사용자가 이 이벤트를 찜했는지 여부',
+    example: false,
+  })
+  isScrapped!: boolean;
 }

@@ -1,0 +1,233 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../src/generated/prisma"
+  /// `binaryTargets`는 Prisma 클라이언트가 다양한 운영 체제 및 아키텍처에서 동작할 수 있도록
+  /// 여러 플랫폼용 바이너리를 생성하도록 지정합니다.
+  /// 
+  /// - "native": 현재 개발 환경의 플랫폼에 맞는 바이너리 생성
+  /// - "linux-musl-openssl-3.0.x": musl libc 기반 Linux (예: Alpine Linux)에서 OpenSSL 3.0.x를 사용하는 환경
+  /// - "linux-musl-arm64-openssl-3.0.x": ARM64 아키텍처의 musl libc 기반 Linux에서 OpenSSL 3.0.x를 사용하는 환경
+  /// - "debian-openssl-1.1.x": Debian 기반 Linux에서 OpenSSL 1.1.x를 사용하는 환경
+  /// - "linux-arm64-openssl-3.0.x": ARM64 아키텍처의 glibc 기반 Linux에서 OpenSSL 3.0.x를 사용하는 환경
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x", "linux-musl-arm64-openssl-3.0.x", "debian-openssl-1.1.x", "linux-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Article {
+  id          BigInt   @id @default(autoincrement())
+  communityId BigInt   @map("community_id")
+  title       String   @db.VarChar(50)
+  content     String   @db.VarChar(5000)
+  isAnonymous Boolean  @map("is_anonymous")
+  authorId    BigInt   @map("author_id")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt   DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+
+  user           User             @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "article_user_id_fk")
+  community      Community        @relation(fields: [communityId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "article_community_id_fk")
+  articleImage   ArticleImage[]
+  articleLike    ArticleLike[]
+  ArticleComment ArticleComment[] @relation(map: "article_comment_article_id_fk")
+
+  @@index([communityId], map: "article_community_id_fk")
+  @@map("article")
+}
+
+model ArticleComment {
+  id                 BigInt               @id @default(autoincrement())
+  articleId          BigInt               @map("article_id")
+  parentCommentId    BigInt?              @map("parent_comment_id")
+  content            String               @db.VarChar(2000)
+  authorId           BigInt               @map("author_id")
+  isAnonymous        Boolean              @map("is_anonymous")
+  createdAt          DateTime             @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt          DateTime             @default(now()) @map("updated_at") @db.Timestamp(6)
+  user               User                 @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "article_comment_user_id_fk")
+  article            Article              @relation(fields: [articleId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "article_comment_article_id_fk")
+  parentComment      ArticleComment?      @relation("CommentReplies", fields: [parentCommentId], references: [id])
+  replies            ArticleComment[]     @relation("CommentReplies")
+  articleCommentLike ArticleCommentLike[]
+
+  @@index([authorId], map: "article_comment_user_id_fk")
+  @@index([articleId], map: "article_comment_article_id_fk")
+  @@index([parentCommentId], map: "article_comment_parent_comment_id_fk")
+  @@map("article_comment")
+}
+
+model ArticleCommentLike {
+  commentId      BigInt         @map("comment_id")
+  userId         BigInt         @map("user_id")
+  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt      DateTime       @default(now()) @map("updated_at") @db.Timestamp(6)
+  articleComment ArticleComment @relation(fields: [commentId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "article_comment_like_article_comment_id_fk")
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "article_comment_like_user_id_fk")
+
+  @@id([commentId, userId])
+  @@index([userId], map: "article_comment_like_user_id_fk")
+  @@map("article_comment_like")
+}
+
+model ArticleImage {
+  articleId BigInt   @map("article_id")
+  imageUrl  String   @map("image_url") @db.VarChar(1024)
+  order     Int
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "article_image_article_id_fk")
+
+  @@id([articleId, order])
+  @@map("article_image")
+}
+
+model ArticleLike {
+  articleId BigInt   @map("article_id")
+  userId    BigInt   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "article_like_article_id_fk")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "article_like_user_id_fk")
+
+  @@id([articleId, userId])
+  @@index([userId], map: "article_like_user_id_fk")
+  @@map("article_like")
+}
+
+model Community {
+  id        BigInt    @id @default(autoincrement())
+  name      String    @db.VarChar(100)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamp(6)
+  article   Article[]
+
+  @@map("community")
+}
+
+model Event {
+  id                 BigInt       @id @default(autoincrement())
+  title              String       @db.VarChar(50)
+  startDate          DateTime     @map("start_date") @db.Date
+  endDate            DateTime     @map("end_date") @db.Date
+  venueName          String?      @map("venue_name") @db.VarChar(100)
+  venueRoadAddress   String?      @map("venue_road_address") @db.VarChar(200)
+  venueJibunAddress  String?      @map("venue_jibun_address") @db.VarChar(200)
+  venueDetailAddress String?      @map("venue_detail_address") @db.VarChar(100)
+  region1            String?      @db.VarChar(50)
+  region2            String?      @db.VarChar(50)
+  region3            String?      @db.VarChar(50)
+  price              Int
+  link               String?      @db.VarChar(300)
+  description        String?      @db.VarChar(1000)
+  authorId           BigInt       @map("author_id")
+  category           String       @db.VarChar(100)
+  latitude           Float?       @db.Double
+  longitude          Float?       @db.Double
+  createdAt          DateTime     @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt          DateTime     @default(now()) @map("updated_at") @db.Timestamp(6)
+  user               User         @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "event_user_id_fk")
+  eventImage         EventImage[]
+  eventScrap         EventScrap[]
+
+  @@index([authorId], map: "event_user_id_fk")
+  @@map("event")
+}
+
+model EventImage {
+  eventId   BigInt   @map("event_id")
+  imageUrl  String   @map("image_url") @db.VarChar(1024)
+  order     Int
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "event_image_event_id_fk")
+
+  @@id([eventId, order])
+  @@map("event_image")
+}
+
+model EventScrap {
+  userId    BigInt   @map("user_id")
+  eventId   BigInt   @map("event_id")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "event_scrap_user_id_fk")
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "event_scrap_event_id_fk")
+
+  @@id([userId, eventId])
+  @@index([eventId], map: "event_scrap_event_id_fk")
+  @@index([userId], map: "event_scrap_user_id_fk")
+  @@map("event_scrap")
+}
+
+model Term {
+  id         BigInt     @id @default(autoincrement())
+  title      String     @db.VarChar(30)
+  content    String     @db.Text
+  isRequired Boolean    @map("is_required")
+  createdAt  DateTime   @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt  DateTime   @default(now()) @map("updated_at") @db.Timestamp(6)
+  userTerm   UserTerm[]
+
+  @@map("term")
+}
+
+model Upload {
+  id        BigInt   @id @default(autoincrement())
+  domain    String   @db.VarChar(50) // 업로드된 파일이 속한 도메인 (예: 'events', 'community')
+  kind      String   @db.VarChar(20) // 파일 종류: 'image' | 'video'
+  key       String   @unique @db.VarChar(500) // S3 object key
+  url       String   @db.VarChar(1024) // CDN 공개 URL
+  mimeType  String   @map("mime_type") @db.VarChar(100) // ex. image/jpeg
+  size      Int? // 파일 크기 (byte 단위)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+
+  @@map("upload")
+}
+
+model User {
+  id                 BigInt               @id @default(autoincrement())
+  name               String?              @db.VarChar(10)
+  nickname           String               @db.VarChar(10)
+  birthdate          DateTime?            @db.Date
+  gender             String?              @db.VarChar(10)
+  phoneNumber        String?              @map("phone_number") @db.VarChar(20)
+  profileImage       String?              @map("profile_image") @db.VarChar(1024)
+  role               String               @default("USER") @db.VarChar(30)
+  oauthProvider      String?              @map("oauth_provider") @db.VarChar(30)
+  oauthId            String?              @map("oauth_id") @db.VarChar(100)
+  createdAt          DateTime             @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt          DateTime             @default(now()) @map("updated_at") @db.Timestamp(6)
+  article            Article[]
+  articleComment     ArticleComment[]
+  articleCommentLike ArticleCommentLike[]
+  articleLike        ArticleLike[]
+  event              Event[]
+  eventScrap         EventScrap[]
+  userTerm           UserTerm[]
+
+  @@map("user")
+}
+
+model UserTerm {
+  userId     BigInt   @map("user_id")
+  termId     BigInt   @map("term_id")
+  isAccepted Boolean  @map("is_accepted")
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt  DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+  term       Term     @relation(fields: [termId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "user_term_term_id_fk")
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "user_term_user_id_fk")
+
+  @@id([userId, termId])
+  @@index([termId], map: "user_term_term_id_fk")
+  @@map("user_term")
+}

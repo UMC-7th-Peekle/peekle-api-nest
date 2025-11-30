@@ -1,0 +1,92 @@
+name: Deploy NestJS to EC2
+
+# 이 워크플로우가 실행될 시점: main 브랜치에 push가 발생했을 때
+on:
+  #  push:
+  #    branches:
+  #      - develop
+  #  pull_request:
+  #    branches:
+  #      - develop
+  workflow_dispatch:
+
+jobs:
+  # 1. Docker 이미지를 빌드하고 Docker Hub에 Push하는 잡
+  docker-image-build:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. 리포지토리 코드 체크아웃
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. QEMU 설정 (다른 아키텍처 에뮬레이션)
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      # Docker Buildx 빌더 설정 (가장 중요)
+      # ⭐️ 이 스텝이 누락되면 질문하신 에러가 발생합니다.
+      # (이 스텝이 multi-arch를 지원하는 드라이버로 자동 전환해 줍니다.)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 2. Docker Hub 로그인 (GitHub Secrets 사용)
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 3. Docker 이미지 빌드 및 푸시
+      # 위에서 작성한 Dockerfile을 사용하여 이미지를 빌드하고 태깅하여 푸시합니다.
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: scripts/ec2-dev/dockerfile
+          push: true # 빌드 후 푸시 실행
+          tags: peekle/peekle-develop:latest
+          platforms: linux/amd64,linux/arm64
+
+  # 2. EC2에 접속하여 배포하는 잡
+  deploy-to-ec2:
+    # 'build-and-push' 잡이 성공해야만 이 잡이 실행됩니다.
+    needs: docker-image-build
+    runs-on: ubuntu-latest
+    steps:
+      # 1. EC2 인스턴스에 SSH로 접속하여 배포 스크립트 실행
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEV_EC2_HOST }}
+          username: ${{ secrets.DEV_EC2_USERNAME }}
+          key: ${{ secrets.DEV_EC2_SSH_KEY }}
+          script: |
+            echo "💪 Creating .env files"
+            echo "${{ secrets.DOTENV_DEFAULT }}" | awk 'NF' > .env
+            echo "${{ secrets.DOTENV_DEVELOPMENT }}" | awk 'NF' > .env.development
+            echo "✅ .env files created"
+
+            # 1. Docker Hub에서 방금 푸시한 최신 이미지를 pull 받습니다.
+            # (만약 private repo라면 EC2 서버에도 docker login 설정이 필요할 수 있습니다.)
+            docker pull peekle/peekle-develop:latest
+
+            # 2. 기존에 실행 중이던 컨테이너를 중지하고 삭제합니다. (컨테이너 이름으로 관리)
+            # '|| true'는 해당 컨테이너가 없어서 명령이 실패해도 워크플로우가 중단되지 않도록 합니다. (최초 배포 시 유용)
+            docker stop peekle-dev || true
+            docker rm peekle-dev || true
+
+            # 3. 새로 받은 이미지로 새 컨테이너를 실행합니다.
+            # NestJS 기본 포트 3000을 호스트의 3000 포트와 연결합니다. (필요시 -p 80:3000 등으로 변경)
+            # -d: 백그라운드 실행
+            # --name: 컨테이너 이름 고정 (관리를 위해 필수)
+            # --restart always: 서버(EC2)가 재부팅되어도 컨테이너가 자동 재시작됩니다.
+            docker run \
+              -d \
+              -p 80:7777 \
+              --name peekle-dev \
+              --restart always \
+              --env-file /home/ubuntu/.env \ 
+              peekle/peekle-develop:latest 
+
+            # 4. (선택적) 불필요하게 쌓인 옛날 이미지들 정리
+            docker image prune -f

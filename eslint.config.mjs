@@ -16,6 +16,7 @@ const eslintConfig = [
       'node_modules/**',
       'dist/**',
       'build/**',
+      'src/generated/**',
 
       // 테스트 및 문서 폴더
       'coverage/**',
@@ -48,6 +49,7 @@ const eslintConfig = [
       // JS ESLint의 no-unused-vars 규칙 비활성화
       // TypeScript ESLint가 이 규칙을 처리하므로 중복 방지
       'no-unused-vars': 'off',
+      '@typescript-eslint/no-explicit-any': 'off', // any 타입 사용 허용
     },
   },
   prettierConfig, // 항상 마지막에!

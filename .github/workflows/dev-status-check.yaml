@@ -1,0 +1,33 @@
+name: Status Check on Develop Branch
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  type-check:
+    name: TypeScript Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run type check
+        run: pnpm type-check
+
+      - name: Build project
+        run: pnpm build

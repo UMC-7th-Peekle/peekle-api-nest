@@ -1,11 +1,25 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 
-import { UsersController } from './users.controller';
-import { UsersService } from './users.service';
+import { FrontendUrlConfig } from '@modules/auth/config/frontend-url.config';
+import { JwtConfig } from '@modules/auth/config/jwt.config';
+import { RefreshJwtConfig } from '@modules/auth/config/refresh-jwt.config';
+import { RegisterJwtConfig } from '@modules/auth/config/register-jwt.config';
+import { AuthService } from '@modules/auth/services/auth.service';
+import { OAuthUserService } from '@modules/users/services/oauth.users.service';
+import { UsersService } from '@modules/users/services/users.service';
+import { UsersController } from '@modules/users/users.controller';
 
 @Module({
+  imports: [
+    JwtModule.registerAsync(JwtConfig.asProvider()),
+    // ConfigModule.forFeature(RefreshJwtConfig),
+    // ConfigModule.forFeature(RegisterJwtConfig),
+    // ConfigModule.forFeature(FrontendUrlConfig),
+  ],
   controllers: [UsersController],
-  providers: [UsersService],
-  exports: [UsersService],
+  providers: [UsersService, OAuthUserService, AuthService],
+  exports: [UsersService, OAuthUserService],
 })
 export class UsersModule {}

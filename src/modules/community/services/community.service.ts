@@ -10,11 +10,14 @@ import {
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import is from 'zod/v4/locales/is.cjs';
 
+import { ArticleFilterType } from '@modules/community/controllers/v1/community.v1.controller';
 import { CreateArticleLikeDto } from '@modules/community/dto/article-like.dto';
 import { CreateArticleDto, GetArticleDto } from '@modules/community/dto/article.dto';
 import { CreateCommentLikeDto } from '@modules/community/dto/comment-like.dto';
 import { CreateCommentDto, GetCommentDto } from '@modules/community/dto/comment.dto';
 import { PrismaService } from '@modules/prisma/prisma.service';
+
+import { Prisma } from '../../../generated/prisma';
 
 @Injectable()
 export class CommunityService {
@@ -49,7 +52,21 @@ export class CommunityService {
 
   // 게시글 목록 조회
   async getArticle(
-    { communityId, page, limit }: { communityId: bigint; page?: number; limit?: number },
+    {
+      communityId,
+      page,
+      limit,
+      filter,
+      userId,
+      search,
+    }: {
+      communityId: bigint;
+      page?: number;
+      limit?: number;
+      filter?: ArticleFilterType;
+      userId?: string;
+      search?: string;
+    },
     // userId: string,
   ) {
     // 커뮤니티 존재 여부 확인
@@ -60,23 +77,108 @@ export class CommunityService {
       throw new NotFoundException('존재하지 않는 커뮤니티입니다.');
     }
 
-    const skip = ((page ?? 1) - 1) * (limit ?? 10);
+    const pageNum = page ?? 1;
+    const limitNum = limit ?? 10;
+    const skip = (pageNum - 1) * limitNum;
+
+    let where: Prisma.ArticleWhereInput = { communityId };
+    let orderBy: Prisma.ArticleOrderByWithRelationInput | Prisma.ArticleOrderByWithRelationInput[] =
+      { createdAt: 'desc' };
+
+    const userBigIntId = userId ? BigInt(userId) : undefined;
+
+    // search 처리: 제목 또는 내용에 포함되는 경우
+    if (search && search.trim().length > 0) {
+      const searchCondition: Prisma.ArticleWhereInput = {
+        AND: [
+          { communityId },
+          {
+            OR: [{ title: { contains: search } }, { content: { contains: search } }],
+          },
+        ],
+      };
+      where = searchCondition;
+    }
+
+    switch (filter) {
+      case ArticleFilterType.MY:
+        if (!userBigIntId) {
+          // 사용자가 없으면 본인 필터는 빈 결과로 처리
+          where = { ...where, authorId: undefined as unknown as bigint };
+        } else {
+          where = {
+            ...where,
+            authorId: userBigIntId,
+          };
+        }
+        break;
+
+      case ArticleFilterType.LIKE:
+        if (userBigIntId) {
+          where = {
+            ...where,
+            articleLike: {
+              some: {
+                userId: userBigIntId,
+              },
+            },
+          };
+        } else {
+          // userId 없으면 빈 결과
+          where = { ...where, articleLike: { some: { userId: undefined as unknown as bigint } } };
+        }
+        break;
+
+      case ArticleFilterType.COMMENT:
+        if (userBigIntId) {
+          where = {
+            ...where,
+            ArticleComment: {
+              some: {
+                authorId: userBigIntId,
+              },
+            },
+          };
+        } else {
+          where = {
+            ...where,
+            ArticleComment: { some: { authorId: undefined as unknown as bigint } },
+          };
+        }
+        break;
+    }
 
     const [articles, totalCount] = await this.prisma.$transaction([
       this.prisma.article.findMany({
-        where: { communityId },
+        where,
         skip,
-        take: limit,
-        orderBy: { createdAt: 'desc' },
+        take: limitNum,
+        orderBy,
         include: {
           articleImage: {
             select: { imageUrl: true, order: true },
             orderBy: { order: 'asc' },
           },
+          _count: { select: { articleLike: true, ArticleComment: true } },
         },
       }),
-      this.prisma.article.count({ where: { communityId } }),
+      this.prisma.article.count({ where }),
     ]);
+
+    const articleIds = articles.map((a) => a.id);
+
+    // 사용자가 있으면 사용자가 좋아요 누른 게시글들 조회
+    const likedArticleIds = new Set<bigint>();
+    if (userBigIntId && articleIds.length > 0) {
+      const likes = await this.prisma.articleLike.findMany({
+        where: {
+          articleId: { in: articleIds },
+          userId: userBigIntId,
+        },
+        select: { articleId: true },
+      });
+      likes.forEach((l) => likedArticleIds.add(l.articleId));
+    }
 
     const articleList = articles.map((article) => ({
       id: article.id.toString(),
@@ -90,14 +192,25 @@ export class CommunityService {
         imageUrl: img.imageUrl,
         order: img.order,
       })),
+      likeCount: article._count?.articleLike ?? 0,
+      commentCount: article._count?.ArticleComment ?? 0,
+      isLiked: userBigIntId ? likedArticleIds.has(article.id) : false, // 본인이 좋아요했는지
+      owner: userBigIntId ? article.authorId === userBigIntId : false, // 본인 소유 여부
     }));
 
-    return articleList;
+    return {
+      articles: articleList,
+      totalCount,
+      totalPages: Math.ceil(totalCount / limitNum),
+      currentPage: pageNum,
+    };
   }
 
   // 게시글 상세 조회
   /* 가입 하지 않은 유저도 조회 가능 */
-  async getArticleDetail(articleId: bigint): Promise<GetArticleDto> {
+  async getArticleDetail(articleId: bigint, userId?: string): Promise<GetArticleDto> {
+    const userBigIntId = userId ? BigInt(userId) : undefined;
+
     const article = await this.prisma.article.findUnique({
       where: { id: articleId },
       include: {
@@ -108,11 +221,26 @@ export class CommunityService {
           },
           orderBy: { order: 'asc' },
         },
+        _count: { select: { articleLike: true, ArticleComment: true } },
       },
     });
 
     if (!article) {
       throw new NotFoundException('해당 게시글을 찾을 수 없습니다.');
+    }
+
+    // 사용자가 있다면 해당 게시글에 대해 좋아요 여부 조회
+    let isLiked = false;
+    if (userBigIntId) {
+      const like = await this.prisma.articleLike.findUnique({
+        where: {
+          articleId_userId: {
+            articleId,
+            userId: userBigIntId,
+          },
+        },
+      });
+      isLiked = !!like;
     }
 
     return {
@@ -127,7 +255,11 @@ export class CommunityService {
         imageUrl: img.imageUrl,
         order: img.order,
       })),
-    };
+      likeCount: article._count?.articleLike ?? 0,
+      commentCount: article._count?.ArticleComment ?? 0,
+      isLiked,
+      owner: userBigIntId ? article.authorId === userBigIntId : false,
+    } as GetArticleDto;
   }
 
   // 게시글 작성
@@ -407,7 +539,7 @@ export class CommunityService {
   // 댓글 목록 조회
   async getComment(
     { articleId, page, limit }: { articleId: bigint; page?: number; limit?: number },
-    // userId: string,
+    userId?: string,
   ) {
     // 게시글 존재 여부를 확인
     const article = await this.prisma.article.findUnique({
@@ -417,17 +549,35 @@ export class CommunityService {
       throw new NotFoundException('존재하지 않는 게시글입니다.');
     }
 
-    const skip = ((page ?? 1) - 1) * (limit ?? 10);
+    const pageNum = page ?? 1;
+    const limitNum = limit ?? 10;
+    const skip = (pageNum - 1) * limitNum;
 
     const [comments, totalCount] = await this.prisma.$transaction([
       this.prisma.articleComment.findMany({
         where: { articleId },
         skip,
-        take: limit,
+        take: limitNum,
         orderBy: { createdAt: 'desc' },
       }),
       this.prisma.articleComment.count({ where: { articleId } }),
     ]);
+
+    const commentIds = comments.map((c) => c.id);
+    const userBigIntId = userId ? BigInt(userId) : undefined;
+
+    // 사용자가 있으면 사용자가 좋아요 누른 댓글들 조회
+    const likedCommentIds = new Set<bigint>();
+    if (userBigIntId && commentIds.length > 0) {
+      const likes = await this.prisma.articleCommentLike.findMany({
+        where: {
+          commentId: { in: commentIds },
+          userId: userBigIntId,
+        },
+        select: { commentId: true },
+      });
+      likes.forEach((l) => likedCommentIds.add(l.commentId));
+    }
 
     const commentList = comments.map((comment) => ({
       id: comment.id.toString(),
@@ -438,9 +588,16 @@ export class CommunityService {
       isAnonymous: comment.isAnonymous,
       createdAt: comment.createdAt.toISOString(),
       updatedAt: comment.updatedAt.toISOString(),
+      isLiked: userBigIntId ? likedCommentIds.has(comment.id) : false,
+      owner: userBigIntId ? comment.authorId === userBigIntId : false,
     }));
 
-    return commentList;
+    return {
+      comments: commentList,
+      totalCount,
+      totalPages: Math.ceil(totalCount / limitNum),
+      currentPage: pageNum,
+    };
   }
 
   // 댓글 작성

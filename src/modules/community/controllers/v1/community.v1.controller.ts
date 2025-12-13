@@ -10,12 +10,12 @@ import {
   Post,
   Query,
   Req,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
-  ApiCookieAuth,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
@@ -47,6 +47,16 @@ import {
 import { GetCommunityDto } from '@modules/community/dto/community.dto';
 import { CommunityService } from '@modules/community/services/community.service';
 
+import { FilterArticleDto } from '../../dto/filter-article.dto';
+
+// 게시글 관련 필터 타입 enum 값으로..
+export enum ArticleFilterType {
+  ALL = 'ALL', // 전체 게시글
+  LIKE = 'LIKE', // 내가 찜한 글
+  MY = 'MY', // 내가 작성한 글
+  COMMENT = 'COMMENT', // 내가 댓글 적은 글
+}
+
 @Controller({
   path: 'community',
   version: '1',
@@ -73,23 +83,52 @@ export class CommunityV1Controller {
   @Get(':communityId/article')
   @ApiOperation({ summary: '게시글 목록 조회' })
   @ApiBearerAuth()
-  @ApiOkResponse({ description: '게시글 목록 반환', type: [GetArticleDto] })
+  @ApiOkResponse({ description: '게시글 목록 반환', type: FilterArticleDto })
   @ApiQuery({ name: 'page', required: false, type: Number, description: '페이지 번호' })
   @ApiQuery({ name: 'limit', required: false, type: Number, description: '페이지 당 개수' })
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    type: String,
+    description: '검색어 (제목 또는 내용)',
+  })
+  @ApiQuery({
+    name: 'filterType',
+    required: false,
+    enum: ArticleFilterType,
+    description:
+      '게시글 필터 타입 (LIKE: 내가 찜한 글, MY: 내가 작성한 글, COMMENT: 내가 댓글 적은 글)',
+  })
   @ResponseMessage('게시글 목록이 조회되었습니다.')
   @Public()
   async getArticle(
     @Param('communityId') communityId: string,
-    @Query() query: { page?: string; limit?: string },
+    @Query()
+    query: { page?: string; limit?: string; filterType?: ArticleFilterType; search?: string },
     @Req() req,
   ) {
     const page = query.page ? Number(query.page) : 1;
     const limit = query.limit ? Number(query.limit) : 10;
-    const userId = req.user?.userId;
+    const filter = query.filterType || ArticleFilterType.ALL;
+    const search = query.search ? String(query.search) : undefined;
+    const userId = req.user?.userId ? String(req.user.userId) : undefined;
+
+    const requiresAuth =
+      filter === ArticleFilterType.MY || // 내가 작성한 글
+      filter === ArticleFilterType.LIKE || // 내가 찜한 글
+      filter === ArticleFilterType.COMMENT; // 댓글 적은 글
+
+    if (requiresAuth && !userId) {
+      throw new UnauthorizedException('로그인이 필요한 필터입니다.');
+    }
+
     return await this.communityService.getArticle({
       communityId: BigInt(communityId),
       page,
       limit,
+      filter,
+      userId,
+      search,
     });
   }
 
@@ -101,8 +140,8 @@ export class CommunityV1Controller {
   @ResponseMessage('게시글이 조회되었습니다.')
   // @Public() // TODO: 임시로 Public 처리, 추후 인증 도입 시 제거 필요
   async getArticleDetail(@Param('articleId') articleId: string, @Req() req) {
-    // const userId = req.user?.userId;   // 생각해보니 userId가 필요없네
-    return await this.communityService.getArticleDetail(BigInt(articleId));
+    const userId = req.user?.userId ? String(req.user.userId) : undefined;
+    return await this.communityService.getArticleDetail(BigInt(articleId), userId);
   }
 
   @Post('article')
@@ -126,10 +165,10 @@ export class CommunityV1Controller {
 
   // 게시글 수정
   @Patch('article/:articleId')
-  @ApiMultiFileAndJson('article_images', CreateArticleDto)
+  @ApiMultiFileAndJson('article_images', UpdateArticleDto)
   @ApiOperation({ summary: '게시글 수정' })
   @ApiBearerAuth()
-  @ApiOkResponse({ description: '게시글 수정 성공', type: CreateArticleDto })
+  @ApiOkResponse({ description: '게시글 수정 성공', type: UpdateArticleDto })
   @UseInterceptors(FilesInterceptor('article_images'))
   @ResponseMessage('게시글이 수정되었습니다.')
   async updateArticle(
@@ -159,7 +198,7 @@ export class CommunityV1Controller {
   @ApiBearerAuth()
   @ApiCreatedResponse({ description: '게시글 좋아요 성공', type: CreateArticleLikeDto })
   async createArticleLike(
-    dto: CreateArticleLikeDto,
+    @Body() dto: CreateArticleLikeDto,
     @Param('articleId') articleId: string,
     @Req() req,
   ) {
@@ -182,6 +221,7 @@ export class CommunityV1Controller {
   // 댓글 관련
   // 댓글 좋아요 추가
   @Post('article/comment/:commentId/like')
+  @ApiOperation({ summary: '댓글 좋아요 추가' })
   @ApiBearerAuth()
   @ApiCreatedResponse({ description: '댓글 좋아요 등록 성공', type: CreateCommentLikeDto })
   async createCommentLike(@Param('commentId') commentId: string, @Req() req) {
@@ -222,12 +262,15 @@ export class CommunityV1Controller {
   ) {
     const page = query.page ? Number(query.page) : 1;
     const limit = query.limit ? Number(query.limit) : 10;
-    // const userId = req.user.id;    // userId가 필요없음
-    return await this.communityService.getComment({
-      articleId: BigInt(articleId),
-      page,
-      limit,
-    });
+    const userId = req.user?.userId ? String(req.user.userId) : undefined;
+    return await this.communityService.getComment(
+      {
+        articleId: BigInt(articleId),
+        page,
+        limit,
+      },
+      userId,
+    );
   }
 
   // 게시글 댓글 작성

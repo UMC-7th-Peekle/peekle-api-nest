@@ -554,7 +554,7 @@ export class CommunityService {
 
   // 댓글 목록 조회
   async getComment(
-    { articleId, page, limit }: { articleId: bigint; page?: number; limit?: number },
+    { articleId }: { articleId: bigint },
     userId?: string,
   ) {
     // 게시글 존재 여부를 확인
@@ -565,19 +565,10 @@ export class CommunityService {
       throw new NotFoundException('존재하지 않는 게시글입니다.');
     }
 
-    const pageNum = page ?? 1;
-    const limitNum = limit ?? 10;
-    const skip = (pageNum - 1) * limitNum;
-
-    const [comments, totalCount] = await this.prisma.$transaction([
-      this.prisma.articleComment.findMany({
-        where: { articleId },
-        skip,
-        take: limitNum,
-        orderBy: { createdAt: 'desc' },
-      }),
-      this.prisma.articleComment.count({ where: { articleId } }),
-    ]);
+    const comments = await this.prisma.articleComment.findMany({
+      where: { articleId },
+      orderBy: { createdAt: 'desc' },
+    });
 
     const commentIds = comments.map((c) => c.id);
     const userBigIntId = userId ? BigInt(userId) : undefined;
@@ -610,9 +601,6 @@ export class CommunityService {
 
     return {
       comments: commentList,
-      totalCount,
-      totalPages: Math.ceil(totalCount / limitNum),
-      currentPage: pageNum,
     };
   }
 

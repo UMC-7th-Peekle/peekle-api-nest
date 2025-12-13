@@ -263,23 +263,16 @@ export class CommunityV1Controller {
     type: Number,
     description: '댓글을 조회할 게시글 ID',
   })
-  @ApiQuery({ name: 'page', required: false, type: Number, description: '페이지 번호' })
-  @ApiQuery({ name: 'limit', required: false, type: Number, description: '페이지 당 개수' })
   @ResponseMessage('댓글 목록이 조회되었습니다.')
   @Public() // TODO: 임시로 Public 처리, 추후 인증 도입 시 제거 필요
   async getComment(
     @Query('articleId') articleId: string,
-    @Query() query: { page?: string; limit?: string },
     @Req() req,
   ) {
-    const page = query.page ? Number(query.page) : 1;
-    const limit = query.limit ? Number(query.limit) : 10;
     const userId = req.user?.userId ? String(req.user.userId) : undefined;
     return await this.communityService.getComment(
       {
         articleId: BigInt(articleId),
-        page,
-        limit,
       },
       userId,
     );

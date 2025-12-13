@@ -45,6 +45,7 @@ import {
   UpdateCommentDto,
 } from '@modules/community/dto/comment.dto';
 import { GetCommunityDto } from '@modules/community/dto/community.dto';
+import { CreateCommunityDto } from '@modules/community/dto/create-community.dto';
 import { CommunityService } from '@modules/community/services/community.service';
 
 import { FilterArticleDto } from '../../dto/filter-article.dto';
@@ -67,6 +68,17 @@ export class CommunityV1Controller {
     private readonly communityService: CommunityService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {}
+
+  // 커뮤니티 생성
+  @Post('')
+  @ApiOperation({ summary: '커뮤니티 생성 (db 초기화 시 추가 테스트용)' })
+  @ApiBearerAuth()
+  @ApiCreatedResponse({ description: '커뮤니티 생성 성공', type: CreateCommunityDto })
+  @ResponseMessage('커뮤니티가 생성되었습니다.')
+  @Public()
+  async createCommunity(@Body() dto: CreateCommunityDto, @Req() req) {
+    return await this.communityService.createCommunity(dto);
+  }
 
   // 커뮤니티 홈 관련
   @Get(':communityId')

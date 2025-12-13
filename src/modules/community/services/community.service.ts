@@ -15,6 +15,7 @@ import { CreateArticleLikeDto } from '@modules/community/dto/article-like.dto';
 import { CreateArticleDto, GetArticleDto } from '@modules/community/dto/article.dto';
 import { CreateCommentLikeDto } from '@modules/community/dto/comment-like.dto';
 import { CreateCommentDto, GetCommentDto } from '@modules/community/dto/comment.dto';
+import { CreateCommunityDto } from '@modules/community/dto/create-community.dto';
 import { PrismaService } from '@modules/prisma/prisma.service';
 
 import { Prisma } from '../../../generated/prisma';
@@ -25,6 +26,21 @@ export class CommunityService {
     private readonly prisma: PrismaService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {}
+
+  // 커뮤니티 생성
+  async createCommunity(dto: CreateCommunityDto) {
+    const community = await this.prisma.community.create({
+      data: {
+        name: dto.name,
+      },
+    });
+
+    return {
+      id: community.id.toString(),
+      name: community.name,
+      createdAt: community.createdAt.toISOString(),
+    };
+  }
 
   // 커뮤니티 홈 조회
   async getCommunityHome(communityId: bigint) {

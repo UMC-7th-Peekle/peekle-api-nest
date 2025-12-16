@@ -170,7 +170,7 @@ export class CommunityV1Controller {
     @Req() req,
   ) {
     this.logger.log(LOG_LEVELS.VERBOSE, inspectObject(req.user));
-    const userId = req.user.userId;
+    const userId = BigInt(req.user.userId);
     // const userId = 1n; // TODO: 임시로 1번 유저로 고정, JWT 인증 도입 후 수정 필요
 
     return await this.communityService.createArticle(data, files, userId);
@@ -190,7 +190,7 @@ export class CommunityV1Controller {
     @FormDataJson('data', ParseJsonPipe) data: UpdateArticleDto, // form-data에서 data는 내용 부분
     @Req() req,
   ) {
-    const userId = req.user.userId;
+    const userId = BigInt(req.user.userId);
     return await this.communityService.updateArticle(BigInt(articleId), data, userId, files);
   }
 
@@ -200,9 +200,9 @@ export class CommunityV1Controller {
   @ApiBearerAuth()
   @ApiOkResponse({ description: '게시글 삭제 성공' })
   @ResponseMessage('게시글이 삭제되었습니다.')
-  async deleteArticle(@Param('articleId') articleId: bigint, @Req() req) {
-    const userId = req.user.userId;
-    return await this.communityService.deleteArticle(articleId, userId);
+  async deleteArticle(@Param('articleId') articleId: string, @Req() req) {
+    const userId = BigInt(req.user.userId);
+    return await this.communityService.deleteArticle(BigInt(articleId), userId);
   }
 
   // 게시글 좋아요 추가
@@ -212,7 +212,7 @@ export class CommunityV1Controller {
   @ApiCreatedResponse({ description: '게시글 좋아요 성공' })
   @ResponseMessage('게시글 좋아요가 추가되었습니다.')
   async createArticleLike(@Param('articleId') articleId: string, @Req() req) {
-    const userId = req.user.userId;
+    const userId = BigInt(req.user.userId);
 
     await this.communityService.createArticleLike(BigInt(articleId), userId);
   }
@@ -224,7 +224,7 @@ export class CommunityV1Controller {
   @ApiOkResponse({ description: '게시글 좋아요 취소 성공' })
   @ResponseMessage('게시글 좋아요가 취소되었습니다.')
   async deleteArticleLike(@Param('articleId') articleId: string, @Req() req) {
-    const userId = req.user.userId;
+    const userId = BigInt(req.user.userId);
     return this.communityService.deleteArticleLike(BigInt(articleId), userId);
   }
 
@@ -235,7 +235,7 @@ export class CommunityV1Controller {
   @ApiBearerAuth()
   @ApiCreatedResponse({ description: '댓글 좋아요 등록 성공', type: CreateCommentLikeDto })
   async createCommentLike(@Param('commentId') commentId: string, @Req() req) {
-    const userId = req.user.userId;
+    const userId = BigInt(req.user.userId);
     return await this.communityService.createCommentLike(BigInt(commentId), userId);
   }
 
@@ -246,7 +246,7 @@ export class CommunityV1Controller {
   @ApiOkResponse({ description: '댓글 좋아요 취소 성공' })
   @ResponseMessage('댓글 좋아요가 취소되었습니다.')
   async deleteCommentLike(@Param('commentId') commentId: string, @Req() req) {
-    const userId = req.user.userId;
+    const userId = BigInt(req.user.userId);
     return this.communityService.deleteCommentLike(BigInt(commentId), userId);
   }
 
@@ -294,7 +294,7 @@ export class CommunityV1Controller {
     @Body() dto: UpdateCommentDto,
     @Req() req,
   ) {
-    const userId = req.user.userId;
+    const userId = BigInt(req.user.userId);
     return await this.communityService.updateComment(BigInt(commentId), dto, userId);
   }
 
@@ -305,7 +305,7 @@ export class CommunityV1Controller {
   @ApiOkResponse({ description: '댓글 삭제 성공' })
   @ResponseMessage('댓글이 삭제되었습니다.')
   async deleteComment(@Param('commentId') commentId: string, @Req() req) {
-    const userId = req.user.userId;
+    const userId = BigInt(req.user.userId);
     return this.communityService.deleteComment(BigInt(commentId), userId);
   }
 

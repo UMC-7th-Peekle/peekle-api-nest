@@ -19,6 +19,7 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiParam,
   ApiQuery,
 } from '@nestjs/swagger';
 
@@ -210,10 +211,7 @@ export class CommunityV1Controller {
   @ApiBearerAuth()
   @ApiCreatedResponse({ description: '게시글 좋아요 성공' })
   @ResponseMessage('게시글 좋아요가 추가되었습니다.')
-  async createArticleLike(
-    @Param('articleId') articleId: string,
-    @Req() req,
-  ) {
+  async createArticleLike(@Param('articleId') articleId: string, @Req() req) {
     const userId = req.user.userId;
 
     await this.communityService.createArticleLike(BigInt(articleId), userId);
@@ -257,7 +255,7 @@ export class CommunityV1Controller {
   @ApiOperation({ summary: '게시글 댓글 목록 조회' })
   @ApiBearerAuth()
   @ApiOkResponse({ description: '해당 게시글의 댓글 목록 반환', type: [GetCommentDto] })
-  @ApiQuery({
+  @ApiParam({
     name: 'articleId',
     required: true,
     type: Number,
@@ -265,10 +263,7 @@ export class CommunityV1Controller {
   })
   @ResponseMessage('댓글 목록이 조회되었습니다.')
   @Public() // TODO: 임시로 Public 처리, 추후 인증 도입 시 제거 필요
-  async getComment(
-    @Query('articleId') articleId: string,
-    @Req() req,
-  ) {
+  async getComment(@Param('articleId') articleId: string, @Req() req) {
     const userId = req.user?.userId ? String(req.user.userId) : undefined;
     return await this.communityService.getComment(
       {

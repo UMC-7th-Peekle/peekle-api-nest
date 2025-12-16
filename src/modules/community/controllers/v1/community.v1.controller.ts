@@ -208,15 +208,15 @@ export class CommunityV1Controller {
   @Post('article/:articleId/like')
   @ApiOperation({ summary: '게시글 좋아요 추가' })
   @ApiBearerAuth()
-  @ApiCreatedResponse({ description: '게시글 좋아요 성공', type: CreateArticleLikeDto })
+  @ApiCreatedResponse({ description: '게시글 좋아요 성공' })
+  @ResponseMessage('게시글 좋아요가 추가되었습니다.')
   async createArticleLike(
-    @Body() dto: CreateArticleLikeDto,
     @Param('articleId') articleId: string,
     @Req() req,
   ) {
     const userId = req.user.userId;
 
-    return await this.communityService.createArticleLike(dto, BigInt(articleId), userId);
+    await this.communityService.createArticleLike(BigInt(articleId), userId);
   }
 
   // 게시글 좋아요 취소

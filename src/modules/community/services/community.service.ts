@@ -415,7 +415,7 @@ export class CommunityService {
   }
 
   // 게시글 좋아요 추가
-  async createArticleLike(dto: CreateArticleLikeDto, articleId: bigint, userId: bigint) {
+  async createArticleLike(articleId: bigint, userId: bigint) {
     // 게시글 존재 여부 확인
     const article = await this.prisma.article.findUnique({
       where: { id: articleId },
@@ -553,10 +553,7 @@ export class CommunityService {
   }
 
   // 댓글 목록 조회
-  async getComment(
-    { articleId }: { articleId: bigint },
-    userId?: string,
-  ) {
+  async getComment({ articleId }: { articleId: bigint }, userId?: string) {
     // 게시글 존재 여부를 확인
     const article = await this.prisma.article.findUnique({
       where: { id: articleId },

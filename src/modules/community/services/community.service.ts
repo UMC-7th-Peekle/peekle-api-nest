@@ -565,6 +565,9 @@ export class CommunityService {
     const comments = await this.prisma.articleComment.findMany({
       where: { articleId },
       orderBy: { createdAt: 'desc' },
+      include: {
+        _count: { select: { articleCommentLike: true } },
+      },
     });
 
     const commentIds = comments.map((c) => c.id);
@@ -593,6 +596,7 @@ export class CommunityService {
       createdAt: comment.createdAt.toISOString(),
       updatedAt: comment.updatedAt.toISOString(),
       isLiked: userBigIntId ? likedCommentIds.has(comment.id) : false,
+      likeCount: comment._count?.articleCommentLike ?? 0,
       owner: userBigIntId ? comment.authorId === userBigIntId : false,
     }));
 

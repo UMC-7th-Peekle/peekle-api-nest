@@ -599,11 +599,6 @@ export class CommunityService {
             id: comment.user.id.toString(),
             name: comment.user.name ?? undefined,
             nickname: comment.user.nickname,
-            birthdate: comment.user.birthdate
-              ? comment.user.birthdate.toISOString().slice(0, 10)
-              : undefined,
-            gender: comment.user.gender ?? undefined,
-            phoneNumber: comment.user.phoneNumber ?? undefined,
             profileImage: comment.user.profileImage ?? undefined,
             role: comment.user.role,
             createdAt: comment.user.createdAt.toISOString(),

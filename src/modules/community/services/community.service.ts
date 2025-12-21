@@ -567,6 +567,8 @@ export class CommunityService {
       orderBy: { createdAt: 'desc' },
       include: {
         _count: { select: { articleCommentLike: true } },
+        // 작성자 프로필 정보 포함
+        user: true,
       },
     });
 
@@ -591,7 +593,23 @@ export class CommunityService {
       articleId: comment.articleId.toString(),
       parentCommentId: comment.parentCommentId ? comment.parentCommentId.toString() : null,
       content: comment.content,
-      authorId: comment.authorId.toString(),
+      // authorId: comment.authorId.toString(),
+      author: comment.user
+        ? {
+            id: comment.user.id.toString(),
+            name: comment.user.name ?? undefined,
+            nickname: comment.user.nickname,
+            birthdate: comment.user.birthdate
+              ? comment.user.birthdate.toISOString().slice(0, 10)
+              : undefined,
+            gender: comment.user.gender ?? undefined,
+            phoneNumber: comment.user.phoneNumber ?? undefined,
+            profileImage: comment.user.profileImage ?? undefined,
+            role: comment.user.role,
+            createdAt: comment.user.createdAt.toISOString(),
+            updatedAt: comment.user.updatedAt.toISOString(),
+          }
+        : undefined,
       isAnonymous: comment.isAnonymous,
       createdAt: comment.createdAt.toISOString(),
       updatedAt: comment.updatedAt.toISOString(),

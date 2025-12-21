@@ -5,6 +5,8 @@ import { IsBoolean, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-va
 import { IsBigInt } from '@common/decorators/is-bigint.decorator';
 import { TransformToBigint } from '@common/decorators/transform.decorator';
 
+import { GetMeResponseDto } from '@modules/users/dto/get-me.dto';
+
 export class CreateCommentDto {
   @ApiProperty({ example: 100, description: '댓글이 달릴 게시글 ID', type: String })
   @IsBigInt()
@@ -60,10 +62,17 @@ export class GetCommentDto {
   @IsNotEmpty()
   content!: string;
 
-  @ApiProperty({ example: 5001, description: '작성자 ID', type: String })
-  @IsBigInt()
-  @TransformToBigint()
-  authorId!: string;
+  // @ApiProperty({ example: 5001, description: '작성자 ID', type: String })
+  // @IsBigInt()
+  // @TransformToBigint()
+  // authorId!: string;
+
+  @ApiProperty({
+    description: '작성자 프로필 정보',
+    required: false,
+    type: () => GetMeResponseDto,
+  })
+  author?: GetMeResponseDto;
 
   @ApiProperty({ example: false, description: '익명 여부', type: Boolean })
   @IsBoolean()
@@ -73,13 +82,11 @@ export class GetCommentDto {
   @ApiProperty({ example: 10, description: '이 댓글의 좋아요 개수', type: Number })
   likeCount!: number;
 
-  // 작성자 프로필
-  // @ApiProperty({
-  //   description: '작성자 프로필 정보',
-  //   required: false,
-  //   type: () => GetMeResponseDto,
-  // })
-  // author?: GetMeResponseDto;
+  @ApiProperty({ example: false, description: '현재 로그인 유저가 좋아요 눌렀는지', type: Boolean })
+  isLiked!: boolean;
+
+  @ApiProperty({ example: true, description: '현재 로그인 유저가 작성자인지 여부', type: Boolean })
+  owner!: boolean;
 
   @ApiProperty({ example: '2025-09-07T10:31:00.000Z', description: '작성일', type: String })
   @IsString()

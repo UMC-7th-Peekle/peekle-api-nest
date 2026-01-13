@@ -13,8 +13,8 @@ export class UpdateProfileImageRequestDto {
     description: '프로필 이미지 배열',
     type: [Object],
     example: [
-      { imageUrl: 'https://cdn.peekle.kr/profile/example1.png', order: 1 },
-      { imageUrl: 'https://cdn.peekle.kr/profile/example2.png', order: 2 },
+      { imageUrl: 'https://com.peekle.kr/profile/example1.png', order: 1 },
+      { imageUrl: 'https://com.peekle.kr/profile/example2.png', order: 2 },
     ],
   })
   @IsArray()
@@ -26,7 +26,7 @@ export class UpdateProfileImageRequestDto {
 export class ProfileImageItem {
   @ApiProperty({
     description: '프로필 이미지 URL',
-    example: 'https://cdn.peekle.kr/profile/example.png',
+    example: 'https://com.peekle.kr/profile/example.png',
   })
   @IsString()
   @IsUrl({}, { message: '유효한 URL이어야 합니다.' })

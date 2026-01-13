@@ -78,3 +78,32 @@ export class UpdateTermsAgreementRequestDto {
   })
   updates!: UpdateTermsAgreementItemDto[];
 }
+export class GetAllTermsItemDto {
+  @ApiProperty({
+    description: '약관 ID',
+  })
+  id!: string;
+
+  @ApiProperty({
+    description: '약관 제목',
+  })
+  title!: string;
+
+  @ApiProperty({
+    description: '약관 내용',
+  })
+  content!: string;
+
+  @ApiProperty({
+    description: '필수 약관 여부',
+  })
+  isRequired!: boolean;
+}
+
+export class GetAllTermsResponseDto {
+  @ApiProperty({
+    description: '약관 목록',
+    type: [GetAllTermsItemDto],
+  })
+  items!: GetAllTermsItemDto[];
+}

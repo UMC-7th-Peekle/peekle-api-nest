@@ -9,6 +9,7 @@ import { PrismaService } from '@modules/prisma/prisma.service';
 import { UpdateNicknameRequestDto } from '@modules/users/dto/nickname.dto';
 import { UpdateProfileImageRequestDto } from '@modules/users/dto/profile.dto';
 import {
+  GetAllTermsResponseDto,
   GetTermsHistoryResponseDto,
   UpdateTermsAgreementRequestDto,
 } from '@modules/users/dto/terms.dto';
@@ -86,6 +87,24 @@ export class UsersService {
         title: term.title,
         isRequired: term.isRequired,
         isAccepted: term.userTerm[0]?.isAccepted ?? false,
+      })),
+    };
+  }
+
+  /**
+   * 모든 약관 조회 (content 포함)
+   */
+  async getAllTerms(): Promise<GetAllTermsResponseDto> {
+    const terms = await this.prisma.term.findMany({
+      orderBy: { id: 'asc' },
+    });
+
+    return {
+      items: terms.map((term) => ({
+        id: term.id.toString(),
+        title: term.title,
+        content: term.content,
+        isRequired: term.isRequired,
       })),
     };
   }

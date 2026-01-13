@@ -237,10 +237,18 @@ exports.Prisma.UserScalarFieldEnum = {
   birthdate: 'birthdate',
   gender: 'gender',
   phoneNumber: 'phoneNumber',
-  profileImage: 'profileImage',
   role: 'role',
   oauthProvider: 'oauthProvider',
   oauthId: 'oauthId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProfileImageScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  imageUrl: 'imageUrl',
+  order: 'order',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -316,10 +324,13 @@ exports.Prisma.UserOrderByRelevanceFieldEnum = {
   nickname: 'nickname',
   gender: 'gender',
   phoneNumber: 'phoneNumber',
-  profileImage: 'profileImage',
   role: 'role',
   oauthProvider: 'oauthProvider',
   oauthId: 'oauthId'
+};
+
+exports.Prisma.ProfileImageOrderByRelevanceFieldEnum = {
+  imageUrl: 'imageUrl'
 };
 
 
@@ -336,6 +347,7 @@ exports.Prisma.ModelName = {
   Term: 'Term',
   Upload: 'Upload',
   User: 'User',
+  ProfileImage: 'ProfileImage',
   UserTerm: 'UserTerm'
 };
 

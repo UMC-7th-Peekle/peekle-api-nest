@@ -61,7 +61,7 @@ export class UsersController {
 
   @ApiBearerAuth()
   @Patch('me/profile-image')
-  @ApiOperation({ summary: '내 정보 - 프로필 이미지 수정/삭제' })
+  @ApiOperation({ summary: '내 정보 - 프로필 이미지 수정' })
   @ApiOkResponse({ type: UpdateProfileImageResponseDto })
   updateProfileImage(
     @Req() req: any,

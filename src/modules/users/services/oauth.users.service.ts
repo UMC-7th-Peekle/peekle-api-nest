@@ -55,12 +55,22 @@ export class OAuthUserService {
         data: {
           name: user.name ?? null,
           nickname: user.nickname,
-          profileImage: user.profileImage ?? null,
           oauthProvider: user.oauthProvider,
           oauthId: user.oauthId,
         },
         select: { id: true },
       });
+
+      // 프로필 이미지가 있으면 저장
+      if (user.profileImage) {
+        await txPrisma.profileImage.create({
+          data: {
+            userId: createdUser.id,
+            imageUrl: user.profileImage,
+            order: 1,
+          },
+        });
+      }
 
       // TODO: 필수 약관 동의 여부 인증 필요
       try {

@@ -201,7 +201,6 @@ model User {
   birthdate          DateTime?            @db.Date
   gender             String?              @db.VarChar(10)
   phoneNumber        String?              @map("phone_number") @db.VarChar(20)
-  profileImage       String?              @map("profile_image") @db.VarChar(1024)
   role               String               @default("USER") @db.VarChar(30)
   oauthProvider      String?              @map("oauth_provider") @db.VarChar(30)
   oauthId            String?              @map("oauth_id") @db.VarChar(100)
@@ -214,8 +213,24 @@ model User {
   event              Event[]
   eventScrap         EventScrap[]
   userTerm           UserTerm[]
+  profileImage       ProfileImage[]
 
   @@map("user")
+}
+
+model ProfileImage {
+  id        BigInt   @id @default(autoincrement())
+  userId    BigInt   @map("user_id")
+  imageUrl  String   @map("image_url") @db.VarChar(1024)
+  order     Int      @map("order")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([userId, order])
+  @@index([userId])
+  @@map("profile_image")
 }
 
 model UserTerm {

@@ -15,7 +15,7 @@ generator client {
   /// - "linux-musl-arm64-openssl-3.0.x": ARM64 아키텍처의 musl libc 기반 Linux에서 OpenSSL 3.0.x를 사용하는 환경
   /// - "debian-openssl-1.1.x": Debian 기반 Linux에서 OpenSSL 1.1.x를 사용하는 환경
   /// - "linux-arm64-openssl-3.0.x": ARM64 아키텍처의 glibc 기반 Linux에서 OpenSSL 3.0.x를 사용하는 환경
-  binaryTargets = ["native", "linux-musl-openssl-3.0.x", "linux-musl-arm64-openssl-3.0.x", "debian-openssl-1.1.x", "linux-arm64-openssl-3.0.x"]
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x", "linux-musl-arm64-openssl-3.0.x", "debian-openssl-1.1.x", "linux-arm64-openssl-3.0.x", "windows"]
 }
 
 datasource db {

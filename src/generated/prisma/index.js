@@ -361,6 +361,10 @@ const config = {
       {
         "fromEnvVar": null,
         "value": "linux-arm64-openssl-3.0.x"
+      },
+      {
+        "fromEnvVar": null,
+        "value": "windows"
       }
     ],
     "previewFeatures": [],

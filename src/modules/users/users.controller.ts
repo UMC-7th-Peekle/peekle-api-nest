@@ -17,6 +17,7 @@ import {
   UpdateProfileImageResponseDto,
 } from '@modules/users/dto/profile.dto';
 import {
+  GetAllTermsResponseDto,
   GetTermsHistoryResponseDto,
   UpdateTermsAgreementRequestDto,
 } from '@modules/users/dto/terms.dto';
@@ -69,6 +70,14 @@ export class UsersController {
   ): Promise<UpdateProfileImageResponseDto> {
     const userId = req.user?.userId;
     return this.usersService.updateProfileImage(userId, body);
+  }
+
+  @Public()
+  @Get('terms/all')
+  @ApiOperation({ summary: '모든 약관 조회 (content 포함)' })
+  @ApiOkResponse({ type: GetAllTermsResponseDto })
+  getAllTerms(): Promise<GetAllTermsResponseDto> {
+    return this.usersService.getAllTerms();
   }
 
   @ApiBearerAuth()

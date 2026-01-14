@@ -34,7 +34,6 @@ export class UsersService {
         birthdate: new Date(user.birthdate),
         gender: user.gender ?? null,
         phoneNumber: user.phoneNumber ?? null,
-        profileImage: user.profileImage ?? null,
         role: user.role || 'USER',
       },
       select: { id: true },
@@ -49,6 +48,11 @@ export class UsersService {
   async getUserInfo(userId: bigint) {
     const profileOwner = await this.prisma.user.findUnique({
       where: { id: userId },
+      include: {
+        profileImage: {
+          orderBy: { order: 'asc' },
+        },
+      },
     });
 
     if (!profileOwner) {
@@ -62,7 +66,11 @@ export class UsersService {
       birthdate: profileOwner?.birthdate?.toISOString().slice(0, 10),
       gender: profileOwner.gender ?? undefined,
       phoneNumber: profileOwner.phoneNumber ?? undefined,
-      profileImage: profileOwner.profileImage ?? undefined,
+      profileImages: profileOwner.profileImage.map((img) => ({
+        id: img.id.toString(),
+        imageUrl: img.imageUrl,
+        order: img.order,
+      })),
       role: profileOwner.role,
       createdAt: profileOwner.createdAt.toISOString(),
       updatedAt: profileOwner.updatedAt.toISOString(),
@@ -210,29 +218,30 @@ export class UsersService {
   }
 
   /**
-   * 내 프로필 이미지 수정/삭제
-   * - null → 삭제
+   * 내 프로필 이미지 수정
+   * - 기존 이미지 모두 삭제 후 새로운 이미지 배열로 저장
    */
   async updateProfileImage(userId: bigint, dto: UpdateProfileImageRequestDto) {
-    if (!('profileImage' in dto)) {
-      return { message: '변경 사항이 없습니다.' };
+    if (!dto.profileImages || dto.profileImages.length === 0) {
+      throw new BadRequestException('최소 하나 이상의 프로필 이미지가 필요합니다.');
     }
 
-    // null → 삭제, string → trim 후 저장
-    const next =
-      dto.profileImage === null
-        ? null
-        : typeof dto.profileImage === 'string'
-          ? dto.profileImage.trim()
-          : dto.profileImage;
+    // 트랜잭션으로 기존 이미지 삭제 후 새로운 이미지 추가
+    await this.prisma.$transaction([
+      // 기존 프로필 이미지 모두 삭제
+      this.prisma.profileImage.deleteMany({
+        where: { userId },
+      }),
+      // 새로운 프로필 이미지 배열 추가
+      this.prisma.profileImage.createMany({
+        data: dto.profileImages.map((img) => ({
+          userId,
+          imageUrl: img.imageUrl.trim(),
+          order: img.order,
+        })),
+      }),
+    ]);
 
-    await this.prisma.user.update({
-      where: { id: userId },
-      data: { profileImage: next },
-    });
-
-    return {
-      message: next ? '프로필 이미지가 업데이트되었습니다.' : '프로필 이미지가 삭제되었습니다.',
-    };
+    return { message: '프로필 이미지가 업데이트되었습니다.' };
   }
 }

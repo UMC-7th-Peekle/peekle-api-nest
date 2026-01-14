@@ -1,6 +1,26 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 /**
+ * ProfileImageDto (프로필 이미지)
+ */
+export class ProfileImageDto {
+  @ApiProperty({
+    description: '프로필 이미지 ID',
+  })
+  id!: string;
+
+  @ApiProperty({
+    description: '프로필 이미지 URL',
+  })
+  imageUrl!: string;
+
+  @ApiProperty({
+    description: '이미지 순서',
+  })
+  order!: number;
+}
+
+/**
  * GetMeResponseDto (Response DTO)
  * - 서버 → 클라이언트 응답을 내보낼 때 사용
  * - 이 값들은 이미 서버(우리 코드)에서 DB → 서비스 → DTO 변환을 거쳐 나온 값이므로,
@@ -43,10 +63,11 @@ export class GetMeResponseDto {
   phoneNumber?: string;
 
   @ApiProperty({
-    description: '사용자 프로필 이미지 URL',
+    description: '사용자 프로필 이미지 배열',
+    type: [ProfileImageDto],
     required: false,
   })
-  profileImage?: string;
+  profileImages?: ProfileImageDto[];
 
   @ApiProperty({
     description: '사용자 역할 (예: admin, user)',

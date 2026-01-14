@@ -74,6 +74,11 @@ export type Upload = $Result.DefaultSelection<Prisma.$UploadPayload>
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 /**
+ * Model ProfileImage
+ * 
+ */
+export type ProfileImage = $Result.DefaultSelection<Prisma.$ProfileImagePayload>
+/**
  * Model UserTerm
  * 
  */
@@ -323,6 +328,16 @@ export class PrismaClient<
     * ```
     */
   get user(): Prisma.UserDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.profileImage`: Exposes CRUD operations for the **ProfileImage** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ProfileImages
+    * const profileImages = await prisma.profileImage.findMany()
+    * ```
+    */
+  get profileImage(): Prisma.ProfileImageDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.userTerm`: Exposes CRUD operations for the **UserTerm** model.
@@ -785,6 +800,7 @@ export namespace Prisma {
     Term: 'Term',
     Upload: 'Upload',
     User: 'User',
+    ProfileImage: 'ProfileImage',
     UserTerm: 'UserTerm'
   };
 
@@ -804,7 +820,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "article" | "articleComment" | "articleCommentLike" | "articleImage" | "articleLike" | "community" | "event" | "eventImage" | "eventScrap" | "term" | "upload" | "user" | "userTerm"
+      modelProps: "article" | "articleComment" | "articleCommentLike" | "articleImage" | "articleLike" | "community" | "event" | "eventImage" | "eventScrap" | "term" | "upload" | "user" | "profileImage" | "userTerm"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1600,6 +1616,72 @@ export namespace Prisma {
           }
         }
       }
+      ProfileImage: {
+        payload: Prisma.$ProfileImagePayload<ExtArgs>
+        fields: Prisma.ProfileImageFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ProfileImageFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProfileImagePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ProfileImageFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProfileImagePayload>
+          }
+          findFirst: {
+            args: Prisma.ProfileImageFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProfileImagePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ProfileImageFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProfileImagePayload>
+          }
+          findMany: {
+            args: Prisma.ProfileImageFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProfileImagePayload>[]
+          }
+          create: {
+            args: Prisma.ProfileImageCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProfileImagePayload>
+          }
+          createMany: {
+            args: Prisma.ProfileImageCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.ProfileImageDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProfileImagePayload>
+          }
+          update: {
+            args: Prisma.ProfileImageUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProfileImagePayload>
+          }
+          deleteMany: {
+            args: Prisma.ProfileImageDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ProfileImageUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.ProfileImageUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProfileImagePayload>
+          }
+          aggregate: {
+            args: Prisma.ProfileImageAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateProfileImage>
+          }
+          groupBy: {
+            args: Prisma.ProfileImageGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ProfileImageGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ProfileImageCountArgs<ExtArgs>
+            result: $Utils.Optional<ProfileImageCountAggregateOutputType> | number
+          }
+        }
+      }
       UserTerm: {
         payload: Prisma.$UserTermPayload<ExtArgs>
         fields: Prisma.UserTermFieldRefs
@@ -1770,6 +1852,7 @@ export namespace Prisma {
     term?: TermOmit
     upload?: UploadOmit
     user?: UserOmit
+    profileImage?: ProfileImageOmit
     userTerm?: UserTermOmit
   }
 
@@ -2068,6 +2151,7 @@ export namespace Prisma {
     event: number
     eventScrap: number
     userTerm: number
+    profileImage: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2078,6 +2162,7 @@ export namespace Prisma {
     event?: boolean | UserCountOutputTypeCountEventArgs
     eventScrap?: boolean | UserCountOutputTypeCountEventScrapArgs
     userTerm?: boolean | UserCountOutputTypeCountUserTermArgs
+    profileImage?: boolean | UserCountOutputTypeCountProfileImageArgs
   }
 
   // Custom InputTypes
@@ -2138,6 +2223,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountUserTermArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: UserTermWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountProfileImageArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProfileImageWhereInput
   }
 
 
@@ -13317,11 +13409,9 @@ export namespace Prisma {
     birthdate: Date | null
     gender: string | null
     phoneNumber: string | null
-    profileImage: string | null
     role: string | null
     oauthProvider: string | null
     oauthId: string | null
-    nicknameUpdatedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -13333,11 +13423,9 @@ export namespace Prisma {
     birthdate: Date | null
     gender: string | null
     phoneNumber: string | null
-    profileImage: string | null
     role: string | null
     oauthProvider: string | null
     oauthId: string | null
-    nicknameUpdatedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -13349,11 +13437,9 @@ export namespace Prisma {
     birthdate: number
     gender: number
     phoneNumber: number
-    profileImage: number
     role: number
     oauthProvider: number
     oauthId: number
-    nicknameUpdatedAt: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -13375,11 +13461,9 @@ export namespace Prisma {
     birthdate?: true
     gender?: true
     phoneNumber?: true
-    profileImage?: true
     role?: true
     oauthProvider?: true
     oauthId?: true
-    nicknameUpdatedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -13391,11 +13475,9 @@ export namespace Prisma {
     birthdate?: true
     gender?: true
     phoneNumber?: true
-    profileImage?: true
     role?: true
     oauthProvider?: true
     oauthId?: true
-    nicknameUpdatedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -13407,11 +13489,9 @@ export namespace Prisma {
     birthdate?: true
     gender?: true
     phoneNumber?: true
-    profileImage?: true
     role?: true
     oauthProvider?: true
     oauthId?: true
-    nicknameUpdatedAt?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -13510,11 +13590,9 @@ export namespace Prisma {
     birthdate: Date | null
     gender: string | null
     phoneNumber: string | null
-    profileImage: string | null
     role: string
     oauthProvider: string | null
     oauthId: string | null
-    nicknameUpdatedAt: Date | null
     createdAt: Date
     updatedAt: Date
     _count: UserCountAggregateOutputType | null
@@ -13545,11 +13623,9 @@ export namespace Prisma {
     birthdate?: boolean
     gender?: boolean
     phoneNumber?: boolean
-    profileImage?: boolean
     role?: boolean
     oauthProvider?: boolean
     oauthId?: boolean
-    nicknameUpdatedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     article?: boolean | User$articleArgs<ExtArgs>
@@ -13559,6 +13635,7 @@ export namespace Prisma {
     event?: boolean | User$eventArgs<ExtArgs>
     eventScrap?: boolean | User$eventScrapArgs<ExtArgs>
     userTerm?: boolean | User$userTermArgs<ExtArgs>
+    profileImage?: boolean | User$profileImageArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -13571,16 +13648,14 @@ export namespace Prisma {
     birthdate?: boolean
     gender?: boolean
     phoneNumber?: boolean
-    profileImage?: boolean
     role?: boolean
     oauthProvider?: boolean
     oauthId?: boolean
-    nicknameUpdatedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "nickname" | "birthdate" | "gender" | "phoneNumber" | "profileImage" | "role" | "oauthProvider" | "oauthId" | "nicknameUpdatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "nickname" | "birthdate" | "gender" | "phoneNumber" | "role" | "oauthProvider" | "oauthId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     article?: boolean | User$articleArgs<ExtArgs>
     articleComment?: boolean | User$articleCommentArgs<ExtArgs>
@@ -13589,6 +13664,7 @@ export namespace Prisma {
     event?: boolean | User$eventArgs<ExtArgs>
     eventScrap?: boolean | User$eventScrapArgs<ExtArgs>
     userTerm?: boolean | User$userTermArgs<ExtArgs>
+    profileImage?: boolean | User$profileImageArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -13602,6 +13678,7 @@ export namespace Prisma {
       event: Prisma.$EventPayload<ExtArgs>[]
       eventScrap: Prisma.$EventScrapPayload<ExtArgs>[]
       userTerm: Prisma.$UserTermPayload<ExtArgs>[]
+      profileImage: Prisma.$ProfileImagePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: bigint
@@ -13610,11 +13687,9 @@ export namespace Prisma {
       birthdate: Date | null
       gender: string | null
       phoneNumber: string | null
-      profileImage: string | null
       role: string
       oauthProvider: string | null
       oauthId: string | null
-      nicknameUpdatedAt: Date | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["user"]>
@@ -13964,6 +14039,7 @@ export namespace Prisma {
     event<T extends User$eventArgs<ExtArgs> = {}>(args?: Subset<T, User$eventArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     eventScrap<T extends User$eventScrapArgs<ExtArgs> = {}>(args?: Subset<T, User$eventScrapArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventScrapPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     userTerm<T extends User$userTermArgs<ExtArgs> = {}>(args?: Subset<T, User$userTermArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserTermPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    profileImage<T extends User$profileImageArgs<ExtArgs> = {}>(args?: Subset<T, User$profileImageArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProfileImagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -13999,11 +14075,9 @@ export namespace Prisma {
     readonly birthdate: FieldRef<"User", 'DateTime'>
     readonly gender: FieldRef<"User", 'String'>
     readonly phoneNumber: FieldRef<"User", 'String'>
-    readonly profileImage: FieldRef<"User", 'String'>
     readonly role: FieldRef<"User", 'String'>
     readonly oauthProvider: FieldRef<"User", 'String'>
     readonly oauthId: FieldRef<"User", 'String'>
-    readonly nicknameUpdatedAt: FieldRef<"User", 'DateTime'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
@@ -14517,6 +14591,30 @@ export namespace Prisma {
   }
 
   /**
+   * User.profileImage
+   */
+  export type User$profileImageArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProfileImage
+     */
+    select?: ProfileImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProfileImage
+     */
+    omit?: ProfileImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProfileImageInclude<ExtArgs> | null
+    where?: ProfileImageWhereInput
+    orderBy?: ProfileImageOrderByWithRelationInput | ProfileImageOrderByWithRelationInput[]
+    cursor?: ProfileImageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ProfileImageScalarFieldEnum | ProfileImageScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -14532,6 +14630,988 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: UserInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ProfileImage
+   */
+
+  export type AggregateProfileImage = {
+    _count: ProfileImageCountAggregateOutputType | null
+    _avg: ProfileImageAvgAggregateOutputType | null
+    _sum: ProfileImageSumAggregateOutputType | null
+    _min: ProfileImageMinAggregateOutputType | null
+    _max: ProfileImageMaxAggregateOutputType | null
+  }
+
+  export type ProfileImageAvgAggregateOutputType = {
+    id: number | null
+    userId: number | null
+    order: number | null
+  }
+
+  export type ProfileImageSumAggregateOutputType = {
+    id: bigint | null
+    userId: bigint | null
+    order: number | null
+  }
+
+  export type ProfileImageMinAggregateOutputType = {
+    id: bigint | null
+    userId: bigint | null
+    imageUrl: string | null
+    order: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ProfileImageMaxAggregateOutputType = {
+    id: bigint | null
+    userId: bigint | null
+    imageUrl: string | null
+    order: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ProfileImageCountAggregateOutputType = {
+    id: number
+    userId: number
+    imageUrl: number
+    order: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ProfileImageAvgAggregateInputType = {
+    id?: true
+    userId?: true
+    order?: true
+  }
+
+  export type ProfileImageSumAggregateInputType = {
+    id?: true
+    userId?: true
+    order?: true
+  }
+
+  export type ProfileImageMinAggregateInputType = {
+    id?: true
+    userId?: true
+    imageUrl?: true
+    order?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ProfileImageMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    imageUrl?: true
+    order?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ProfileImageCountAggregateInputType = {
+    id?: true
+    userId?: true
+    imageUrl?: true
+    order?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ProfileImageAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProfileImage to aggregate.
+     */
+    where?: ProfileImageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProfileImages to fetch.
+     */
+    orderBy?: ProfileImageOrderByWithRelationInput | ProfileImageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ProfileImageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProfileImages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProfileImages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ProfileImages
+    **/
+    _count?: true | ProfileImageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ProfileImageAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ProfileImageSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ProfileImageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ProfileImageMaxAggregateInputType
+  }
+
+  export type GetProfileImageAggregateType<T extends ProfileImageAggregateArgs> = {
+        [P in keyof T & keyof AggregateProfileImage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateProfileImage[P]>
+      : GetScalarType<T[P], AggregateProfileImage[P]>
+  }
+
+
+
+
+  export type ProfileImageGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProfileImageWhereInput
+    orderBy?: ProfileImageOrderByWithAggregationInput | ProfileImageOrderByWithAggregationInput[]
+    by: ProfileImageScalarFieldEnum[] | ProfileImageScalarFieldEnum
+    having?: ProfileImageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ProfileImageCountAggregateInputType | true
+    _avg?: ProfileImageAvgAggregateInputType
+    _sum?: ProfileImageSumAggregateInputType
+    _min?: ProfileImageMinAggregateInputType
+    _max?: ProfileImageMaxAggregateInputType
+  }
+
+  export type ProfileImageGroupByOutputType = {
+    id: bigint
+    userId: bigint
+    imageUrl: string
+    order: number
+    createdAt: Date
+    updatedAt: Date
+    _count: ProfileImageCountAggregateOutputType | null
+    _avg: ProfileImageAvgAggregateOutputType | null
+    _sum: ProfileImageSumAggregateOutputType | null
+    _min: ProfileImageMinAggregateOutputType | null
+    _max: ProfileImageMaxAggregateOutputType | null
+  }
+
+  type GetProfileImageGroupByPayload<T extends ProfileImageGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ProfileImageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ProfileImageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ProfileImageGroupByOutputType[P]>
+            : GetScalarType<T[P], ProfileImageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ProfileImageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    imageUrl?: boolean
+    order?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["profileImage"]>
+
+
+
+  export type ProfileImageSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    imageUrl?: boolean
+    order?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ProfileImageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "imageUrl" | "order" | "createdAt" | "updatedAt", ExtArgs["result"]["profileImage"]>
+  export type ProfileImageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $ProfileImagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ProfileImage"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: bigint
+      userId: bigint
+      imageUrl: string
+      order: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["profileImage"]>
+    composites: {}
+  }
+
+  type ProfileImageGetPayload<S extends boolean | null | undefined | ProfileImageDefaultArgs> = $Result.GetResult<Prisma.$ProfileImagePayload, S>
+
+  type ProfileImageCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ProfileImageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ProfileImageCountAggregateInputType | true
+    }
+
+  export interface ProfileImageDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ProfileImage'], meta: { name: 'ProfileImage' } }
+    /**
+     * Find zero or one ProfileImage that matches the filter.
+     * @param {ProfileImageFindUniqueArgs} args - Arguments to find a ProfileImage
+     * @example
+     * // Get one ProfileImage
+     * const profileImage = await prisma.profileImage.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ProfileImageFindUniqueArgs>(args: SelectSubset<T, ProfileImageFindUniqueArgs<ExtArgs>>): Prisma__ProfileImageClient<$Result.GetResult<Prisma.$ProfileImagePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ProfileImage that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ProfileImageFindUniqueOrThrowArgs} args - Arguments to find a ProfileImage
+     * @example
+     * // Get one ProfileImage
+     * const profileImage = await prisma.profileImage.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ProfileImageFindUniqueOrThrowArgs>(args: SelectSubset<T, ProfileImageFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ProfileImageClient<$Result.GetResult<Prisma.$ProfileImagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProfileImage that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProfileImageFindFirstArgs} args - Arguments to find a ProfileImage
+     * @example
+     * // Get one ProfileImage
+     * const profileImage = await prisma.profileImage.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ProfileImageFindFirstArgs>(args?: SelectSubset<T, ProfileImageFindFirstArgs<ExtArgs>>): Prisma__ProfileImageClient<$Result.GetResult<Prisma.$ProfileImagePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProfileImage that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProfileImageFindFirstOrThrowArgs} args - Arguments to find a ProfileImage
+     * @example
+     * // Get one ProfileImage
+     * const profileImage = await prisma.profileImage.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ProfileImageFindFirstOrThrowArgs>(args?: SelectSubset<T, ProfileImageFindFirstOrThrowArgs<ExtArgs>>): Prisma__ProfileImageClient<$Result.GetResult<Prisma.$ProfileImagePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ProfileImages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProfileImageFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ProfileImages
+     * const profileImages = await prisma.profileImage.findMany()
+     * 
+     * // Get first 10 ProfileImages
+     * const profileImages = await prisma.profileImage.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const profileImageWithIdOnly = await prisma.profileImage.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ProfileImageFindManyArgs>(args?: SelectSubset<T, ProfileImageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProfileImagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ProfileImage.
+     * @param {ProfileImageCreateArgs} args - Arguments to create a ProfileImage.
+     * @example
+     * // Create one ProfileImage
+     * const ProfileImage = await prisma.profileImage.create({
+     *   data: {
+     *     // ... data to create a ProfileImage
+     *   }
+     * })
+     * 
+     */
+    create<T extends ProfileImageCreateArgs>(args: SelectSubset<T, ProfileImageCreateArgs<ExtArgs>>): Prisma__ProfileImageClient<$Result.GetResult<Prisma.$ProfileImagePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ProfileImages.
+     * @param {ProfileImageCreateManyArgs} args - Arguments to create many ProfileImages.
+     * @example
+     * // Create many ProfileImages
+     * const profileImage = await prisma.profileImage.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ProfileImageCreateManyArgs>(args?: SelectSubset<T, ProfileImageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a ProfileImage.
+     * @param {ProfileImageDeleteArgs} args - Arguments to delete one ProfileImage.
+     * @example
+     * // Delete one ProfileImage
+     * const ProfileImage = await prisma.profileImage.delete({
+     *   where: {
+     *     // ... filter to delete one ProfileImage
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ProfileImageDeleteArgs>(args: SelectSubset<T, ProfileImageDeleteArgs<ExtArgs>>): Prisma__ProfileImageClient<$Result.GetResult<Prisma.$ProfileImagePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ProfileImage.
+     * @param {ProfileImageUpdateArgs} args - Arguments to update one ProfileImage.
+     * @example
+     * // Update one ProfileImage
+     * const profileImage = await prisma.profileImage.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ProfileImageUpdateArgs>(args: SelectSubset<T, ProfileImageUpdateArgs<ExtArgs>>): Prisma__ProfileImageClient<$Result.GetResult<Prisma.$ProfileImagePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ProfileImages.
+     * @param {ProfileImageDeleteManyArgs} args - Arguments to filter ProfileImages to delete.
+     * @example
+     * // Delete a few ProfileImages
+     * const { count } = await prisma.profileImage.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ProfileImageDeleteManyArgs>(args?: SelectSubset<T, ProfileImageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProfileImages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProfileImageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ProfileImages
+     * const profileImage = await prisma.profileImage.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ProfileImageUpdateManyArgs>(args: SelectSubset<T, ProfileImageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one ProfileImage.
+     * @param {ProfileImageUpsertArgs} args - Arguments to update or create a ProfileImage.
+     * @example
+     * // Update or create a ProfileImage
+     * const profileImage = await prisma.profileImage.upsert({
+     *   create: {
+     *     // ... data to create a ProfileImage
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ProfileImage we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ProfileImageUpsertArgs>(args: SelectSubset<T, ProfileImageUpsertArgs<ExtArgs>>): Prisma__ProfileImageClient<$Result.GetResult<Prisma.$ProfileImagePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ProfileImages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProfileImageCountArgs} args - Arguments to filter ProfileImages to count.
+     * @example
+     * // Count the number of ProfileImages
+     * const count = await prisma.profileImage.count({
+     *   where: {
+     *     // ... the filter for the ProfileImages we want to count
+     *   }
+     * })
+    **/
+    count<T extends ProfileImageCountArgs>(
+      args?: Subset<T, ProfileImageCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ProfileImageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ProfileImage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProfileImageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ProfileImageAggregateArgs>(args: Subset<T, ProfileImageAggregateArgs>): Prisma.PrismaPromise<GetProfileImageAggregateType<T>>
+
+    /**
+     * Group by ProfileImage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProfileImageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ProfileImageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ProfileImageGroupByArgs['orderBy'] }
+        : { orderBy?: ProfileImageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ProfileImageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProfileImageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ProfileImage model
+   */
+  readonly fields: ProfileImageFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ProfileImage.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ProfileImageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ProfileImage model
+   */
+  interface ProfileImageFieldRefs {
+    readonly id: FieldRef<"ProfileImage", 'BigInt'>
+    readonly userId: FieldRef<"ProfileImage", 'BigInt'>
+    readonly imageUrl: FieldRef<"ProfileImage", 'String'>
+    readonly order: FieldRef<"ProfileImage", 'Int'>
+    readonly createdAt: FieldRef<"ProfileImage", 'DateTime'>
+    readonly updatedAt: FieldRef<"ProfileImage", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ProfileImage findUnique
+   */
+  export type ProfileImageFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProfileImage
+     */
+    select?: ProfileImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProfileImage
+     */
+    omit?: ProfileImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProfileImageInclude<ExtArgs> | null
+    /**
+     * Filter, which ProfileImage to fetch.
+     */
+    where: ProfileImageWhereUniqueInput
+  }
+
+  /**
+   * ProfileImage findUniqueOrThrow
+   */
+  export type ProfileImageFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProfileImage
+     */
+    select?: ProfileImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProfileImage
+     */
+    omit?: ProfileImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProfileImageInclude<ExtArgs> | null
+    /**
+     * Filter, which ProfileImage to fetch.
+     */
+    where: ProfileImageWhereUniqueInput
+  }
+
+  /**
+   * ProfileImage findFirst
+   */
+  export type ProfileImageFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProfileImage
+     */
+    select?: ProfileImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProfileImage
+     */
+    omit?: ProfileImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProfileImageInclude<ExtArgs> | null
+    /**
+     * Filter, which ProfileImage to fetch.
+     */
+    where?: ProfileImageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProfileImages to fetch.
+     */
+    orderBy?: ProfileImageOrderByWithRelationInput | ProfileImageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProfileImages.
+     */
+    cursor?: ProfileImageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProfileImages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProfileImages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProfileImages.
+     */
+    distinct?: ProfileImageScalarFieldEnum | ProfileImageScalarFieldEnum[]
+  }
+
+  /**
+   * ProfileImage findFirstOrThrow
+   */
+  export type ProfileImageFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProfileImage
+     */
+    select?: ProfileImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProfileImage
+     */
+    omit?: ProfileImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProfileImageInclude<ExtArgs> | null
+    /**
+     * Filter, which ProfileImage to fetch.
+     */
+    where?: ProfileImageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProfileImages to fetch.
+     */
+    orderBy?: ProfileImageOrderByWithRelationInput | ProfileImageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProfileImages.
+     */
+    cursor?: ProfileImageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProfileImages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProfileImages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProfileImages.
+     */
+    distinct?: ProfileImageScalarFieldEnum | ProfileImageScalarFieldEnum[]
+  }
+
+  /**
+   * ProfileImage findMany
+   */
+  export type ProfileImageFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProfileImage
+     */
+    select?: ProfileImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProfileImage
+     */
+    omit?: ProfileImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProfileImageInclude<ExtArgs> | null
+    /**
+     * Filter, which ProfileImages to fetch.
+     */
+    where?: ProfileImageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProfileImages to fetch.
+     */
+    orderBy?: ProfileImageOrderByWithRelationInput | ProfileImageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ProfileImages.
+     */
+    cursor?: ProfileImageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProfileImages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProfileImages.
+     */
+    skip?: number
+    distinct?: ProfileImageScalarFieldEnum | ProfileImageScalarFieldEnum[]
+  }
+
+  /**
+   * ProfileImage create
+   */
+  export type ProfileImageCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProfileImage
+     */
+    select?: ProfileImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProfileImage
+     */
+    omit?: ProfileImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProfileImageInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ProfileImage.
+     */
+    data: XOR<ProfileImageCreateInput, ProfileImageUncheckedCreateInput>
+  }
+
+  /**
+   * ProfileImage createMany
+   */
+  export type ProfileImageCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ProfileImages.
+     */
+    data: ProfileImageCreateManyInput | ProfileImageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ProfileImage update
+   */
+  export type ProfileImageUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProfileImage
+     */
+    select?: ProfileImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProfileImage
+     */
+    omit?: ProfileImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProfileImageInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ProfileImage.
+     */
+    data: XOR<ProfileImageUpdateInput, ProfileImageUncheckedUpdateInput>
+    /**
+     * Choose, which ProfileImage to update.
+     */
+    where: ProfileImageWhereUniqueInput
+  }
+
+  /**
+   * ProfileImage updateMany
+   */
+  export type ProfileImageUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ProfileImages.
+     */
+    data: XOR<ProfileImageUpdateManyMutationInput, ProfileImageUncheckedUpdateManyInput>
+    /**
+     * Filter which ProfileImages to update
+     */
+    where?: ProfileImageWhereInput
+    /**
+     * Limit how many ProfileImages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProfileImage upsert
+   */
+  export type ProfileImageUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProfileImage
+     */
+    select?: ProfileImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProfileImage
+     */
+    omit?: ProfileImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProfileImageInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ProfileImage to update in case it exists.
+     */
+    where: ProfileImageWhereUniqueInput
+    /**
+     * In case the ProfileImage found by the `where` argument doesn't exist, create a new ProfileImage with this data.
+     */
+    create: XOR<ProfileImageCreateInput, ProfileImageUncheckedCreateInput>
+    /**
+     * In case the ProfileImage was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ProfileImageUpdateInput, ProfileImageUncheckedUpdateInput>
+  }
+
+  /**
+   * ProfileImage delete
+   */
+  export type ProfileImageDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProfileImage
+     */
+    select?: ProfileImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProfileImage
+     */
+    omit?: ProfileImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProfileImageInclude<ExtArgs> | null
+    /**
+     * Filter which ProfileImage to delete.
+     */
+    where: ProfileImageWhereUniqueInput
+  }
+
+  /**
+   * ProfileImage deleteMany
+   */
+  export type ProfileImageDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProfileImages to delete
+     */
+    where?: ProfileImageWhereInput
+    /**
+     * Limit how many ProfileImages to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProfileImage without action
+   */
+  export type ProfileImageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProfileImage
+     */
+    select?: ProfileImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProfileImage
+     */
+    omit?: ProfileImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProfileImageInclude<ExtArgs> | null
   }
 
 
@@ -15670,16 +16750,26 @@ export namespace Prisma {
     birthdate: 'birthdate',
     gender: 'gender',
     phoneNumber: 'phoneNumber',
-    profileImage: 'profileImage',
     role: 'role',
     oauthProvider: 'oauthProvider',
     oauthId: 'oauthId',
-    nicknameUpdatedAt: 'nicknameUpdatedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+  export const ProfileImageScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    imageUrl: 'imageUrl',
+    order: 'order',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ProfileImageScalarFieldEnum = (typeof ProfileImageScalarFieldEnum)[keyof typeof ProfileImageScalarFieldEnum]
 
 
   export const UserTermScalarFieldEnum: {
@@ -15786,13 +16876,19 @@ export namespace Prisma {
     nickname: 'nickname',
     gender: 'gender',
     phoneNumber: 'phoneNumber',
-    profileImage: 'profileImage',
     role: 'role',
     oauthProvider: 'oauthProvider',
     oauthId: 'oauthId'
   };
 
   export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
+
+
+  export const ProfileImageOrderByRelevanceFieldEnum: {
+    imageUrl: 'imageUrl'
+  };
+
+  export type ProfileImageOrderByRelevanceFieldEnum = (typeof ProfileImageOrderByRelevanceFieldEnum)[keyof typeof ProfileImageOrderByRelevanceFieldEnum]
 
 
   /**
@@ -16641,11 +17737,9 @@ export namespace Prisma {
     birthdate?: DateTimeNullableFilter<"User"> | Date | string | null
     gender?: StringNullableFilter<"User"> | string | null
     phoneNumber?: StringNullableFilter<"User"> | string | null
-    profileImage?: StringNullableFilter<"User"> | string | null
     role?: StringFilter<"User"> | string
     oauthProvider?: StringNullableFilter<"User"> | string | null
     oauthId?: StringNullableFilter<"User"> | string | null
-    nicknameUpdatedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     article?: ArticleListRelationFilter
@@ -16655,6 +17749,7 @@ export namespace Prisma {
     event?: EventListRelationFilter
     eventScrap?: EventScrapListRelationFilter
     userTerm?: UserTermListRelationFilter
+    profileImage?: ProfileImageListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -16664,11 +17759,9 @@ export namespace Prisma {
     birthdate?: SortOrderInput | SortOrder
     gender?: SortOrderInput | SortOrder
     phoneNumber?: SortOrderInput | SortOrder
-    profileImage?: SortOrderInput | SortOrder
     role?: SortOrder
     oauthProvider?: SortOrderInput | SortOrder
     oauthId?: SortOrderInput | SortOrder
-    nicknameUpdatedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     article?: ArticleOrderByRelationAggregateInput
@@ -16678,6 +17771,7 @@ export namespace Prisma {
     event?: EventOrderByRelationAggregateInput
     eventScrap?: EventScrapOrderByRelationAggregateInput
     userTerm?: UserTermOrderByRelationAggregateInput
+    profileImage?: ProfileImageOrderByRelationAggregateInput
     _relevance?: UserOrderByRelevanceInput
   }
 
@@ -16691,11 +17785,9 @@ export namespace Prisma {
     birthdate?: DateTimeNullableFilter<"User"> | Date | string | null
     gender?: StringNullableFilter<"User"> | string | null
     phoneNumber?: StringNullableFilter<"User"> | string | null
-    profileImage?: StringNullableFilter<"User"> | string | null
     role?: StringFilter<"User"> | string
     oauthProvider?: StringNullableFilter<"User"> | string | null
     oauthId?: StringNullableFilter<"User"> | string | null
-    nicknameUpdatedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     article?: ArticleListRelationFilter
@@ -16705,6 +17797,7 @@ export namespace Prisma {
     event?: EventListRelationFilter
     eventScrap?: EventScrapListRelationFilter
     userTerm?: UserTermListRelationFilter
+    profileImage?: ProfileImageListRelationFilter
   }, "id">
 
   export type UserOrderByWithAggregationInput = {
@@ -16714,11 +17807,9 @@ export namespace Prisma {
     birthdate?: SortOrderInput | SortOrder
     gender?: SortOrderInput | SortOrder
     phoneNumber?: SortOrderInput | SortOrder
-    profileImage?: SortOrderInput | SortOrder
     role?: SortOrder
     oauthProvider?: SortOrderInput | SortOrder
     oauthId?: SortOrderInput | SortOrder
-    nicknameUpdatedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
@@ -16738,13 +17829,75 @@ export namespace Prisma {
     birthdate?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     gender?: StringNullableWithAggregatesFilter<"User"> | string | null
     phoneNumber?: StringNullableWithAggregatesFilter<"User"> | string | null
-    profileImage?: StringNullableWithAggregatesFilter<"User"> | string | null
     role?: StringWithAggregatesFilter<"User"> | string
     oauthProvider?: StringNullableWithAggregatesFilter<"User"> | string | null
     oauthId?: StringNullableWithAggregatesFilter<"User"> | string | null
-    nicknameUpdatedAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+  }
+
+  export type ProfileImageWhereInput = {
+    AND?: ProfileImageWhereInput | ProfileImageWhereInput[]
+    OR?: ProfileImageWhereInput[]
+    NOT?: ProfileImageWhereInput | ProfileImageWhereInput[]
+    id?: BigIntFilter<"ProfileImage"> | bigint | number
+    userId?: BigIntFilter<"ProfileImage"> | bigint | number
+    imageUrl?: StringFilter<"ProfileImage"> | string
+    order?: IntFilter<"ProfileImage"> | number
+    createdAt?: DateTimeFilter<"ProfileImage"> | Date | string
+    updatedAt?: DateTimeFilter<"ProfileImage"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type ProfileImageOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    imageUrl?: SortOrder
+    order?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    _relevance?: ProfileImageOrderByRelevanceInput
+  }
+
+  export type ProfileImageWhereUniqueInput = Prisma.AtLeast<{
+    id?: bigint | number
+    userId_order?: ProfileImageUserIdOrderCompoundUniqueInput
+    AND?: ProfileImageWhereInput | ProfileImageWhereInput[]
+    OR?: ProfileImageWhereInput[]
+    NOT?: ProfileImageWhereInput | ProfileImageWhereInput[]
+    userId?: BigIntFilter<"ProfileImage"> | bigint | number
+    imageUrl?: StringFilter<"ProfileImage"> | string
+    order?: IntFilter<"ProfileImage"> | number
+    createdAt?: DateTimeFilter<"ProfileImage"> | Date | string
+    updatedAt?: DateTimeFilter<"ProfileImage"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "userId_order">
+
+  export type ProfileImageOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    imageUrl?: SortOrder
+    order?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ProfileImageCountOrderByAggregateInput
+    _avg?: ProfileImageAvgOrderByAggregateInput
+    _max?: ProfileImageMaxOrderByAggregateInput
+    _min?: ProfileImageMinOrderByAggregateInput
+    _sum?: ProfileImageSumOrderByAggregateInput
+  }
+
+  export type ProfileImageScalarWhereWithAggregatesInput = {
+    AND?: ProfileImageScalarWhereWithAggregatesInput | ProfileImageScalarWhereWithAggregatesInput[]
+    OR?: ProfileImageScalarWhereWithAggregatesInput[]
+    NOT?: ProfileImageScalarWhereWithAggregatesInput | ProfileImageScalarWhereWithAggregatesInput[]
+    id?: BigIntWithAggregatesFilter<"ProfileImage"> | bigint | number
+    userId?: BigIntWithAggregatesFilter<"ProfileImage"> | bigint | number
+    imageUrl?: StringWithAggregatesFilter<"ProfileImage"> | string
+    order?: IntWithAggregatesFilter<"ProfileImage"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"ProfileImage"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ProfileImage"> | Date | string
   }
 
   export type UserTermWhereInput = {
@@ -17607,11 +18760,9 @@ export namespace Prisma {
     birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
-    profileImage?: string | null
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
-    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleCreateNestedManyWithoutUserInput
@@ -17621,6 +18772,7 @@ export namespace Prisma {
     event?: EventCreateNestedManyWithoutUserInput
     eventScrap?: EventScrapCreateNestedManyWithoutUserInput
     userTerm?: UserTermCreateNestedManyWithoutUserInput
+    profileImage?: ProfileImageCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -17630,11 +18782,9 @@ export namespace Prisma {
     birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
-    profileImage?: string | null
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
-    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleUncheckedCreateNestedManyWithoutUserInput
@@ -17644,6 +18794,7 @@ export namespace Prisma {
     event?: EventUncheckedCreateNestedManyWithoutUserInput
     eventScrap?: EventScrapUncheckedCreateNestedManyWithoutUserInput
     userTerm?: UserTermUncheckedCreateNestedManyWithoutUserInput
+    profileImage?: ProfileImageUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -17653,11 +18804,9 @@ export namespace Prisma {
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
-    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateManyWithoutUserNestedInput
@@ -17667,6 +18816,7 @@ export namespace Prisma {
     event?: EventUpdateManyWithoutUserNestedInput
     eventScrap?: EventScrapUpdateManyWithoutUserNestedInput
     userTerm?: UserTermUpdateManyWithoutUserNestedInput
+    profileImage?: ProfileImageUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -17676,11 +18826,9 @@ export namespace Prisma {
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
-    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUncheckedUpdateManyWithoutUserNestedInput
@@ -17690,6 +18838,7 @@ export namespace Prisma {
     event?: EventUncheckedUpdateManyWithoutUserNestedInput
     eventScrap?: EventScrapUncheckedUpdateManyWithoutUserNestedInput
     userTerm?: UserTermUncheckedUpdateManyWithoutUserNestedInput
+    profileImage?: ProfileImageUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -17699,11 +18848,9 @@ export namespace Prisma {
     birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
-    profileImage?: string | null
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
-    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -17715,11 +18862,9 @@ export namespace Prisma {
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
-    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -17731,11 +18876,71 @@ export namespace Prisma {
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
-    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProfileImageCreateInput = {
+    id?: bigint | number
+    imageUrl: string
+    order: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutProfileImageInput
+  }
+
+  export type ProfileImageUncheckedCreateInput = {
+    id?: bigint | number
+    userId: bigint | number
+    imageUrl: string
+    order: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProfileImageUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutProfileImageNestedInput
+  }
+
+  export type ProfileImageUncheckedUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProfileImageCreateManyInput = {
+    id?: bigint | number
+    userId: bigint | number
+    imageUrl: string
+    order: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProfileImageUpdateManyMutationInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProfileImageUncheckedUpdateManyInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -18686,7 +19891,17 @@ export namespace Prisma {
     none?: EventWhereInput
   }
 
+  export type ProfileImageListRelationFilter = {
+    every?: ProfileImageWhereInput
+    some?: ProfileImageWhereInput
+    none?: ProfileImageWhereInput
+  }
+
   export type EventOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ProfileImageOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -18703,11 +19918,9 @@ export namespace Prisma {
     birthdate?: SortOrder
     gender?: SortOrder
     phoneNumber?: SortOrder
-    profileImage?: SortOrder
     role?: SortOrder
     oauthProvider?: SortOrder
     oauthId?: SortOrder
-    nicknameUpdatedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -18723,11 +19936,9 @@ export namespace Prisma {
     birthdate?: SortOrder
     gender?: SortOrder
     phoneNumber?: SortOrder
-    profileImage?: SortOrder
     role?: SortOrder
     oauthProvider?: SortOrder
     oauthId?: SortOrder
-    nicknameUpdatedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -18739,11 +19950,9 @@ export namespace Prisma {
     birthdate?: SortOrder
     gender?: SortOrder
     phoneNumber?: SortOrder
-    profileImage?: SortOrder
     role?: SortOrder
     oauthProvider?: SortOrder
     oauthId?: SortOrder
-    nicknameUpdatedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -18764,6 +19973,56 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type ProfileImageOrderByRelevanceInput = {
+    fields: ProfileImageOrderByRelevanceFieldEnum | ProfileImageOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type ProfileImageUserIdOrderCompoundUniqueInput = {
+    userId: bigint | number
+    order: number
+  }
+
+  export type ProfileImageCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    imageUrl?: SortOrder
+    order?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProfileImageAvgOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    order?: SortOrder
+  }
+
+  export type ProfileImageMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    imageUrl?: SortOrder
+    order?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProfileImageMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    imageUrl?: SortOrder
+    order?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProfileImageSumOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    order?: SortOrder
   }
 
   export type TermScalarRelationFilter = {
@@ -19491,6 +20750,13 @@ export namespace Prisma {
     connect?: UserTermWhereUniqueInput | UserTermWhereUniqueInput[]
   }
 
+  export type ProfileImageCreateNestedManyWithoutUserInput = {
+    create?: XOR<ProfileImageCreateWithoutUserInput, ProfileImageUncheckedCreateWithoutUserInput> | ProfileImageCreateWithoutUserInput[] | ProfileImageUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ProfileImageCreateOrConnectWithoutUserInput | ProfileImageCreateOrConnectWithoutUserInput[]
+    createMany?: ProfileImageCreateManyUserInputEnvelope
+    connect?: ProfileImageWhereUniqueInput | ProfileImageWhereUniqueInput[]
+  }
+
   export type ArticleUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<ArticleCreateWithoutUserInput, ArticleUncheckedCreateWithoutUserInput> | ArticleCreateWithoutUserInput[] | ArticleUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ArticleCreateOrConnectWithoutUserInput | ArticleCreateOrConnectWithoutUserInput[]
@@ -19538,6 +20804,13 @@ export namespace Prisma {
     connectOrCreate?: UserTermCreateOrConnectWithoutUserInput | UserTermCreateOrConnectWithoutUserInput[]
     createMany?: UserTermCreateManyUserInputEnvelope
     connect?: UserTermWhereUniqueInput | UserTermWhereUniqueInput[]
+  }
+
+  export type ProfileImageUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<ProfileImageCreateWithoutUserInput, ProfileImageUncheckedCreateWithoutUserInput> | ProfileImageCreateWithoutUserInput[] | ProfileImageUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ProfileImageCreateOrConnectWithoutUserInput | ProfileImageCreateOrConnectWithoutUserInput[]
+    createMany?: ProfileImageCreateManyUserInputEnvelope
+    connect?: ProfileImageWhereUniqueInput | ProfileImageWhereUniqueInput[]
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -19642,6 +20915,20 @@ export namespace Prisma {
     deleteMany?: UserTermScalarWhereInput | UserTermScalarWhereInput[]
   }
 
+  export type ProfileImageUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ProfileImageCreateWithoutUserInput, ProfileImageUncheckedCreateWithoutUserInput> | ProfileImageCreateWithoutUserInput[] | ProfileImageUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ProfileImageCreateOrConnectWithoutUserInput | ProfileImageCreateOrConnectWithoutUserInput[]
+    upsert?: ProfileImageUpsertWithWhereUniqueWithoutUserInput | ProfileImageUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ProfileImageCreateManyUserInputEnvelope
+    set?: ProfileImageWhereUniqueInput | ProfileImageWhereUniqueInput[]
+    disconnect?: ProfileImageWhereUniqueInput | ProfileImageWhereUniqueInput[]
+    delete?: ProfileImageWhereUniqueInput | ProfileImageWhereUniqueInput[]
+    connect?: ProfileImageWhereUniqueInput | ProfileImageWhereUniqueInput[]
+    update?: ProfileImageUpdateWithWhereUniqueWithoutUserInput | ProfileImageUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ProfileImageUpdateManyWithWhereWithoutUserInput | ProfileImageUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ProfileImageScalarWhereInput | ProfileImageScalarWhereInput[]
+  }
+
   export type ArticleUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<ArticleCreateWithoutUserInput, ArticleUncheckedCreateWithoutUserInput> | ArticleCreateWithoutUserInput[] | ArticleUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ArticleCreateOrConnectWithoutUserInput | ArticleCreateOrConnectWithoutUserInput[]
@@ -19738,6 +21025,34 @@ export namespace Prisma {
     update?: UserTermUpdateWithWhereUniqueWithoutUserInput | UserTermUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: UserTermUpdateManyWithWhereWithoutUserInput | UserTermUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: UserTermScalarWhereInput | UserTermScalarWhereInput[]
+  }
+
+  export type ProfileImageUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ProfileImageCreateWithoutUserInput, ProfileImageUncheckedCreateWithoutUserInput> | ProfileImageCreateWithoutUserInput[] | ProfileImageUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ProfileImageCreateOrConnectWithoutUserInput | ProfileImageCreateOrConnectWithoutUserInput[]
+    upsert?: ProfileImageUpsertWithWhereUniqueWithoutUserInput | ProfileImageUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ProfileImageCreateManyUserInputEnvelope
+    set?: ProfileImageWhereUniqueInput | ProfileImageWhereUniqueInput[]
+    disconnect?: ProfileImageWhereUniqueInput | ProfileImageWhereUniqueInput[]
+    delete?: ProfileImageWhereUniqueInput | ProfileImageWhereUniqueInput[]
+    connect?: ProfileImageWhereUniqueInput | ProfileImageWhereUniqueInput[]
+    update?: ProfileImageUpdateWithWhereUniqueWithoutUserInput | ProfileImageUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ProfileImageUpdateManyWithWhereWithoutUserInput | ProfileImageUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ProfileImageScalarWhereInput | ProfileImageScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutProfileImageInput = {
+    create?: XOR<UserCreateWithoutProfileImageInput, UserUncheckedCreateWithoutProfileImageInput>
+    connectOrCreate?: UserCreateOrConnectWithoutProfileImageInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutProfileImageNestedInput = {
+    create?: XOR<UserCreateWithoutProfileImageInput, UserUncheckedCreateWithoutProfileImageInput>
+    connectOrCreate?: UserCreateOrConnectWithoutProfileImageInput
+    upsert?: UserUpsertWithoutProfileImageInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutProfileImageInput, UserUpdateWithoutProfileImageInput>, UserUncheckedUpdateWithoutProfileImageInput>
   }
 
   export type TermCreateNestedOneWithoutUserTermInput = {
@@ -20050,11 +21365,9 @@ export namespace Prisma {
     birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
-    profileImage?: string | null
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
-    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     articleComment?: ArticleCommentCreateNestedManyWithoutUserInput
@@ -20063,6 +21376,7 @@ export namespace Prisma {
     event?: EventCreateNestedManyWithoutUserInput
     eventScrap?: EventScrapCreateNestedManyWithoutUserInput
     userTerm?: UserTermCreateNestedManyWithoutUserInput
+    profileImage?: ProfileImageCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutArticleInput = {
@@ -20072,11 +21386,9 @@ export namespace Prisma {
     birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
-    profileImage?: string | null
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
-    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     articleComment?: ArticleCommentUncheckedCreateNestedManyWithoutUserInput
@@ -20085,6 +21397,7 @@ export namespace Prisma {
     event?: EventUncheckedCreateNestedManyWithoutUserInput
     eventScrap?: EventScrapUncheckedCreateNestedManyWithoutUserInput
     userTerm?: UserTermUncheckedCreateNestedManyWithoutUserInput
+    profileImage?: ProfileImageUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutArticleInput = {
@@ -20209,11 +21522,9 @@ export namespace Prisma {
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
-    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     articleComment?: ArticleCommentUpdateManyWithoutUserNestedInput
@@ -20222,6 +21533,7 @@ export namespace Prisma {
     event?: EventUpdateManyWithoutUserNestedInput
     eventScrap?: EventScrapUpdateManyWithoutUserNestedInput
     userTerm?: UserTermUpdateManyWithoutUserNestedInput
+    profileImage?: ProfileImageUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutArticleInput = {
@@ -20231,11 +21543,9 @@ export namespace Prisma {
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
-    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     articleComment?: ArticleCommentUncheckedUpdateManyWithoutUserNestedInput
@@ -20244,6 +21554,7 @@ export namespace Prisma {
     event?: EventUncheckedUpdateManyWithoutUserNestedInput
     eventScrap?: EventScrapUncheckedUpdateManyWithoutUserNestedInput
     userTerm?: UserTermUncheckedUpdateManyWithoutUserNestedInput
+    profileImage?: ProfileImageUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CommunityUpsertWithoutArticleInput = {
@@ -20361,11 +21672,9 @@ export namespace Prisma {
     birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
-    profileImage?: string | null
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
-    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleCreateNestedManyWithoutUserInput
@@ -20374,6 +21683,7 @@ export namespace Prisma {
     event?: EventCreateNestedManyWithoutUserInput
     eventScrap?: EventScrapCreateNestedManyWithoutUserInput
     userTerm?: UserTermCreateNestedManyWithoutUserInput
+    profileImage?: ProfileImageCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutArticleCommentInput = {
@@ -20383,11 +21693,9 @@ export namespace Prisma {
     birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
-    profileImage?: string | null
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
-    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleUncheckedCreateNestedManyWithoutUserInput
@@ -20396,6 +21704,7 @@ export namespace Prisma {
     event?: EventUncheckedCreateNestedManyWithoutUserInput
     eventScrap?: EventScrapUncheckedCreateNestedManyWithoutUserInput
     userTerm?: UserTermUncheckedCreateNestedManyWithoutUserInput
+    profileImage?: ProfileImageUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutArticleCommentInput = {
@@ -20537,11 +21846,9 @@ export namespace Prisma {
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
-    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateManyWithoutUserNestedInput
@@ -20550,6 +21857,7 @@ export namespace Prisma {
     event?: EventUpdateManyWithoutUserNestedInput
     eventScrap?: EventScrapUpdateManyWithoutUserNestedInput
     userTerm?: UserTermUpdateManyWithoutUserNestedInput
+    profileImage?: ProfileImageUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutArticleCommentInput = {
@@ -20559,11 +21867,9 @@ export namespace Prisma {
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
-    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUncheckedUpdateManyWithoutUserNestedInput
@@ -20572,6 +21878,7 @@ export namespace Prisma {
     event?: EventUncheckedUpdateManyWithoutUserNestedInput
     eventScrap?: EventScrapUncheckedUpdateManyWithoutUserNestedInput
     userTerm?: UserTermUncheckedUpdateManyWithoutUserNestedInput
+    profileImage?: ProfileImageUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ArticleUpsertWithoutArticleCommentInput = {
@@ -20724,11 +22031,9 @@ export namespace Prisma {
     birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
-    profileImage?: string | null
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
-    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleCreateNestedManyWithoutUserInput
@@ -20737,6 +22042,7 @@ export namespace Prisma {
     event?: EventCreateNestedManyWithoutUserInput
     eventScrap?: EventScrapCreateNestedManyWithoutUserInput
     userTerm?: UserTermCreateNestedManyWithoutUserInput
+    profileImage?: ProfileImageCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutArticleCommentLikeInput = {
@@ -20746,11 +22052,9 @@ export namespace Prisma {
     birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
-    profileImage?: string | null
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
-    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleUncheckedCreateNestedManyWithoutUserInput
@@ -20759,6 +22063,7 @@ export namespace Prisma {
     event?: EventUncheckedCreateNestedManyWithoutUserInput
     eventScrap?: EventScrapUncheckedCreateNestedManyWithoutUserInput
     userTerm?: UserTermUncheckedCreateNestedManyWithoutUserInput
+    profileImage?: ProfileImageUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutArticleCommentLikeInput = {
@@ -20819,11 +22124,9 @@ export namespace Prisma {
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
-    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateManyWithoutUserNestedInput
@@ -20832,6 +22135,7 @@ export namespace Prisma {
     event?: EventUpdateManyWithoutUserNestedInput
     eventScrap?: EventScrapUpdateManyWithoutUserNestedInput
     userTerm?: UserTermUpdateManyWithoutUserNestedInput
+    profileImage?: ProfileImageUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutArticleCommentLikeInput = {
@@ -20841,11 +22145,9 @@ export namespace Prisma {
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
-    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUncheckedUpdateManyWithoutUserNestedInput
@@ -20854,6 +22156,7 @@ export namespace Prisma {
     event?: EventUncheckedUpdateManyWithoutUserNestedInput
     eventScrap?: EventScrapUncheckedUpdateManyWithoutUserNestedInput
     userTerm?: UserTermUncheckedUpdateManyWithoutUserNestedInput
+    profileImage?: ProfileImageUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ArticleCreateWithoutArticleImageInput = {
@@ -20962,11 +22265,9 @@ export namespace Prisma {
     birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
-    profileImage?: string | null
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
-    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleCreateNestedManyWithoutUserInput
@@ -20975,6 +22276,7 @@ export namespace Prisma {
     event?: EventCreateNestedManyWithoutUserInput
     eventScrap?: EventScrapCreateNestedManyWithoutUserInput
     userTerm?: UserTermCreateNestedManyWithoutUserInput
+    profileImage?: ProfileImageCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutArticleLikeInput = {
@@ -20984,11 +22286,9 @@ export namespace Prisma {
     birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
-    profileImage?: string | null
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
-    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleUncheckedCreateNestedManyWithoutUserInput
@@ -20997,6 +22297,7 @@ export namespace Prisma {
     event?: EventUncheckedCreateNestedManyWithoutUserInput
     eventScrap?: EventScrapUncheckedCreateNestedManyWithoutUserInput
     userTerm?: UserTermUncheckedCreateNestedManyWithoutUserInput
+    profileImage?: ProfileImageUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutArticleLikeInput = {
@@ -21059,11 +22360,9 @@ export namespace Prisma {
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
-    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateManyWithoutUserNestedInput
@@ -21072,6 +22371,7 @@ export namespace Prisma {
     event?: EventUpdateManyWithoutUserNestedInput
     eventScrap?: EventScrapUpdateManyWithoutUserNestedInput
     userTerm?: UserTermUpdateManyWithoutUserNestedInput
+    profileImage?: ProfileImageUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutArticleLikeInput = {
@@ -21081,11 +22381,9 @@ export namespace Prisma {
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
-    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUncheckedUpdateManyWithoutUserNestedInput
@@ -21094,6 +22392,7 @@ export namespace Prisma {
     event?: EventUncheckedUpdateManyWithoutUserNestedInput
     eventScrap?: EventScrapUncheckedUpdateManyWithoutUserNestedInput
     userTerm?: UserTermUncheckedUpdateManyWithoutUserNestedInput
+    profileImage?: ProfileImageUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ArticleCreateWithoutCommunityInput = {
@@ -21169,11 +22468,9 @@ export namespace Prisma {
     birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
-    profileImage?: string | null
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
-    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleCreateNestedManyWithoutUserInput
@@ -21182,6 +22479,7 @@ export namespace Prisma {
     articleLike?: ArticleLikeCreateNestedManyWithoutUserInput
     eventScrap?: EventScrapCreateNestedManyWithoutUserInput
     userTerm?: UserTermCreateNestedManyWithoutUserInput
+    profileImage?: ProfileImageCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutEventInput = {
@@ -21191,11 +22489,9 @@ export namespace Prisma {
     birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
-    profileImage?: string | null
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
-    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleUncheckedCreateNestedManyWithoutUserInput
@@ -21204,6 +22500,7 @@ export namespace Prisma {
     articleLike?: ArticleLikeUncheckedCreateNestedManyWithoutUserInput
     eventScrap?: EventScrapUncheckedCreateNestedManyWithoutUserInput
     userTerm?: UserTermUncheckedCreateNestedManyWithoutUserInput
+    profileImage?: ProfileImageUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutEventInput = {
@@ -21275,11 +22572,9 @@ export namespace Prisma {
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
-    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateManyWithoutUserNestedInput
@@ -21288,6 +22583,7 @@ export namespace Prisma {
     articleLike?: ArticleLikeUpdateManyWithoutUserNestedInput
     eventScrap?: EventScrapUpdateManyWithoutUserNestedInput
     userTerm?: UserTermUpdateManyWithoutUserNestedInput
+    profileImage?: ProfileImageUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEventInput = {
@@ -21297,11 +22593,9 @@ export namespace Prisma {
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
-    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUncheckedUpdateManyWithoutUserNestedInput
@@ -21310,6 +22604,7 @@ export namespace Prisma {
     articleLike?: ArticleLikeUncheckedUpdateManyWithoutUserNestedInput
     eventScrap?: EventScrapUncheckedUpdateManyWithoutUserNestedInput
     userTerm?: UserTermUncheckedUpdateManyWithoutUserNestedInput
+    profileImage?: ProfileImageUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type EventImageUpsertWithWhereUniqueWithoutEventInput = {
@@ -21484,11 +22779,9 @@ export namespace Prisma {
     birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
-    profileImage?: string | null
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
-    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleCreateNestedManyWithoutUserInput
@@ -21497,6 +22790,7 @@ export namespace Prisma {
     articleLike?: ArticleLikeCreateNestedManyWithoutUserInput
     event?: EventCreateNestedManyWithoutUserInput
     userTerm?: UserTermCreateNestedManyWithoutUserInput
+    profileImage?: ProfileImageCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutEventScrapInput = {
@@ -21506,11 +22800,9 @@ export namespace Prisma {
     birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
-    profileImage?: string | null
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
-    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleUncheckedCreateNestedManyWithoutUserInput
@@ -21519,6 +22811,7 @@ export namespace Prisma {
     articleLike?: ArticleLikeUncheckedCreateNestedManyWithoutUserInput
     event?: EventUncheckedCreateNestedManyWithoutUserInput
     userTerm?: UserTermUncheckedCreateNestedManyWithoutUserInput
+    profileImage?: ProfileImageUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutEventScrapInput = {
@@ -21597,11 +22890,9 @@ export namespace Prisma {
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
-    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateManyWithoutUserNestedInput
@@ -21610,6 +22901,7 @@ export namespace Prisma {
     articleLike?: ArticleLikeUpdateManyWithoutUserNestedInput
     event?: EventUpdateManyWithoutUserNestedInput
     userTerm?: UserTermUpdateManyWithoutUserNestedInput
+    profileImage?: ProfileImageUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEventScrapInput = {
@@ -21619,11 +22911,9 @@ export namespace Prisma {
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
-    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUncheckedUpdateManyWithoutUserNestedInput
@@ -21632,6 +22922,7 @@ export namespace Prisma {
     articleLike?: ArticleLikeUncheckedUpdateManyWithoutUserNestedInput
     event?: EventUncheckedUpdateManyWithoutUserNestedInput
     userTerm?: UserTermUncheckedUpdateManyWithoutUserNestedInput
+    profileImage?: ProfileImageUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type EventUpsertWithoutEventScrapInput = {
@@ -21962,6 +23253,32 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ProfileImageCreateWithoutUserInput = {
+    id?: bigint | number
+    imageUrl: string
+    order: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProfileImageUncheckedCreateWithoutUserInput = {
+    id?: bigint | number
+    imageUrl: string
+    order: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProfileImageCreateOrConnectWithoutUserInput = {
+    where: ProfileImageWhereUniqueInput
+    create: XOR<ProfileImageCreateWithoutUserInput, ProfileImageUncheckedCreateWithoutUserInput>
+  }
+
+  export type ProfileImageCreateManyUserInputEnvelope = {
+    data: ProfileImageCreateManyUserInput | ProfileImageCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ArticleUpsertWithWhereUniqueWithoutUserInput = {
     where: ArticleWhereUniqueInput
     update: XOR<ArticleUpdateWithoutUserInput, ArticleUncheckedUpdateWithoutUserInput>
@@ -22100,6 +23417,134 @@ export namespace Prisma {
     data: XOR<UserTermUpdateManyMutationInput, UserTermUncheckedUpdateManyWithoutUserInput>
   }
 
+  export type ProfileImageUpsertWithWhereUniqueWithoutUserInput = {
+    where: ProfileImageWhereUniqueInput
+    update: XOR<ProfileImageUpdateWithoutUserInput, ProfileImageUncheckedUpdateWithoutUserInput>
+    create: XOR<ProfileImageCreateWithoutUserInput, ProfileImageUncheckedCreateWithoutUserInput>
+  }
+
+  export type ProfileImageUpdateWithWhereUniqueWithoutUserInput = {
+    where: ProfileImageWhereUniqueInput
+    data: XOR<ProfileImageUpdateWithoutUserInput, ProfileImageUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ProfileImageUpdateManyWithWhereWithoutUserInput = {
+    where: ProfileImageScalarWhereInput
+    data: XOR<ProfileImageUpdateManyMutationInput, ProfileImageUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type ProfileImageScalarWhereInput = {
+    AND?: ProfileImageScalarWhereInput | ProfileImageScalarWhereInput[]
+    OR?: ProfileImageScalarWhereInput[]
+    NOT?: ProfileImageScalarWhereInput | ProfileImageScalarWhereInput[]
+    id?: BigIntFilter<"ProfileImage"> | bigint | number
+    userId?: BigIntFilter<"ProfileImage"> | bigint | number
+    imageUrl?: StringFilter<"ProfileImage"> | string
+    order?: IntFilter<"ProfileImage"> | number
+    createdAt?: DateTimeFilter<"ProfileImage"> | Date | string
+    updatedAt?: DateTimeFilter<"ProfileImage"> | Date | string
+  }
+
+  export type UserCreateWithoutProfileImageInput = {
+    id?: bigint | number
+    name?: string | null
+    nickname: string
+    birthdate?: Date | string | null
+    gender?: string | null
+    phoneNumber?: string | null
+    role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    article?: ArticleCreateNestedManyWithoutUserInput
+    articleComment?: ArticleCommentCreateNestedManyWithoutUserInput
+    articleCommentLike?: ArticleCommentLikeCreateNestedManyWithoutUserInput
+    articleLike?: ArticleLikeCreateNestedManyWithoutUserInput
+    event?: EventCreateNestedManyWithoutUserInput
+    eventScrap?: EventScrapCreateNestedManyWithoutUserInput
+    userTerm?: UserTermCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutProfileImageInput = {
+    id?: bigint | number
+    name?: string | null
+    nickname: string
+    birthdate?: Date | string | null
+    gender?: string | null
+    phoneNumber?: string | null
+    role?: string
+    oauthProvider?: string | null
+    oauthId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    article?: ArticleUncheckedCreateNestedManyWithoutUserInput
+    articleComment?: ArticleCommentUncheckedCreateNestedManyWithoutUserInput
+    articleCommentLike?: ArticleCommentLikeUncheckedCreateNestedManyWithoutUserInput
+    articleLike?: ArticleLikeUncheckedCreateNestedManyWithoutUserInput
+    event?: EventUncheckedCreateNestedManyWithoutUserInput
+    eventScrap?: EventScrapUncheckedCreateNestedManyWithoutUserInput
+    userTerm?: UserTermUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutProfileImageInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutProfileImageInput, UserUncheckedCreateWithoutProfileImageInput>
+  }
+
+  export type UserUpsertWithoutProfileImageInput = {
+    update: XOR<UserUpdateWithoutProfileImageInput, UserUncheckedUpdateWithoutProfileImageInput>
+    create: XOR<UserCreateWithoutProfileImageInput, UserUncheckedCreateWithoutProfileImageInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutProfileImageInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutProfileImageInput, UserUncheckedUpdateWithoutProfileImageInput>
+  }
+
+  export type UserUpdateWithoutProfileImageInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    nickname?: StringFieldUpdateOperationsInput | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    article?: ArticleUpdateManyWithoutUserNestedInput
+    articleComment?: ArticleCommentUpdateManyWithoutUserNestedInput
+    articleCommentLike?: ArticleCommentLikeUpdateManyWithoutUserNestedInput
+    articleLike?: ArticleLikeUpdateManyWithoutUserNestedInput
+    event?: EventUpdateManyWithoutUserNestedInput
+    eventScrap?: EventScrapUpdateManyWithoutUserNestedInput
+    userTerm?: UserTermUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutProfileImageInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    nickname?: StringFieldUpdateOperationsInput | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
+    oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    article?: ArticleUncheckedUpdateManyWithoutUserNestedInput
+    articleComment?: ArticleCommentUncheckedUpdateManyWithoutUserNestedInput
+    articleCommentLike?: ArticleCommentLikeUncheckedUpdateManyWithoutUserNestedInput
+    articleLike?: ArticleLikeUncheckedUpdateManyWithoutUserNestedInput
+    event?: EventUncheckedUpdateManyWithoutUserNestedInput
+    eventScrap?: EventScrapUncheckedUpdateManyWithoutUserNestedInput
+    userTerm?: UserTermUncheckedUpdateManyWithoutUserNestedInput
+  }
+
   export type TermCreateWithoutUserTermInput = {
     id?: bigint | number
     title: string
@@ -22130,11 +23575,9 @@ export namespace Prisma {
     birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
-    profileImage?: string | null
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
-    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleCreateNestedManyWithoutUserInput
@@ -22143,6 +23586,7 @@ export namespace Prisma {
     articleLike?: ArticleLikeCreateNestedManyWithoutUserInput
     event?: EventCreateNestedManyWithoutUserInput
     eventScrap?: EventScrapCreateNestedManyWithoutUserInput
+    profileImage?: ProfileImageCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutUserTermInput = {
@@ -22152,11 +23596,9 @@ export namespace Prisma {
     birthdate?: Date | string | null
     gender?: string | null
     phoneNumber?: string | null
-    profileImage?: string | null
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
-    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleUncheckedCreateNestedManyWithoutUserInput
@@ -22165,6 +23607,7 @@ export namespace Prisma {
     articleLike?: ArticleLikeUncheckedCreateNestedManyWithoutUserInput
     event?: EventUncheckedCreateNestedManyWithoutUserInput
     eventScrap?: EventScrapUncheckedCreateNestedManyWithoutUserInput
+    profileImage?: ProfileImageUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutUserTermInput = {
@@ -22219,11 +23662,9 @@ export namespace Prisma {
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
-    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateManyWithoutUserNestedInput
@@ -22232,6 +23673,7 @@ export namespace Prisma {
     articleLike?: ArticleLikeUpdateManyWithoutUserNestedInput
     event?: EventUpdateManyWithoutUserNestedInput
     eventScrap?: EventScrapUpdateManyWithoutUserNestedInput
+    profileImage?: ProfileImageUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUserTermInput = {
@@ -22241,11 +23683,9 @@ export namespace Prisma {
     birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
-    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUncheckedUpdateManyWithoutUserNestedInput
@@ -22254,6 +23694,7 @@ export namespace Prisma {
     articleLike?: ArticleLikeUncheckedUpdateManyWithoutUserNestedInput
     event?: EventUncheckedUpdateManyWithoutUserNestedInput
     eventScrap?: EventScrapUncheckedUpdateManyWithoutUserNestedInput
+    profileImage?: ProfileImageUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ArticleImageCreateManyArticleInput = {
@@ -22613,6 +24054,14 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type ProfileImageCreateManyUserInput = {
+    id?: bigint | number
+    imageUrl: string
+    order: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type ArticleUpdateWithoutUserInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
@@ -22824,6 +24273,30 @@ export namespace Prisma {
   export type UserTermUncheckedUpdateManyWithoutUserInput = {
     termId?: BigIntFieldUpdateOperationsInput | bigint | number
     isAccepted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProfileImageUpdateWithoutUserInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProfileImageUncheckedUpdateWithoutUserInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProfileImageUncheckedUpdateManyWithoutUserInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

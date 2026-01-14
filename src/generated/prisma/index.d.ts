@@ -13412,6 +13412,7 @@ export namespace Prisma {
     role: string | null
     oauthProvider: string | null
     oauthId: string | null
+    nicknameUpdatedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -13426,6 +13427,7 @@ export namespace Prisma {
     role: string | null
     oauthProvider: string | null
     oauthId: string | null
+    nicknameUpdatedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -13440,6 +13442,7 @@ export namespace Prisma {
     role: number
     oauthProvider: number
     oauthId: number
+    nicknameUpdatedAt: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -13464,6 +13467,7 @@ export namespace Prisma {
     role?: true
     oauthProvider?: true
     oauthId?: true
+    nicknameUpdatedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -13478,6 +13482,7 @@ export namespace Prisma {
     role?: true
     oauthProvider?: true
     oauthId?: true
+    nicknameUpdatedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -13492,6 +13497,7 @@ export namespace Prisma {
     role?: true
     oauthProvider?: true
     oauthId?: true
+    nicknameUpdatedAt?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -13593,6 +13599,7 @@ export namespace Prisma {
     role: string
     oauthProvider: string | null
     oauthId: string | null
+    nicknameUpdatedAt: Date | null
     createdAt: Date
     updatedAt: Date
     _count: UserCountAggregateOutputType | null
@@ -13626,6 +13633,7 @@ export namespace Prisma {
     role?: boolean
     oauthProvider?: boolean
     oauthId?: boolean
+    nicknameUpdatedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     article?: boolean | User$articleArgs<ExtArgs>
@@ -13651,11 +13659,12 @@ export namespace Prisma {
     role?: boolean
     oauthProvider?: boolean
     oauthId?: boolean
+    nicknameUpdatedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "nickname" | "birthdate" | "gender" | "phoneNumber" | "role" | "oauthProvider" | "oauthId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "nickname" | "birthdate" | "gender" | "phoneNumber" | "role" | "oauthProvider" | "oauthId" | "nicknameUpdatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     article?: boolean | User$articleArgs<ExtArgs>
     articleComment?: boolean | User$articleCommentArgs<ExtArgs>
@@ -13690,6 +13699,7 @@ export namespace Prisma {
       role: string
       oauthProvider: string | null
       oauthId: string | null
+      nicknameUpdatedAt: Date | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["user"]>
@@ -14078,6 +14088,7 @@ export namespace Prisma {
     readonly role: FieldRef<"User", 'String'>
     readonly oauthProvider: FieldRef<"User", 'String'>
     readonly oauthId: FieldRef<"User", 'String'>
+    readonly nicknameUpdatedAt: FieldRef<"User", 'DateTime'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
@@ -16753,6 +16764,7 @@ export namespace Prisma {
     role: 'role',
     oauthProvider: 'oauthProvider',
     oauthId: 'oauthId',
+    nicknameUpdatedAt: 'nicknameUpdatedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -17740,6 +17752,7 @@ export namespace Prisma {
     role?: StringFilter<"User"> | string
     oauthProvider?: StringNullableFilter<"User"> | string | null
     oauthId?: StringNullableFilter<"User"> | string | null
+    nicknameUpdatedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     article?: ArticleListRelationFilter
@@ -17762,6 +17775,7 @@ export namespace Prisma {
     role?: SortOrder
     oauthProvider?: SortOrderInput | SortOrder
     oauthId?: SortOrderInput | SortOrder
+    nicknameUpdatedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     article?: ArticleOrderByRelationAggregateInput
@@ -17788,6 +17802,7 @@ export namespace Prisma {
     role?: StringFilter<"User"> | string
     oauthProvider?: StringNullableFilter<"User"> | string | null
     oauthId?: StringNullableFilter<"User"> | string | null
+    nicknameUpdatedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     article?: ArticleListRelationFilter
@@ -17810,6 +17825,7 @@ export namespace Prisma {
     role?: SortOrder
     oauthProvider?: SortOrderInput | SortOrder
     oauthId?: SortOrderInput | SortOrder
+    nicknameUpdatedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
@@ -17832,6 +17848,7 @@ export namespace Prisma {
     role?: StringWithAggregatesFilter<"User"> | string
     oauthProvider?: StringNullableWithAggregatesFilter<"User"> | string | null
     oauthId?: StringNullableWithAggregatesFilter<"User"> | string | null
+    nicknameUpdatedAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
@@ -18763,6 +18780,7 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleCreateNestedManyWithoutUserInput
@@ -18785,6 +18803,7 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleUncheckedCreateNestedManyWithoutUserInput
@@ -18807,6 +18826,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateManyWithoutUserNestedInput
@@ -18829,6 +18849,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUncheckedUpdateManyWithoutUserNestedInput
@@ -18851,6 +18872,7 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -18865,6 +18887,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -18879,6 +18902,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19921,6 +19945,7 @@ export namespace Prisma {
     role?: SortOrder
     oauthProvider?: SortOrder
     oauthId?: SortOrder
+    nicknameUpdatedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -19939,6 +19964,7 @@ export namespace Prisma {
     role?: SortOrder
     oauthProvider?: SortOrder
     oauthId?: SortOrder
+    nicknameUpdatedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -19953,6 +19979,7 @@ export namespace Prisma {
     role?: SortOrder
     oauthProvider?: SortOrder
     oauthId?: SortOrder
+    nicknameUpdatedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -21368,6 +21395,7 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     articleComment?: ArticleCommentCreateNestedManyWithoutUserInput
@@ -21389,6 +21417,7 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     articleComment?: ArticleCommentUncheckedCreateNestedManyWithoutUserInput
@@ -21525,6 +21554,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     articleComment?: ArticleCommentUpdateManyWithoutUserNestedInput
@@ -21546,6 +21576,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     articleComment?: ArticleCommentUncheckedUpdateManyWithoutUserNestedInput
@@ -21675,6 +21706,7 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleCreateNestedManyWithoutUserInput
@@ -21696,6 +21728,7 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleUncheckedCreateNestedManyWithoutUserInput
@@ -21849,6 +21882,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateManyWithoutUserNestedInput
@@ -21870,6 +21904,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUncheckedUpdateManyWithoutUserNestedInput
@@ -22034,6 +22069,7 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleCreateNestedManyWithoutUserInput
@@ -22055,6 +22091,7 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleUncheckedCreateNestedManyWithoutUserInput
@@ -22127,6 +22164,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateManyWithoutUserNestedInput
@@ -22148,6 +22186,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUncheckedUpdateManyWithoutUserNestedInput
@@ -22268,6 +22307,7 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleCreateNestedManyWithoutUserInput
@@ -22289,6 +22329,7 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleUncheckedCreateNestedManyWithoutUserInput
@@ -22363,6 +22404,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateManyWithoutUserNestedInput
@@ -22384,6 +22426,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUncheckedUpdateManyWithoutUserNestedInput
@@ -22471,6 +22514,7 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleCreateNestedManyWithoutUserInput
@@ -22492,6 +22536,7 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleUncheckedCreateNestedManyWithoutUserInput
@@ -22575,6 +22620,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateManyWithoutUserNestedInput
@@ -22596,6 +22642,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUncheckedUpdateManyWithoutUserNestedInput
@@ -22782,6 +22829,7 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleCreateNestedManyWithoutUserInput
@@ -22803,6 +22851,7 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleUncheckedCreateNestedManyWithoutUserInput
@@ -22893,6 +22942,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateManyWithoutUserNestedInput
@@ -22914,6 +22964,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUncheckedUpdateManyWithoutUserNestedInput
@@ -23455,6 +23506,7 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleCreateNestedManyWithoutUserInput
@@ -23476,6 +23528,7 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleUncheckedCreateNestedManyWithoutUserInput
@@ -23513,6 +23566,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateManyWithoutUserNestedInput
@@ -23534,6 +23588,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUncheckedUpdateManyWithoutUserNestedInput
@@ -23578,6 +23633,7 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleCreateNestedManyWithoutUserInput
@@ -23599,6 +23655,7 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     article?: ArticleUncheckedCreateNestedManyWithoutUserInput
@@ -23665,6 +23722,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateManyWithoutUserNestedInput
@@ -23686,6 +23744,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUncheckedUpdateManyWithoutUserNestedInput

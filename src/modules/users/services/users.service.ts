@@ -5,6 +5,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
+import dayjs from 'dayjs';
+
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { UpdateNicknameRequestDto } from '@modules/users/dto/nickname.dto';
 import { UpdateProfileImageRequestDto } from '@modules/users/dto/profile.dto';
@@ -153,6 +155,23 @@ export class UsersService {
   async updateNickname(userId: bigint, dto: UpdateNicknameRequestDto) {
     const nickname = dto.nickname.trim();
 
+    // 닉네임 최근 변경일자 조회
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { nicknameUpdatedAt: true },
+    });
+
+    if (user?.nicknameUpdatedAt) {
+      const diffDays = dayjs().diff(user.nicknameUpdatedAt, 'day');
+
+      if (diffDays < 30) {
+        throw new BadRequestException({
+          message: `닉네임은 ${30 - diffDays}일 후에 변경할 수 있습니다.`,
+          nextAvailableAt: dayjs(user.nicknameUpdatedAt).add(30, 'day').toISOString(),
+        });
+      }
+    }
+
     const nicknameAlreadyExists = await this.prisma.user.findFirst({
       where: { nickname, NOT: { id: userId } },
       select: { id: true },
@@ -164,7 +183,7 @@ export class UsersService {
     try {
       await this.prisma.user.update({
         where: { id: userId },
-        data: { nickname },
+        data: { nickname, nicknameUpdatedAt: new Date() }, // 닉네임 변경일자 갱신
       });
     } catch (e: unknown) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {

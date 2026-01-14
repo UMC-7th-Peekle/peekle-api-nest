@@ -568,7 +568,13 @@ export class CommunityService {
       include: {
         _count: { select: { articleCommentLike: true } },
         // 작성자 프로필 정보 포함
-        user: true,
+        user: {
+          include: {
+            profileImage: {
+              orderBy: { order: 'asc' },
+            },
+          },
+        },
       },
     });
 
@@ -599,7 +605,11 @@ export class CommunityService {
             id: comment.user.id.toString(),
             name: comment.user.name ?? undefined,
             nickname: comment.user.nickname,
-            profileImage: comment.user.profileImage ?? undefined,
+            profileImages: comment.user.profileImage.map((img) => ({
+              id: img.id.toString(),
+              imageUrl: img.imageUrl,
+              order: img.order,
+            })),
             role: comment.user.role,
             createdAt: comment.user.createdAt.toISOString(),
             updatedAt: comment.user.updatedAt.toISOString(),

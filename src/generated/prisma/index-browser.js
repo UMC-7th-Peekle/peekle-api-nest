@@ -240,6 +240,8 @@ exports.Prisma.UserScalarFieldEnum = {
   role: 'role',
   oauthProvider: 'oauthProvider',
   oauthId: 'oauthId',
+  isActive: 'isActive',
+  deletedAt: 'deletedAt',
   nicknameUpdatedAt: 'nicknameUpdatedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

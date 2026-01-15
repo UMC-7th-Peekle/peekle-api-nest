@@ -12,6 +12,7 @@ import { RefreshJwtConfig } from '@modules/auth/config/refresh-jwt.config';
 import { RegisterJwtConfig } from '@modules/auth/config/register-jwt.config';
 import { JwtPayload, RegisterJwtPayload } from '@modules/auth/types/jwt.types';
 import { FrontEnvironment } from '@modules/auth/types/oauth.types';
+import { PrismaService } from '@modules/prisma/prisma.service';
 import { UsersService } from '@modules/users/services/users.service';
 import { OAuthLoginOrRegisterResult } from '@modules/users/types/oauth.users.types';
 
@@ -26,6 +27,7 @@ export class AuthService {
     private readonly userService: UsersService,
     @Inject(FrontendUrlConfig.KEY)
     private readonly frontendUrlConfig: ConfigType<typeof FrontendUrlConfig>,
+    private readonly prisma: PrismaService,
   ) {}
 
   getFrontendOAuthCallbackUrl(frontEnv: FrontEnvironment): string {
@@ -71,10 +73,24 @@ export class AuthService {
    * JWT Guard에서 사용합니다. JWT payload 내의 userId를 받아서 사용자 정보를 반환합니다.
    * @param userId
    */
+  // getUserInfo 사용 시 Auth - User간 순환 참조 문제가 발생하여 직접 prisma 접근으로 변경
   async validateJwtUser(userId: bigint) {
-    const user = await this.userService.getUserInfo(userId);
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        nickname: true,
+        deletedAt: true,
+        isActive: true,
+      },
+    });
 
     if (!user) throw new UnauthorizedException('INVALID_TOKEN : 존재하지 않는 사용자입니다.');
+
+    if (user.deletedAt || user.isActive === false) {
+      throw new UnauthorizedException('WITHDRAWN_USER : 탈퇴한 사용자입니다.');
+    }
 
     return {
       userId: user.id,

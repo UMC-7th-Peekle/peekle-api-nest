@@ -1,4 +1,5 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 
 import { Prisma } from '@peekle/prisma/client';
@@ -37,6 +38,10 @@ export class OAuthUserService {
     console.log('OAuthUserService ~ user:', user);
 
     if (user) {
+      if (user.deletedAt || user.isActive === false) {
+        throw new UnauthorizedException('WITHDRAWN_USER : 탈퇴한 사용자입니다.');
+      }
+
       const tokens = await this.authService.generateTokens(user.id);
       return { type: 'login', oauthProvider: oauthData.oauthProvider, tokens };
     } else {

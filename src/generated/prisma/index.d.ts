@@ -13412,6 +13412,8 @@ export namespace Prisma {
     role: string | null
     oauthProvider: string | null
     oauthId: string | null
+    isActive: boolean | null
+    deletedAt: Date | null
     nicknameUpdatedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -13427,6 +13429,8 @@ export namespace Prisma {
     role: string | null
     oauthProvider: string | null
     oauthId: string | null
+    isActive: boolean | null
+    deletedAt: Date | null
     nicknameUpdatedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -13442,6 +13446,8 @@ export namespace Prisma {
     role: number
     oauthProvider: number
     oauthId: number
+    isActive: number
+    deletedAt: number
     nicknameUpdatedAt: number
     createdAt: number
     updatedAt: number
@@ -13467,6 +13473,8 @@ export namespace Prisma {
     role?: true
     oauthProvider?: true
     oauthId?: true
+    isActive?: true
+    deletedAt?: true
     nicknameUpdatedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -13482,6 +13490,8 @@ export namespace Prisma {
     role?: true
     oauthProvider?: true
     oauthId?: true
+    isActive?: true
+    deletedAt?: true
     nicknameUpdatedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -13497,6 +13507,8 @@ export namespace Prisma {
     role?: true
     oauthProvider?: true
     oauthId?: true
+    isActive?: true
+    deletedAt?: true
     nicknameUpdatedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -13599,6 +13611,8 @@ export namespace Prisma {
     role: string
     oauthProvider: string | null
     oauthId: string | null
+    isActive: boolean
+    deletedAt: Date | null
     nicknameUpdatedAt: Date | null
     createdAt: Date
     updatedAt: Date
@@ -13633,6 +13647,8 @@ export namespace Prisma {
     role?: boolean
     oauthProvider?: boolean
     oauthId?: boolean
+    isActive?: boolean
+    deletedAt?: boolean
     nicknameUpdatedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -13659,12 +13675,14 @@ export namespace Prisma {
     role?: boolean
     oauthProvider?: boolean
     oauthId?: boolean
+    isActive?: boolean
+    deletedAt?: boolean
     nicknameUpdatedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "nickname" | "birthdate" | "gender" | "phoneNumber" | "role" | "oauthProvider" | "oauthId" | "nicknameUpdatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "nickname" | "birthdate" | "gender" | "phoneNumber" | "role" | "oauthProvider" | "oauthId" | "isActive" | "deletedAt" | "nicknameUpdatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     article?: boolean | User$articleArgs<ExtArgs>
     articleComment?: boolean | User$articleCommentArgs<ExtArgs>
@@ -13699,6 +13717,8 @@ export namespace Prisma {
       role: string
       oauthProvider: string | null
       oauthId: string | null
+      isActive: boolean
+      deletedAt: Date | null
       nicknameUpdatedAt: Date | null
       createdAt: Date
       updatedAt: Date
@@ -14088,6 +14108,8 @@ export namespace Prisma {
     readonly role: FieldRef<"User", 'String'>
     readonly oauthProvider: FieldRef<"User", 'String'>
     readonly oauthId: FieldRef<"User", 'String'>
+    readonly isActive: FieldRef<"User", 'Boolean'>
+    readonly deletedAt: FieldRef<"User", 'DateTime'>
     readonly nicknameUpdatedAt: FieldRef<"User", 'DateTime'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
@@ -16764,6 +16786,8 @@ export namespace Prisma {
     role: 'role',
     oauthProvider: 'oauthProvider',
     oauthId: 'oauthId',
+    isActive: 'isActive',
+    deletedAt: 'deletedAt',
     nicknameUpdatedAt: 'nicknameUpdatedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -17752,6 +17776,8 @@ export namespace Prisma {
     role?: StringFilter<"User"> | string
     oauthProvider?: StringNullableFilter<"User"> | string | null
     oauthId?: StringNullableFilter<"User"> | string | null
+    isActive?: BoolFilter<"User"> | boolean
+    deletedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     nicknameUpdatedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
@@ -17775,6 +17801,8 @@ export namespace Prisma {
     role?: SortOrder
     oauthProvider?: SortOrderInput | SortOrder
     oauthId?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     nicknameUpdatedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -17802,6 +17830,8 @@ export namespace Prisma {
     role?: StringFilter<"User"> | string
     oauthProvider?: StringNullableFilter<"User"> | string | null
     oauthId?: StringNullableFilter<"User"> | string | null
+    isActive?: BoolFilter<"User"> | boolean
+    deletedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     nicknameUpdatedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
@@ -17825,6 +17855,8 @@ export namespace Prisma {
     role?: SortOrder
     oauthProvider?: SortOrderInput | SortOrder
     oauthId?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     nicknameUpdatedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -17848,6 +17880,8 @@ export namespace Prisma {
     role?: StringWithAggregatesFilter<"User"> | string
     oauthProvider?: StringNullableWithAggregatesFilter<"User"> | string | null
     oauthId?: StringNullableWithAggregatesFilter<"User"> | string | null
+    isActive?: BoolWithAggregatesFilter<"User"> | boolean
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     nicknameUpdatedAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -18780,6 +18814,8 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    isActive?: boolean
+    deletedAt?: Date | string | null
     nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -18803,6 +18839,8 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    isActive?: boolean
+    deletedAt?: Date | string | null
     nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -18826,6 +18864,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18849,6 +18889,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18872,6 +18914,8 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    isActive?: boolean
+    deletedAt?: Date | string | null
     nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -18887,6 +18931,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18902,6 +18948,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19945,6 +19993,8 @@ export namespace Prisma {
     role?: SortOrder
     oauthProvider?: SortOrder
     oauthId?: SortOrder
+    isActive?: SortOrder
+    deletedAt?: SortOrder
     nicknameUpdatedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -19964,6 +20014,8 @@ export namespace Prisma {
     role?: SortOrder
     oauthProvider?: SortOrder
     oauthId?: SortOrder
+    isActive?: SortOrder
+    deletedAt?: SortOrder
     nicknameUpdatedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -19979,6 +20031,8 @@ export namespace Prisma {
     role?: SortOrder
     oauthProvider?: SortOrder
     oauthId?: SortOrder
+    isActive?: SortOrder
+    deletedAt?: SortOrder
     nicknameUpdatedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -21395,6 +21449,8 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    isActive?: boolean
+    deletedAt?: Date | string | null
     nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -21417,6 +21473,8 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    isActive?: boolean
+    deletedAt?: Date | string | null
     nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -21554,6 +21612,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21576,6 +21636,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21706,6 +21768,8 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    isActive?: boolean
+    deletedAt?: Date | string | null
     nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -21728,6 +21792,8 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    isActive?: boolean
+    deletedAt?: Date | string | null
     nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -21882,6 +21948,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21904,6 +21972,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22069,6 +22139,8 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    isActive?: boolean
+    deletedAt?: Date | string | null
     nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22091,6 +22163,8 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    isActive?: boolean
+    deletedAt?: Date | string | null
     nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22164,6 +22238,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22186,6 +22262,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22307,6 +22385,8 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    isActive?: boolean
+    deletedAt?: Date | string | null
     nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22329,6 +22409,8 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    isActive?: boolean
+    deletedAt?: Date | string | null
     nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22404,6 +22486,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22426,6 +22510,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22514,6 +22600,8 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    isActive?: boolean
+    deletedAt?: Date | string | null
     nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22536,6 +22624,8 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    isActive?: boolean
+    deletedAt?: Date | string | null
     nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22620,6 +22710,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22642,6 +22734,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22829,6 +22923,8 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    isActive?: boolean
+    deletedAt?: Date | string | null
     nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22851,6 +22947,8 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    isActive?: boolean
+    deletedAt?: Date | string | null
     nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -22942,6 +23040,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22964,6 +23064,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -23506,6 +23608,8 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    isActive?: boolean
+    deletedAt?: Date | string | null
     nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -23528,6 +23632,8 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    isActive?: boolean
+    deletedAt?: Date | string | null
     nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -23566,6 +23672,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -23588,6 +23696,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -23633,6 +23743,8 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    isActive?: boolean
+    deletedAt?: Date | string | null
     nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -23655,6 +23767,8 @@ export namespace Prisma {
     role?: string
     oauthProvider?: string | null
     oauthId?: string | null
+    isActive?: boolean
+    deletedAt?: Date | string | null
     nicknameUpdatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -23722,6 +23836,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -23744,6 +23860,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     oauthProvider?: NullableStringFieldUpdateOperationsInput | string | null
     oauthId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nicknameUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

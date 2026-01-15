@@ -204,6 +204,8 @@ model User {
   role               String               @default("USER") @db.VarChar(30)
   oauthProvider      String?              @map("oauth_provider") @db.VarChar(30)
   oauthId            String?              @map("oauth_id") @db.VarChar(100)
+  isActive           Boolean              @default(true) @map("is_active")
+  deletedAt          DateTime?            @map("deleted_at") @db.Timestamp(6)
   nicknameUpdatedAt  DateTime?            @map("nickname_updated_at") @db.Timestamp(6)
   createdAt          DateTime             @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt          DateTime             @default(now()) @map("updated_at") @db.Timestamp(6)

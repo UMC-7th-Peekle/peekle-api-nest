@@ -244,4 +244,36 @@ export class UsersService {
 
     return { message: '프로필 이미지가 업데이트되었습니다.' };
   }
+
+  /**
+   * 회원 탈퇴
+   * - 실제 데이터는 삭제하지 않고, 계정 상태(isActive) 변경하고, 탈퇴일자(deletedAt)만 기록
+   */
+  async withdrawUser(userId: bigint) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        deletedAt: true, // user 상태가 탈퇴/활성 말고 추가되는 경우를 대비해 deletedAt 필드로 탈퇴 여부 판단
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('사용자를 찾을 수 없습니다.');
+    }
+
+    if (user.deletedAt) {
+      throw new BadRequestException('이미 탈퇴한 사용자입니다.');
+    }
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        isActive: false,
+        deletedAt: new Date(),
+      },
+    });
+
+    return { message: '회원 탈퇴가 완료되었습니다.' };
+  }
 }

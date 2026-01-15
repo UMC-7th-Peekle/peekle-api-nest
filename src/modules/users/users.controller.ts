@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Query, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Query, Req } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 // req.user?.userId로 꺼내오도록 하긴 했는데 다른 파트와의 코드 일관성을 위해 일단 사용하진 않음
@@ -98,5 +98,16 @@ export class UsersController {
   updateTermsAgreement(@Req() req: any, @Body() body: UpdateTermsAgreementRequestDto) {
     const userId = req.user?.userId;
     return this.usersService.updateTermsAgreement(userId, body);
+  }
+
+  @ApiBearerAuth()
+  @Delete('me')
+  @ApiOperation({ summary: '회원 탈퇴' })
+  @ApiOkResponse({
+    schema: { example: { message: '회원 탈퇴가 완료되었습니다.' } },
+  })
+  withdrawUser(@Req() req: any) {
+    const userId = req.user?.userId;
+    return this.usersService.withdrawUser(userId);
   }
 }

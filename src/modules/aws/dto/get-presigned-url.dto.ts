@@ -5,6 +5,7 @@ import { IsEnum, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 export enum UploadDomain {
   EVENTS = 'events',
   COMMUNITY = 'community',
+  PROFILE = 'profile',
 }
 
 export enum UploadKind {

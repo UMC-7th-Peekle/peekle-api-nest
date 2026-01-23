@@ -106,13 +106,20 @@ export class AuthService {
   ) {
     const redirectUrl = frontendUrl ?? this.getFrontendOAuthCallbackUrl(frontEnv);
 
-    let res: string;
+    // login/register/error 는 서로 순서가 있는 조건이 아니기 때문에 하나의 if-else 흐름으로 묶지 않고,
+    // 각 타입을 조건에 맞는 즉시 return 하는 방식으로 수정해보았습니다.
     if (result.type === 'login') {
-      res = `${redirectUrl}?type=login&oauthProvider=${result.oauthProvider}&accessToken=${result.tokens.accessToken}&refreshToken=${result.tokens.refreshToken}`;
-    } else if (result.type === 'register') {
-      res = `${redirectUrl}?type=register&oauthProvider=${result.oauthProvider}&registerToken=${result.tokens.registerToken}`;
-    } else throw new InternalServerErrorException('Something Got Wrong.');
+      return `${redirectUrl}?type=login&oauthProvider=${result.oauthProvider}&accessToken=${result.tokens.accessToken}&refreshToken=${result.tokens.refreshToken}`;
+    }
 
-    return res;
+    if (result.type === 'register') {
+      return `${redirectUrl}?type=register&oauthProvider=${result.oauthProvider}&registerToken=${result.tokens.registerToken}`;
+    }
+
+    if (result.type === 'error') {
+      return `${redirectUrl}?type=error&oauthProvider=${result.oauthProvider}&errorCode=${result.errorCode}`;
+    }
+
+    throw new InternalServerErrorException('Invalid OAuth result type'); // Something Got Wrong
   }
 }

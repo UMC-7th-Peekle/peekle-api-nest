@@ -37,8 +37,13 @@ export class OAuthUserService {
     console.log('OAuthUserService ~ user:', user);
 
     if (user) {
+      // 탈퇴한 사용자가 있을 때 프론트에 넘기기 위해 throw 대신 return으로 변경
       if (user.deletedAt || user.isActive === false) {
-        throw new UnauthorizedException('WITHDRAWN_USER : 탈퇴한 사용자입니다.');
+        return {
+          type: 'error',
+          oauthProvider,
+          errorCode: 'USER_WITHDRAWN',
+        };
       }
 
       const tokens = await this.authService.generateTokens(user.id);

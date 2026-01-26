@@ -37,4 +37,10 @@ export interface OAuthRegisterResult {
   };
 }
 
-export type OAuthLoginOrRegisterResult = OAuthLoginResult | OAuthRegisterResult;
+export interface OAuthErrorResult {
+  type: 'error';
+  oauthProvider: OAuthProvider;
+  errorCode: 'USER_WITHDRAWN'; // 탈퇴한 사용자
+}
+
+export type OAuthLoginOrRegisterResult = OAuthLoginResult | OAuthRegisterResult | OAuthErrorResult;

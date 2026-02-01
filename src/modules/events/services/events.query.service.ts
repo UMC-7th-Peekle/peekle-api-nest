@@ -153,45 +153,41 @@ export class EventsQueryService {
         const lat = query.latitude;
         const lng = query.longitude;
 
+        let cursorId: bigint | null = null;
         let cursorDistance: number | null = null;
 
-        // cursor 기준 distance 조회
-        if (query.cursor) {
-          let cursorId: bigint;
+        if (query.cursor && query.distanceCursor != null) {
           try {
             cursorId = BigInt(query.cursor);
+            cursorDistance = query.distanceCursor;
           } catch {
-            throw new BadRequestException('cursor는 BigInt 타입이어야 합니다.');
+            throw new BadRequestException('유효하지 않은 cursor 값입니다.');
           }
-
-          const cursorRow = await this.prisma.$queryRaw<Array<{ distance: number }>>`
-    SELECT ST_Distance_Sphere(
-             POINT(${lng}, ${lat}),
-             POINT(e.longitude, e.latitude)
-           ) AS distance
-    FROM event e
-    WHERE e.id = ${cursorId}
-      AND e.latitude IS NOT NULL
-      AND e.longitude IS NOT NULL
-  `;
-
-          if (!cursorRow.length) {
-            throw new BadRequestException('유효하지 않은 cursor입니다.');
-          }
-          cursorDistance = cursorRow[0].distance;
         }
 
         const comparator = sortOrder === 'asc' ? Prisma.sql`>` : Prisma.sql`<`;
 
-        // --- 조건 누적 ---
         const conditions: Prisma.Sql[] = [
           Prisma.sql`e.latitude IS NOT NULL`,
           Prisma.sql`e.longitude IS NOT NULL`,
         ];
 
-        if (cursorDistance !== null) {
+        // ⭐ 거리 커서 조건
+        if (cursorId !== null && cursorDistance !== null) {
           conditions.push(
-            Prisma.sql`ST_Distance_Sphere(POINT(${lng}, ${lat}), POINT(e.longitude, e.latitude)) ${comparator} ${cursorDistance}`,
+            Prisma.sql`(
+      ST_Distance_Sphere(
+        POINT(${lng}, ${lat}),
+        POINT(e.longitude, e.latitude)
+      ) ${comparator} ${cursorDistance}
+      OR (
+        ST_Distance_Sphere(
+          POINT(${lng}, ${lat}),
+          POINT(e.longitude, e.latitude)
+        ) = ${cursorDistance}
+        AND e.id ${comparator} ${cursorId}
+      )
+    )`,
           );
         }
 

@@ -10,10 +10,16 @@ import { PrismaService } from '@modules/prisma/prisma.service';
 export class EventsQueryService {
   constructor(private readonly prisma: PrismaService) {}
 
+  // 이벤트 목록 조회 API
+  // - 필터(query) 기반으로 이벤트를 조회
+  // - 정렬 기준(DATE / PRICE / DISTANCE)에 따라 쿼리 분기
+  // - 커서 기반 페이징 처리
+  // - 로그인 사용자일 경우 찜 여부 계산
+  // - 썸네일 + 응답 DTO로 가공
   async getEventsList(query: GetEventsQueryDto, userId?: bigint) {
     const sortOrder: 'asc' | 'desc' = query.order === Order.ASC ? 'asc' : 'desc';
 
-    // where 절: Prisma용 필터 조건
+    // where 절: Prisma용 필터 조건: 모든 조건은 AND로 묶임
     const andConds: Prisma.EventWhereInput[] = [];
 
     // 내가 찜한 이벤트만 보기
@@ -58,9 +64,13 @@ export class EventsQueryService {
       else andConds.push({ price: { not: 0 } });
     }
 
-    // 카테고리 필터
+    // 카테고리 필터 (OR 조건)
     if (query.categories?.length) {
-      andConds.push({ category: { in: query.categories } });
+      andConds.push({
+        OR: query.categories.map((category) => ({
+          category,
+        })),
+      });
     }
 
     // 검색어 필터 (제목 기준 검색)
@@ -131,6 +141,8 @@ export class EventsQueryService {
         break;
       }
 
+      // 거리순 정렬
+      // 여기서는 Raw SQL로 해야 해서 별도 처리
       case EventSortField.DISTANCE: {
         if (query.latitude == null || query.longitude == null) {
           throw new BadRequestException(
@@ -201,9 +213,11 @@ export class EventsQueryService {
           else conditions.push(Prisma.sql`e.price <> 0`);
         }
 
-        // 카테고리 필터
+        // 카테고리 필터 (OR 조건)
         if (query.categories?.length) {
-          conditions.push(Prisma.sql`e.category IN (${Prisma.join(query.categories)})`);
+          const categoryOr = query.categories.map((c) => Prisma.sql`e.category = ${c}`);
+
+          conditions.push(Prisma.sql`(${Prisma.join(categoryOr, ' OR ')})`);
         }
 
         // 위치 키워드 필터

@@ -172,7 +172,7 @@ export class EventsQueryService {
           Prisma.sql`e.longitude IS NOT NULL`,
         ];
 
-        // ⭐ 거리 커서 조건
+        // 거리 커서 조건
         if (cursorId !== null && cursorDistance !== null) {
           conditions.push(
             Prisma.sql`(

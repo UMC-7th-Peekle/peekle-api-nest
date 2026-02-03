@@ -41,6 +41,8 @@ export interface OAuthErrorResult {
   type: 'error';
   oauthProvider: OAuthProvider;
   errorCode: 'USER_WITHDRAWN'; // 탈퇴한 사용자
+  deletedAt: string;
+  rejoinableAt: string;
 }
 
 export type OAuthLoginOrRegisterResult = OAuthLoginResult | OAuthRegisterResult | OAuthErrorResult;

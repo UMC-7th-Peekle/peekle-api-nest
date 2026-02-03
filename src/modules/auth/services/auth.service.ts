@@ -117,7 +117,16 @@ export class AuthService {
     }
 
     if (result.type === 'error') {
-      return `${redirectUrl}?type=error&oauthProvider=${result.oauthProvider}&errorCode=${result.errorCode}`;
+      const deletedAt = result.deletedAt ?? '';
+      const rejoinableAt = result.rejoinableAt ?? '';
+
+      return (
+        `${redirectUrl}?type=error` +
+        `&oauthProvider=${result.oauthProvider}` +
+        `&errorCode=${result.errorCode}` +
+        `&deletedAt=${deletedAt}` +
+        `&rejoinableAt=${rejoinableAt}`
+      );
     }
 
     throw new InternalServerErrorException('Invalid OAuth result type'); // Something Got Wrong

@@ -56,6 +56,16 @@ export class GetEventsQueryDto {
   @TransformToBigint()
   cursor?: bigint;
 
+  @ApiPropertyOptional({
+    description: '거리순 정렬용 커서: 마지막으로 본 이벤트와의 거리',
+    example: 1500,
+    type: Number,
+  })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  distanceCursor?: number;
+
   // 기간 필터
   @ApiPropertyOptional({ description: '시작일 (YYYY-MM-DD)', example: '2025-09-01' })
   @IsOptional()

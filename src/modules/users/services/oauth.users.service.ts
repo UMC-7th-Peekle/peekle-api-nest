@@ -34,15 +34,30 @@ export class OAuthUserService {
       },
     });
 
+    const formatDate = (date: Date) => date.toISOString().slice(0, 10); // YYYY-MM-DD
+
     console.log('OAuthUserService ~ user:', user);
 
     if (user) {
       // 탈퇴한 사용자가 있을 때 프론트에 넘기기 위해 throw 대신 return으로 변경
       if (user.deletedAt || user.isActive === false) {
+        if (!user.deletedAt) {
+          // 논리적으로 탈퇴인데 deletedAt이 없는 경우 방어
+          throw new Error('Withdrawn user without deletedAt');
+        }
+
+        const REJOIN_DAYS = 7;
+        const deletedAt = user.deletedAt;
+
+        const rejoinableAt = new Date(deletedAt);
+        rejoinableAt.setDate(rejoinableAt.getDate() + REJOIN_DAYS);
+
         return {
           type: 'error',
           oauthProvider,
           errorCode: 'USER_WITHDRAWN',
+          deletedAt: formatDate(deletedAt),
+          rejoinableAt: formatDate(rejoinableAt),
         };
       }
 

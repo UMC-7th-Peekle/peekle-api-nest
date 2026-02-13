@@ -8,6 +8,7 @@ import { RefreshJwtConfig } from '@modules/auth/config/refresh-jwt.config';
 import { RegisterJwtConfig } from '@modules/auth/config/register-jwt.config';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { OAuthUserService } from '@modules/users/services/oauth.users.service';
+import { UserCleanupService } from '@modules/users/services/user-cleanup.service';
 import { UsersService } from '@modules/users/services/users.service';
 import { UsersController } from '@modules/users/users.controller';
 
@@ -19,7 +20,7 @@ import { UsersController } from '@modules/users/users.controller';
     // ConfigModule.forFeature(FrontendUrlConfig),
   ],
   controllers: [UsersController],
-  providers: [UsersService, OAuthUserService, AuthService],
+  providers: [UsersService, OAuthUserService, AuthService, UserCleanupService],
   exports: [UsersService, OAuthUserService],
 })
 export class UsersModule {}

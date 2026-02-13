@@ -1,6 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule, ValidationPipe } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { ScheduleModule } from '@nestjs/schedule';
 
 import cookieParser from 'cookie-parser';
 import { WinstonModule } from 'nest-winston';
@@ -51,6 +52,7 @@ const validate = (config: Record<string, unknown>) => {
       validate,
     }),
     WinstonModule.forRoot(winstonLoggerOptions),
+    ScheduleModule.forRoot(),
     UsersModule,
     PrismaModule,
     AuthModule,
